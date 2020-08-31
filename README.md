@@ -91,7 +91,7 @@ python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_templa
 
 **pc-alert-get.py**
 - Grab alerts from Prisma Cloud.
-- Note: Specify your parameters in the commandline and run. Results will be saved to a CSV file.
+- Note: Specify your parameters in the command-line and run. Results will be saved to a CSV file.
 
 Example:
 ```
