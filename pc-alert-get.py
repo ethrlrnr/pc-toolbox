@@ -7,7 +7,7 @@ import argparse
 import pc_lib_api
 import pc_lib_general
 import json
-
+import pandas
 
 # --Execution Block-- #
 # --Parse command line arguments-- #
@@ -55,6 +55,12 @@ parser.add_argument(
     '--policytype',
     type=str,
     help='(Optional) - Filter - Policy Type.')
+	
+parser.add_argument(
+    '-fct',
+    '--cloudtype',
+    type=str,
+    help='(Optional) - Filter - Policy Type.')	
 
 parser.add_argument(
     '-tr',
@@ -123,6 +129,12 @@ if args.alertstatus is not None:
     temp_filter['name'] = "alert.status"
     temp_filter['value'] = args.alertstatus
     alerts_filter['filters'].append(temp_filter)
+if args.cloudtype is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.type"
+    temp_filter['value'] = args.cloudtype
+    alerts_filter['filters'].append(temp_filter)
 if args.policytype is not None:
     temp_filter = {}
     temp_filter['operator'] = "="
@@ -132,13 +144,13 @@ if args.policytype is not None:
 
 print('Done.')
 
-
 # Get alerts list
 print('API - Getting alerts list...', end='')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
 print('Done.')
 
-# Print the list to the screen
-print()
-print(json.dumps(alerts_list))
+print('Saving JSON contents as a CSV...', end='')
+rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
+rr.to_csv('output_test.csv', sep=',', encoding='utf-8') 
+print('Done.')
