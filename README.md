@@ -11,6 +11,7 @@ To set up your python environment, you will need the following packages:
 To install/check for this:
 ```
 pip install requests --upgrade
+pip install pandas 
 ```
 
 ------------------------------------------------------------------
