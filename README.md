@@ -88,3 +88,18 @@ Example:
 ```
 python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_template.csv
 ```
+
+**pc-alert-get.py**
+- Grab alerts from Prisma Cloud
+- Note: Specify your parameters in the commandline and run. Results will be saved to a CSV file.
+
+Example:
+```
+python pc-alert-get.py -y -fas open  -tr 120 --detailed -fct aws
+python pc-alert-get.py -y -fas open  -tr 90 --detailed -fct gcp
+python pc-alert-get.py -y -fas open  -tr 60 --detailed -fpt anomaly -fct gcp
+python pc-alert-get.py -y -fas open  -tr 30 --detailed -fpt config -fct azure
+```
+
+
+
