@@ -8,6 +8,7 @@ import pc_lib_api
 import pc_lib_general
 import json
 import pandas
+from datetime import datetime, date, time
 
 # --Execution Block-- #
 # --Parse command line arguments-- #
@@ -151,6 +152,8 @@ alerts_list = response_package['data']
 print('Done.')
 
 print('Saving JSON contents as a CSV...', end='')
+
+now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
-rr.to_csv('output_test.csv', sep=',', encoding='utf-8') 
+rr.to_csv('output_test_{}.csv'.format(now), sep=',', encoding='utf-8') 
 print('Done.')
