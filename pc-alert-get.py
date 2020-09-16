@@ -151,9 +151,10 @@ pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, da
 alerts_list = response_package['data']
 print('Done.')
 
-# Save JSON to CSV with date/time
+# Save JSON to CSV with date/time and cloud type 
 print('Saving JSON contents as a CSV...', end='')
+type = args.cloudtype
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
-rr.to_csv('output_test_{}.csv'.format(now), sep=',', encoding='utf-8') 
+rr.to_csv('%s_output_test_{}.csv'.format(now) % type, sep=',', encoding='utf-8') 
 print('Done.')
