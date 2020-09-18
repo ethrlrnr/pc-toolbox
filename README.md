@@ -105,7 +105,7 @@ python pc-alert-get.py -y -fas open  -tr 30 --detailed -fpt config -fct azure
 - This code is geared towards GCP and AWS.
 - Pandas library is required.
 - Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
-- Columns found in output can be easily customized with other JSON elements.
+- Columns found in CSV output can be easily customized with other JSON elements.
 
 Example:
 ```
