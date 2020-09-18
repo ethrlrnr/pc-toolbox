@@ -101,7 +101,7 @@ python pc-alert-get.py -y -fas open  -tr 90 --detailed -fct gcp
 python pc-alert-get.py -y -fas open  -tr 60 --detailed -fpt anomaly -fct gcp
 python pc-alert-get.py -y -fas open  -tr 30 --detailed -fpt config -fct azure
 ```
-**pc-alert-get.py**
+**pc-alert-get-lite.py**
 - This code is geared towards GCP and AWS.
 - Pandas library is required.
 - Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
