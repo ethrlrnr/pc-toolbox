@@ -90,8 +90,9 @@ python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_templa
 ```
 
 **pc-alert-get.py**
-- Grab alerts from Prisma Cloud.
-- Note: Specify your parameters in the command-line and run. Results will be saved to a CSV file.
+- Grab alerts from Prisma Cloud, this is a full dump with 150+ columns.
+- Pandas library is required.
+- Note: Specify your parameters in the command-line and run. Results will be saved to a CSV file with the cloud type and time appended to the file name. 
 
 Example:
 ```
@@ -100,6 +101,15 @@ python pc-alert-get.py -y -fas open  -tr 90 --detailed -fct gcp
 python pc-alert-get.py -y -fas open  -tr 60 --detailed -fpt anomaly -fct gcp
 python pc-alert-get.py -y -fas open  -tr 30 --detailed -fpt config -fct azure
 ```
+**pc-alert-get.py**
+- This code is geared towards GCP and AWS.
+- Pandas library is required.
+- Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
+- Columns found in output can be easily customized with other JSON elements.
 
-
+Example:
+```
+python pc-alert-get-lite.py -y -fas open  -tr 120 --detailed -fct aws
+python pc-alert-get-lite.py -y -fas open  -tr 90 --detailed -fct gcp
+python pc-alert-get-lite.py -y -fas open  -tr 60 --detailed -fpt anomaly -fct gcp
 
