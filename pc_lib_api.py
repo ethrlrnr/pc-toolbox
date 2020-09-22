@@ -192,7 +192,7 @@ def api_user_role_list_get(pc_settings):
 # Get User list
 def api_user_list_get(pc_settings):
     action = "GET"
-    url = "https://" + pc_settings['apiBase'] + "/user"
+    url = "https://" + pc_settings['apiBase'] + "/v2/user"
     return pc_call_api(action, url, pc_settings)
 
 
