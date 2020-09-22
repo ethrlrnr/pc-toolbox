@@ -62,7 +62,7 @@ parser.add_argument(
     '-fct',
     '--cloudtype',
     type=str,
-    help='(Optional) - Filter - Policy Type.')	
+    help='(Optional) - Filter - Cloud Type.')	
 
 parser.add_argument(
     '-tr',
