@@ -76,6 +76,7 @@ pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a datafra
 mvp = pu.query('cloudType == "gcp"')
 mvp1 = mvp.filter(['id'])
 
+#Remove rows in CSV which contain a certain string
 mvp1[~mvp1['id'].str.contains('iac|sbx|sandbox|test|66278518872|retrieveseatmap01|playground')].to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
 
