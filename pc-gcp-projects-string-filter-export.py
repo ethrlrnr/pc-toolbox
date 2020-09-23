@@ -75,10 +75,10 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a dataframe
 mvp = pu.query('cloudType == "gcp"')
 mvp1 = mvp.filter(['id'])
-
-#Remove rows in CSV which contain a certain string
-mvp1[~mvp1['id'].str.contains('iac|sbx|sandbox|test|66278518872|retrieveseatmap01|playground')].to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
+mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|66278518872|retrieveseatmap01|playground')]
+mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
+
 
 
 
