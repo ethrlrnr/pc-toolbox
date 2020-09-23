@@ -73,7 +73,9 @@ print('Done.')
 print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a dataframe
-pu.query('cloudType == "gcp"').to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8') 
+mvp = pu.query('cloudType == "gcp"')
+mvp1 = mvp.filter(['id'])
+mvp1.to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
 
 
