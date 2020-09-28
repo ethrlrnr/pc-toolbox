@@ -284,3 +284,17 @@ def api_cloud_accounts_add(pc_settings, cloud_type, cloud_account_to_add):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/cloud/" + cloud_type
     return pc_call_api(action, url, pc_settings, data=cloud_account_to_add)
+
+# Get Account Groups Names list
+def api_accounts_groups_list_get(pc_settings, params=None):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/cloud/group"
+	#url = "https://" + pc_settings['apiBase'] + "/cloud/name"
+    return pc_call_api(action, url, pc_settings, params=params)
+
+# Add Account Group 
+def api_accounts_groups_add(pc_settings, new_accounts_group):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
+	#$url = "https://" + pc_settings['apiBase'] + "cloud/group" + cloud_type
+    return pc_call_api(action, url, pc_settings, data=new_accounts_group)
