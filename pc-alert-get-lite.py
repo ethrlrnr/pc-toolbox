@@ -155,7 +155,7 @@ pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, da
 alerts_list = response_package['data']
 print('Done.')
 
-#NEW - Save as CSV from JSON (requires pandas library to be installed) <-------------------
+# Save JSON to CSV (14-17 columns lite dump) with date/time and cloud type part of the output file name.
 print('Saving JSON contents as a CSV...', end='')
 
 type = args.cloudtype
