@@ -100,7 +100,7 @@ for row_dict in import_list_from_csv.to_dict(orient="records"):
 	accounts_groups_to_import.append(temp_accounts_group)
 	
 print(accounts_groups_to_import)
-#the master array should look like this---->[{'accountIds': ['automation-tooling-4857'], 'name': 'automation-tooling-4857'}, {'accountIds': ['crew-manager-nextgen-6006'], 'name': 'crew-manager-nextgen-6006'}, {'accountIds': ['istioegressgateway-5876'], 'name': 'istioegressgateway-5876'}]
+#the master array should look like this---->[{'accountIds': ['autop-tooling-4857'], 'name': 'autop-tooling-4857'}, {'accountIds': ['crew-ma-gen-6006'], 'name': 'crew-ma-gen-6006'}, {'accountIds': ['egressgateway-5876'], 'name': 'gateway-5876'}]
 print('Done.')
 
 
