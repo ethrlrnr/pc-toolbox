@@ -3,21 +3,18 @@ import requests
 import time
 import pc_lib_general
 
-# --Description-- #
-# Prisma Cloud API Helper library.  Contains shared API call functions.
-# --End Description-- #
-
 
 # --Helper Methods-- #
 # Main API Call Function
-def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=0, max_retries=2, auth_count=0, auth_retries=1):
+def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=0, max_retries=5, auth_count=0, auth_retries=1):
     retry_statuses = [429, 500, 502, 503, 504]
     auth_statuses = [401]
-    retry_wait_timer = 5
+    retry_wait_timer = 15
     headers = {'Content-Type': 'application/json', 'x-redlock-auth': pc_settings['jwt']}
 
     # Make the API Call
     response = requests.request(action, api_url, params=params, headers=headers, data=json.dumps(data))
+    print(response)
 
     # Check for an error to retry, re-auth, or fail
     if response.status_code in retry_statuses:
@@ -265,26 +262,26 @@ def api_compliance_report_download(pc_settings, report_id):
         pass
 
 
-# Get Cloud Accounts list
+# Get Cloud Accounts list - level 1 get
 def api_cloud_accounts_list_get(pc_settings, params=None):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/cloud"
     return pc_call_api(action, url, pc_settings, params=params)
 
 
-# Get Cloud Accounts Names list
+# Get Cloud Accounts Names list - level 2 cloud sub accounts
 def api_cloud_accounts_list_names_get(pc_settings, params=None):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/cloud/name"
     return pc_call_api(action, url, pc_settings, params=params)
 
 
-# Add Cloud Account
+# Add Cloud Account *** level 1 post
 def api_cloud_accounts_add(pc_settings, cloud_type, cloud_account_to_add):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/cloud/" + cloud_type
     return pc_call_api(action, url, pc_settings, data=cloud_account_to_add)
-
+	
 # Get Account Groups Names list
 def api_accounts_groups_list_get(pc_settings, params=None):
     action = "GET"
@@ -292,9 +289,9 @@ def api_accounts_groups_list_get(pc_settings, params=None):
 	#url = "https://" + pc_settings['apiBase'] + "/cloud/name"
     return pc_call_api(action, url, pc_settings, params=params)
 
-# Add Account Group 
+#encoding='utf8
+# Add Account Group - level 3 needed
 def api_accounts_groups_add(pc_settings, new_accounts_group):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
-	#$url = "https://" + pc_settings['apiBase'] + "cloud/group" + cloud_type
     return pc_call_api(action, url, pc_settings, data=new_accounts_group)
