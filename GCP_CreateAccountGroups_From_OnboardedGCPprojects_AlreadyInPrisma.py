@@ -9,11 +9,6 @@ import pc_lib_general
 import json
 import pandas
 from datetime import datetime, date, time
-#import pickle
-
-#class Cloudaccounts(dict):
-	#def __init__(self, id, name):
-		#dict.__init__(self, id=id, name=name)
 
 # --Execution Block-- #
 # --Parse command line arguments-- #
@@ -48,7 +43,7 @@ parser.add_argument(
 parser.add_argument(
     'source_csv_cloud_accounts_list',
     type=str,
-    help='Filename of the file with the list of GCP cloud sub accounts with Prisma ID. Call the CSV dumped from pc-gcp-projects-string-filter-export.py')
+    help='Filename of the file with the list of cloud accounts to import (CSV).')
 
 
 args = parser.parse_args()
@@ -73,46 +68,45 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-
-# use CSV file from created by pc-gcp-projects-string-filter-export.py
 print('File - Importing CSV from disk...', end='')
 import_list_from_csv = pandas.read_csv(args.source_csv_cloud_accounts_list)
 print(import_list_from_csv)
-# use CSV file from created by pc-gcp-projects-string-filter-export.py
 print('Done.')
+
+# Get existing cloud account list
+print('API - Getting existing cloud account list...', end='')
+#below gets level2
+pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_names_get(pc_settings)
+cloud_accounts_list = response_package['data']
+#print(cloud_accounts_list)
 
 # Convert groupId to an array for import
 print('Data - Converting CSV data format for import...', end='')
+# below creates an empty list (this is master array)
 accounts_groups_to_import = []
-#creates a dictionary inside a blank list. Each row in the CSV is a dicitonairy
+#creates a dictionary inside a blank list. Each row in the CSV needs to be a dicitonary. Loop through each row and turn it into dictionary. 
+#to_dict uses the pandas dataframe and turns it into a dictionary. Orient Records=do it by row (and not columns) 
 for row_dict in import_list_from_csv.to_dict(orient="records"):
-
+	#Important--to match the api requirements:
+	#accountIds = 'id' is required to be an array of strings. This means the accountIds must be inside of a list []. Added extra brackets around.
+	#name = 'id' also. is just a string. 
+	#first create an empty dictionary, then add each item to it (accountIds, name)
 	temp_accounts_group = {}
-	temp_accounts_group['name'] = row_dict['name']
-	temp_accounts_group['accountIds'] = row_dict['id']
+	temp_accounts_group['accountIds'] = [row_dict['id']]
+	temp_accounts_group['name'] = row_dict['id']
+	#each temp account group row will look like ---> {'accountIds': ['automation-tooling-4857'], 'name': 'automation-tooling-4857'}
 	
-	
-
-  
+	#append each new dictionary to the master array (accounts_groups_to_import)
 	accounts_groups_to_import.append(temp_accounts_group)
-print('DoneDoneDoneDoneDone.')
+	
 print(accounts_groups_to_import)
+#the master array should look like this---->[{'accountIds': ['automation-tooling-4857'], 'name': 'automation-tooling-4857'}, {'accountIds': ['crew-manager-nextgen-6006'], 'name': 'crew-manager-nextgen-6006'}, {'accountIds': ['istioegressgateway-5876'], 'name': 'istioegressgateway-5876'}]
 print('Done.')
 
-
-# Check ingested list for all required fields and data in all fields
-## To Do ##
 
 # Check ingested list for any duplicates in the CSV (Names or account ID's)
 ## To Do ##
 
-# Get existing cloud account list
-print('API - Getting existing cloud account list...', end='')
-pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
-#pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_names_get(pc_settings)
-#cloud_accounts_list = response_package['data']
-#print(cloud_accounts_list)
-print('Done Getting existing account list ----------------------.')
 
 # Figure out which accounts are already in Prisma Cloud and remove them from the import list
 ## To Do ##
@@ -120,19 +114,19 @@ print('Done Getting existing account list ----------------------.')
 # Check the remaining list for any duplicate names
 ## To Do ##
 
-# Import the account list into Prisma Cloud
-print('API - Adding account groups...')
-cloud_type = "gcp"
-print()
 
-
- 
+#for each dictionary in the master array, send one row at a time to pc_lib_api. 
+#for example, send first---->{'accountIds': ['automation-tooling-4857'], 'name': 'automation-tooling-4857'}
+#this imports each group one at a time. 
 for new_accounts_group in accounts_groups_to_import:
-	# data2=json.dumps(new_accounts_group)
-    print(new_accounts_group)
-    #print('Adding account name: ' + new_accounts_group['name'])
-    #print('Adding account id: ' + new_accounts_group['accountIds'])
+    print('Adding account name: ' + new_accounts_group['name'])
+    print(new_accounts_group['accountIds'])
     pc_settings, response_package = pc_lib_api.api_accounts_groups_add(pc_settings, new_accounts_group)
-#cant get to second row due to formating of the dictionary
-
 print('Import Complete.')
+
+#if receive status code 200, group imported correctly. 
+
+#if receive Status Error 400: three reasons you might get this error:
+# (1) this exact cloud account group already exists. Most likely this is why getting Error 400. 
+# (2) the formatting of accoutIds is incorrect. This was initial error, had to make accountIds an array of strings to meet api requirements. 
+# (3) the formatting of account group name is inocrrect. must be a string. 
