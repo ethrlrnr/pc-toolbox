@@ -74,10 +74,14 @@ print('Done.')
 print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a dataframe
+#Filter down to only GCP 
 mvp = pu.query('cloudType == "gcp"')
+#columns returned are name, cloudtype, parantaccountname and ID. Filter out everything except ID (GCP project name)
 mvp1 = mvp.filter(['id'])
 #mvp1 = mvp.drop(columns=['name','cloudType','parentAccountName'])
+#Filter out rows which contain certain strings, add your own items below, this is useful for bulk upload purposes.
 mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|retrieveseatmap01|playground|your_GCP_main_account_ID')]
+#Sort ID column alphabetically, remove index on left side
 mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
 
