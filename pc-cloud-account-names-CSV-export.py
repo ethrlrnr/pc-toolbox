@@ -62,30 +62,19 @@ if not args.yes:
 print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
-
-
-
 print('API - Getting current user list...', end='')
-pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
-accounts_groups_list = response_package['data']
+pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_names_get(pc_settings)
+cloud_accounts_list_names = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
+# Save JSON to CSV with date/time 
 print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(accounts_groups_list) #put json inside a dataframe
-pu.to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
-mvp = pu.query('description == "GCP Project Mapped to Account Group"')
-#query method matches for criteria in a column, in this case in the column description find things that match "GCP Project.."
-mvp1 = mvp.filter(['id', 'name'])
-#8 columns are returned, only need "id" and "name".
-#alternate method to filter the columns returned ---> mvp1 = mvp.drop(columns=['accounts','alertRules', 'autoCreated', 'accountIds', 'lastModifiedTs', 'lastModifiedBy', 'description'])
+pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a dataframe
+mvp = pu.query('cloudType == "gcp"')
+#mvp1 = mvp.filter(['id'])
+mvp1 = mvp.drop(columns=['cloudType','parentAccountName'])
 mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|66278518872|retrieveseatmap01|playground')]
-#str.contains filters out rows containing certain strings you specify 
-mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
-#index= false removes index on far left
+mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
-
-
-
