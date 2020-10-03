@@ -6,10 +6,10 @@ import pc_lib_general
 
 # --Helper Methods-- #
 # Main API Call Function
-def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=0, max_retries=5, auth_count=0, auth_retries=1):
+def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=5, max_retries=9, auth_count=0, auth_retries=5):
     retry_statuses = [429, 500, 502, 503, 504]
     auth_statuses = [401]
-    retry_wait_timer = 15
+    retry_wait_timer = 30
     headers = {'Content-Type': 'application/json', 'x-redlock-auth': pc_settings['jwt']}
 
     # Make the API Call
@@ -184,6 +184,12 @@ def api_user_role_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/user/role"
     return pc_call_api(action, url, pc_settings)
+	
+# Add new User Role
+def api_user_role_add(pc_settings, user_role_to_add):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/user/role"
+    return pc_call_api(action, url, pc_settings, data=user_role_to_add)
 
 
 # Get User list
@@ -295,3 +301,5 @@ def api_accounts_groups_add(pc_settings, new_accounts_group):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
     return pc_call_api(action, url, pc_settings, data=new_accounts_group)
+	
+	
