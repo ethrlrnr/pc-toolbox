@@ -111,7 +111,7 @@ print('Done.')
 
 
 #for each dictionary in the master array, send one row at a time to pc_lib_api. 
-#for example, send first---->{'accountIds': ['automation-tooling-4857'], 'name': 'automation-tooling-4857'}
+#for example, send first---->{'accountIds': ['automation-tooling-47'], 'name': 'automation-tooling-47'}
 #this imports each group one at a time. 
 for new_accounts_group in accounts_groups_to_import:
     print('Adding account name: ' + new_accounts_group['name'])
