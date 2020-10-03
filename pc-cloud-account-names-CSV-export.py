@@ -77,7 +77,9 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(accounts_groups_list) #put json inside a dataframe
 pu.to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
 mvp = pu.query('description == "GCP Project Mapped to Account Group"')
+#query method matches for criteria in a column, in this case in the column description find things that match "GCP Project.."
 mvp1 = mvp.filter(['id', 'name'])
+#8 columns are returned, only need "id" and "name".
 #alternate method to filter the columns returned ---> mvp1 = mvp.drop(columns=['accounts','alertRules', 'autoCreated', 'accountIds', 'lastModifiedTs', 'lastModifiedBy', 'description'])
 mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|66278518872|retrieveseatmap01|playground')]
 #str.contains filters out rows containing certain strings you specify 
