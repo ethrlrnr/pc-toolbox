@@ -103,11 +103,6 @@ print(accounts_groups_to_import)
 #the master array should look like this---->[{'accountIds': ['autop-tooling-4857'], 'name': 'autop-tooling-4857'}, {'accountIds': ['crew-ma-gen-6006'], 'name': 'crew-ma-gen-6006'}, {'accountIds': ['egressgateway-5876'], 'name': 'gateway-5876'}]
 print('Done.')
 
-
-# Check ingested list for any duplicates in the CSV (Names or account ID's)
-## To Do ##
-
-
 # Figure out which accounts are already in Prisma Cloud and remove them from the import list
 ## To Do ##
 
