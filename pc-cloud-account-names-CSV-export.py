@@ -34,7 +34,7 @@ parser.add_argument(
     help='*Required* - Base URL used in the UI for connecting to Prisma Cloud.  '
          'Formatted as app.prismacloud.io or app2.prismacloud.io or app.eu.prismacloud.io, etc.  '
          'You can also input the api version of the URL if you know it and it will be passed through.')
-		 
+
 parser.add_argument(
     '-y',
     '--yes',
@@ -63,17 +63,26 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
+
+
 print('API - Getting current user list...', end='')
-pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_get(pc_settings)
-cloud_accounts_list = response_package['data']
+pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
+accounts_groups_list = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time 
+# Save JSON to CSV with date/time and cloud type 
 print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(cloud_accounts_list) #put json inside a dataframe
-pu.to_csv('prisma_cloud_accounts_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
+pu = pandas.json_normalize(accounts_groups_list) #put json inside a dataframe
+pu.to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
+mvp = pu.query('description == "GCP Project Mapped to Account Group"')
+mvp1 = mvp.filter(['id', 'name'])
+#alternate method to filter the columns returned ---> mvp1 = mvp.drop(columns=['accounts','alertRules', 'autoCreated', 'accountIds', 'lastModifiedTs', 'lastModifiedBy', 'description'])
+mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|66278518872|retrieveseatmap01|playground')]
+#str.contains filters out rows containing certain strings you specify 
+mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
+#index= false removes index on far left
 print('Done.')
 
 
