@@ -76,7 +76,7 @@ print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(user_role_list) #put json inside a dataframe
 mvp = pu.query('description == "Role Mapped to GCP Project"')
-mvp1 = mvp.filter(['id'])
+mvp1 = mvp.filter(['id', 'name'])
 mvp1.sort_values(by=['id'], ascending = True).to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
 print('Done.')
 
