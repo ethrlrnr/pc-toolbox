@@ -162,12 +162,22 @@ type = args.cloudtype
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
 
+#Convert column in DF which stores the timestamp as Unix Time to Time/Date. This will also convert the default time zone from UTC to Chicago.
+rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+
+#Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we had to be sure we were calling the right column names. The columns below can be swapped out for anything found in the JSON response ("rr" in this case)
 if args.cloudtype == "gcp":
-    gcp_LITE_FIELDS = ["id", "status", "policy.severity", "policy.name", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId"]
-    rr[gcp_LITE_FIELDS].to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8') 
+    gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status"]
+#Reindex, if one of our columns is empty the code will proceed and not error out. 	
+    rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
+#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+    rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%Y-%m-%d %H:%M:%S') 
 
 else:
-    aws_LITE_FIELDS = ["id", "status", "policy.severity", "policy.name", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.data.tagSets.ContactEmail", "resource.region", "resource.regionId", "resource.data.tags"]
-    rr[aws_LITE_FIELDS].to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8') 
+    aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit"]
+    rr2 = rr.reindex(columns=aws_LITE_FIELDS)
+    rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%Y-%m-%d %H:%M:%S') 
+
 
 print('Done.')
