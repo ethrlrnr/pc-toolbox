@@ -57,7 +57,18 @@ parser.add_argument(
     type=str,
     help='(Optional) - Filter - Policy Type.')
 	
-#NEW - Cloudtype <------------------	
+parser.add_argument(
+    '-fpcs',
+    '--policycomplianceStandard',
+    type=str,
+    help='(Optional) - Filter - Policy Compliance Standard.')
+
+parser.add_argument(
+    '-fps',
+    '--policyseverity',
+    type=str,
+    help='(Optional) - Filter - Policy Severity.')
+
 parser.add_argument(
     '-fct',
     '--cloudtype',
@@ -131,7 +142,6 @@ if args.alertstatus is not None:
     temp_filter['name'] = "alert.status"
     temp_filter['value'] = args.alertstatus
     alerts_filter['filters'].append(temp_filter)
-#NEW - Cloudtype <------------
 if args.cloudtype is not None:
     temp_filter = {}
     temp_filter['operator'] = "="
@@ -144,7 +154,18 @@ if args.policytype is not None:
     temp_filter['name'] = "policy.type"
     temp_filter['value'] = args.policytype
     alerts_filter['filters'].append(temp_filter)
-	
+if args.policycomplianceStandard is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "policy.complianceStandard"
+    temp_filter['value'] = args.policycomplianceStandard
+    alerts_filter['filters'].append(temp_filter)
+if args.policyseverity is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "policy.severity"
+    temp_filter['value'] = args.policyseverity
+    alerts_filter['filters'].append(temp_filter)
 
 print('Done.')
 
@@ -166,7 +187,7 @@ rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
 rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 
 
-#Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we had to be sure we were calling the right column names. The columns below can be swapped out for anything found in the JSON response ("rr" in this case)
+#Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case)
 if args.cloudtype == "gcp":
     gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
