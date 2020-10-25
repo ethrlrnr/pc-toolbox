@@ -93,7 +93,8 @@ python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_templa
 **pc-alert-get.py**
 - Grab alerts from Prisma Cloud, this is a full dump with 150+ columns.
 - Pandas library is required.
-- Note: Specify your parameters in the command-line and run. Results will be saved to a CSV file with the cloud type and time appended to the file name. 
+- Specify your parameters in the command-line and run. Results will be saved to a CSV file with the cloud type and time appended to the file name.
+- If your response is large sometimes you will receive a server side error. The only way to handle this issue at the moment is to pull less days or do more filtering. 
 
 Example:
 ```
