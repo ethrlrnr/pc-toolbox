@@ -97,10 +97,10 @@ python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_templa
 
 Example:
 ```
-python pc-alert-get.py -y -fas open  -tr 120 --detailed -fct aws
-python pc-alert-get.py -y -fas open  -tr 90 --detailed -fct gcp
-python pc-alert-get.py -y -fas open  -tr 60 --detailed -fpt anomaly -fct gcp
-python pc-alert-get.py -y -fas open  -tr 30 --detailed -fpt config -fct azure
+python pc-alert-get.py -y -fas open -tr 120 --detailed -fct aws
+python pc-alert-get.py -y -fas open -tr 90 --detailed -fct gcp
+python pc-alert-get.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
+python pc-alert-get.py -y -fas open -tr 30 --detailed -fpt config -fct azure
 ```
 **pc-alert-get-lite.py**
 - This code is geared towards GCP and AWS.
@@ -110,7 +110,7 @@ python pc-alert-get.py -y -fas open  -tr 30 --detailed -fpt config -fct azure
 
 Example:
 ```
-python pc-alert-get-lite.py -y -fas open  -tr 120 --detailed -fct aws
-python pc-alert-get-lite.py -y -fas open  -tr 90 --detailed -fct gcp
-python pc-alert-get-lite.py -y -fas open  -tr 60 --detailed -fpt anomaly -fct gcp
-
+python pc-alert-get-lite.py -y -fas open -tr 120 --detailed -fct aws
+python pc-alert-get-lite.py -y -fas open -tr 90 --detailed -fct gcp
+python pc-alert-get-lite.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
