@@ -57,11 +57,12 @@ parser.add_argument(
     type=str,
     help='(Optional) - Filter - Policy Type.')
 	
+#NEW - Cloudtype <------------------	
 parser.add_argument(
     '-fct',
     '--cloudtype',
     type=str,
-    help='(Optional) - Filter - Cloud Type.')	
+    help='(Optional) - Filter - Policy Type.')	
 
 parser.add_argument(
     '-tr',
@@ -130,6 +131,7 @@ if args.alertstatus is not None:
     temp_filter['name'] = "alert.status"
     temp_filter['value'] = args.alertstatus
     alerts_filter['filters'].append(temp_filter)
+#NEW - Cloudtype <------------
 if args.cloudtype is not None:
     temp_filter = {}
     temp_filter['operator'] = "="
@@ -142,8 +144,10 @@ if args.policytype is not None:
     temp_filter['name'] = "policy.type"
     temp_filter['value'] = args.policytype
     alerts_filter['filters'].append(temp_filter)
+	
 
 print('Done.')
+
 
 # Get alerts list
 print('API - Getting alerts list...', end='')
@@ -151,10 +155,21 @@ pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, da
 alerts_list = response_package['data']
 print('Done.')
 
-# Save JSON to CSV (200+ columns full dump) with date/time and cloud type part of the output file name.
+#NEW - Save as CSV from JSON (requires pandas library to be installed) <-------------------
 print('Saving JSON contents as a CSV...', end='')
+
 type = args.cloudtype
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
-rr.to_csv('%s_output_test_{}.csv'.format(now) % type, sep=',', encoding='utf-8') 
+#print (rr)
+
+#columnsgroupextra = ['firstSeen', 'lastSeen', 'alertTime', 'eventOccurred', 'policy.lastModifiedOn','resource.data.timestamp', 'investigateOptions.startTs', 'investigateOptions.endTs']
+
+rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['lastSeen']=(pandas.to_datetime(rr['lastSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['firstSeen']=(pandas.to_datetime(rr['firstSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+print (rr['lastSeen'])
+#rr['investigateOptions.searchId'] = rr['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
+#rr['alertTime'] = rr['alertTime'].apply(pandas.to_datetime, unit = 'ms')
+rr.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
 print('Done.')
