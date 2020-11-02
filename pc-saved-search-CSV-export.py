@@ -71,11 +71,16 @@ saved_searches = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
+# Save JSON to CSV with date/time
 print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(saved_searches) #put json inside a dataframe
+
+#strip items from overloaded "policies" column in dataframe, which includes the name and ID of policies jammed into one cell. This code only keeps the policy ID which we can use for mapping purposes in other areas like GET ALERTS (id to id mapping then grab associated RQL)
+pu.policies = pu.id.str.replace(".+\['|'].+", '')
+
 pu.to_csv('saved_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
+
 
 
