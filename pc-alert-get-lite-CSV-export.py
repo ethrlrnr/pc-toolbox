@@ -50,6 +50,12 @@ parser.add_argument(
     '--alertstatus',
     type=str,
     help='(Optional) - Filter - Alert Status.')
+	
+parser.add_argument(
+    '-aid',
+    '--alertid',
+    type=str,
+    help='(Optional) - Filter - Alert ID.')
 
 parser.add_argument(
     '-fpt',
@@ -62,18 +68,33 @@ parser.add_argument(
     '--policycomplianceStandard',
     type=str,
     help='(Optional) - Filter - Policy Compliance Standard.')
-
+	
 parser.add_argument(
     '-fps',
     '--policyseverity',
     type=str,
     help='(Optional) - Filter - Policy Severity.')
-
+		
 parser.add_argument(
     '-fct',
     '--cloudtype',
     type=str,
-    help='(Optional) - Filter - Cloud Type.')	
+    help='(Optional) - Filter - Cloud Type.')
+parser.add_argument(
+    '-fca',
+    '--cloudaccount',
+    type=str,
+    help='(Optional) - Filter - Cloud Account.')
+parser.add_argument(
+    '-fcaid',
+    '--cloudaccountid',
+    type=str,
+    help='(Optional) - Filter - Cloud Account ID.')
+parser.add_argument(
+    '-fcr',
+    '--cloudregion',
+    type=str,
+    help='(Optional) - Filter - Cloud Region.')
 
 parser.add_argument(
     '-tr',
@@ -88,7 +109,22 @@ parser.add_argument(
     type=int,
     default=500,
     help='(Optional) - Return values limit (Default to 500).')
-
+parser.add_argument(
+    '-fagt',
+    '--accountgroup',
+    type=str,
+    help='(Optional) - Filter - Account Group.')
+parser.add_argument(
+    '-fpid',
+    '--policyid',
+    type=str,
+    help='(Optional) - Filter - Policy ID.')	
+parser.add_argument(
+    '-frid',
+    '--resourceid',
+    type=str,
+    help='(Optional) - Filter - Resource ID.')	
+	
 
 args = parser.parse_args()
 # --End parse command line arguments-- #
@@ -142,6 +178,36 @@ if args.alertstatus is not None:
     temp_filter['name'] = "alert.status"
     temp_filter['value'] = args.alertstatus
     alerts_filter['filters'].append(temp_filter)
+if args.alertid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "alert.id"
+    temp_filter['value'] = args.alertid
+    alerts_filter['filters'].append(temp_filter)
+if args.cloudaccount is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.account"
+    temp_filter['value'] = args.cloudaccount
+    alerts_filter['filters'].append(temp_filter)
+if args.cloudregion is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.region"
+    temp_filter['value'] = args.cloudregion
+    alerts_filter['filters'].append(temp_filter)
+if args.accountgroup is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "account.group"
+    temp_filter['value'] = args.accountgroup
+    alerts_filter['filters'].append(temp_filter)
+if args.cloudaccountid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.accountId"
+    temp_filter['value'] = args.cloudaccountid
+    alerts_filter['filters'].append(temp_filter)
 if args.cloudtype is not None:
     temp_filter = {}
     temp_filter['operator'] = "="
@@ -166,8 +232,21 @@ if args.policyseverity is not None:
     temp_filter['name'] = "policy.severity"
     temp_filter['value'] = args.policyseverity
     alerts_filter['filters'].append(temp_filter)
+if args.policyid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "policy.id"
+    temp_filter['value'] = args.policyid
+    alerts_filter['filters'].append(temp_filter)
+if args.resourceid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "resource.id"
+    temp_filter['value'] = args.policyid
+    alerts_filter['filters'].append(temp_filter)
 
 print('Done.')
+
 
 # Get alerts list
 print('API - Getting alerts list...', end='')
@@ -184,49 +263,50 @@ rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
 
 
 #Convert column in DF which stores the timestamp as Unix Time to Time/Date. This will also convert the default time zone from UTC to Chicago.
+
 rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 column_exist_check = "investigateOptions.searchId" in rr
-#print (column_exist_check)
-#print (args.cloudtype)
+print (column_exist_check)
+print (args.cloudtype)
 
 #Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case)
 if args.cloudtype == "gcp": 
     if column_exist_check == True:
         gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId"]
-        #Reindex, if one of our columns is empty the code will proceed and not error out. 	
+#Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
-        #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
-	#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+    #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
+#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
         rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
         gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status"]
-        #Reindex, if one of our columns is empty the code will proceed and not error out. 	
+#Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
-        #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
         rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 	
 	
 if args.cloudtype == "aws": 
     if column_exist_check == True:
         aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "investigateOptions.searchId"]
-        #Reindex, if one of our columns is empty the code will proceed and not error out. 	
+#Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
-        #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
-        #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+    #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
+#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
         rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
         aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit"]
-        #Reindex, if one of our columns is empty the code will proceed and not error out. 	
+#Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
-        #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
         rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 	
 	
 
