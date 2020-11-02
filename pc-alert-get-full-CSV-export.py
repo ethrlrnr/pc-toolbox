@@ -50,6 +50,12 @@ parser.add_argument(
     '--alertstatus',
     type=str,
     help='(Optional) - Filter - Alert Status.')
+	
+parser.add_argument(
+    '-aid',
+    '--alertid',
+    type=str,
+    help='(Optional) - Filter - Alert ID.')
 
 parser.add_argument(
     '-fpt',
@@ -57,12 +63,38 @@ parser.add_argument(
     type=str,
     help='(Optional) - Filter - Policy Type.')
 	
-#NEW - Cloudtype <------------------	
+parser.add_argument(
+    '-fpcs',
+    '--policycomplianceStandard',
+    type=str,
+    help='(Optional) - Filter - Policy Compliance Standard.')
+	
+parser.add_argument(
+    '-fps',
+    '--policyseverity',
+    type=str,
+    help='(Optional) - Filter - Policy Severity.')
+		
 parser.add_argument(
     '-fct',
     '--cloudtype',
     type=str,
-    help='(Optional) - Filter - Policy Type.')	
+    help='(Optional) - Filter - Cloud Type.')
+parser.add_argument(
+    '-fca',
+    '--cloudaccount',
+    type=str,
+    help='(Optional) - Filter - Cloud Account.')
+parser.add_argument(
+    '-fcaid',
+    '--cloudaccountid',
+    type=str,
+    help='(Optional) - Filter - Cloud Account ID.')
+parser.add_argument(
+    '-fcr',
+    '--cloudregion',
+    type=str,
+    help='(Optional) - Filter - Cloud Region.')
 
 parser.add_argument(
     '-tr',
@@ -77,8 +109,22 @@ parser.add_argument(
     type=int,
     default=500,
     help='(Optional) - Return values limit (Default to 500).')
-
-
+parser.add_argument(
+    '-fagt',
+    '--accountgroup',
+    type=str,
+    help='(Optional) - Filter - Account Group.')
+parser.add_argument(
+    '-fpid',
+    '--policyid',
+    type=str,
+    help='(Optional) - Filter - Policy ID.')	
+parser.add_argument(
+    '-frid',
+    '--resourceid',
+    type=str,
+    help='(Optional) - Filter - Resource ID.')	
+	
 args = parser.parse_args()
 # --End parse command line arguments-- #
 
@@ -131,7 +177,36 @@ if args.alertstatus is not None:
     temp_filter['name'] = "alert.status"
     temp_filter['value'] = args.alertstatus
     alerts_filter['filters'].append(temp_filter)
-#NEW - Cloudtype <------------
+if args.alertid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "alert.id"
+    temp_filter['value'] = args.alertid
+    alerts_filter['filters'].append(temp_filter)
+if args.cloudaccount is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.account"
+    temp_filter['value'] = args.cloudaccount
+    alerts_filter['filters'].append(temp_filter)
+if args.cloudregion is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.region"
+    temp_filter['value'] = args.cloudregion
+    alerts_filter['filters'].append(temp_filter)
+if args.accountgroup is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "account.group"
+    temp_filter['value'] = args.accountgroup
+    alerts_filter['filters'].append(temp_filter)
+if args.cloudaccountid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "cloud.accountId"
+    temp_filter['value'] = args.cloudaccountid
+    alerts_filter['filters'].append(temp_filter)
 if args.cloudtype is not None:
     temp_filter = {}
     temp_filter['operator'] = "="
@@ -144,8 +219,30 @@ if args.policytype is not None:
     temp_filter['name'] = "policy.type"
     temp_filter['value'] = args.policytype
     alerts_filter['filters'].append(temp_filter)
-	
-
+if args.policycomplianceStandard is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "policy.complianceStandard"
+    temp_filter['value'] = args.policycomplianceStandard
+    alerts_filter['filters'].append(temp_filter)
+if args.policyseverity is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "policy.severity"
+    temp_filter['value'] = args.policyseverity
+    alerts_filter['filters'].append(temp_filter)
+if args.policyid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "policy.id"
+    temp_filter['value'] = args.policyid
+    alerts_filter['filters'].append(temp_filter)
+if args.resourceid is not None:
+    temp_filter = {}
+    temp_filter['operator'] = "="
+    temp_filter['name'] = "resource.id"
+    temp_filter['value'] = args.policyid
+    alerts_filter['filters'].append(temp_filter)
 print('Done.')
 
 
@@ -168,7 +265,7 @@ rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
 rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 rr['lastSeen']=(pandas.to_datetime(rr['lastSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 rr['firstSeen']=(pandas.to_datetime(rr['firstSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
-print (rr['lastSeen'])
+
 #rr['investigateOptions.searchId'] = rr['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
 #rr['alertTime'] = rr['alertTime'].apply(pandas.to_datetime, unit = 'ms')
 rr.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
