@@ -58,6 +58,12 @@ def pc_jwt_get(pc_settings):
 
 
 # Get Compliance Standards list
+def api_compliance_posture_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/compliance/posture"
+    return pc_call_api(action, url, pc_settings)
+
+# Get Compliance Standards list
 def api_compliance_standard_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/compliance"
@@ -127,13 +133,19 @@ def api_policy_v2_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/v2/policy"
     return pc_call_api(action, url, pc_settings)
+	
+# Get policy list (v2)
+def api_policy_v2_list_get_enabled(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/v2/policy?policy.enabled=true"
+    return pc_call_api(action, url, pc_settings)
 
 
 # Get Custom Policy list (v2)
 def api_policy_custom_v2_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/v2/policy"
-    filters = [('policy.policyMode', 'custom')]
+    filters = [('policy.policyMode', 'redlock_default')]
     return pc_call_api(action, url, pc_settings, params=filters)
 
 
@@ -169,6 +181,11 @@ def api_policy_status_update(pc_settings, policy_id, status):
 def api_search_get(pc_settings, search_id):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/search/history/" + search_id
+    return pc_call_api(action, url, pc_settings)
+	
+def api_search_get_all(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=saved&limit=10000"
     return pc_call_api(action, url, pc_settings)
 
 
