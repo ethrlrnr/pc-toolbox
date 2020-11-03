@@ -334,7 +334,7 @@ if args.cloudtype == "gcp":
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
     #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
         gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query"]
@@ -342,7 +342,7 @@ if args.cloudtype == "gcp":
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 	
 if args.cloudtype == "aws": 
     if column_exist_check == True:
@@ -353,7 +353,7 @@ if args.cloudtype == "aws":
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
     #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
         aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query"]
@@ -361,7 +361,7 @@ if args.cloudtype == "aws":
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
 
 print('Done')
 print('Saving JSON contents as a CSV...')
