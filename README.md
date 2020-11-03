@@ -116,4 +116,4 @@ python pc-alert-get-lite.py -y -fas open -tr 90 --detailed -fct gcp
 python pc-alert-get-lite.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-lite.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 
-**WILL COMPLETE DOCUMENTATION IN DEC 2020***
+**WILL COMPLETE DOCUMENTATION IN DEC 2020 FOR ALL THE NEW SCRIPTS***
