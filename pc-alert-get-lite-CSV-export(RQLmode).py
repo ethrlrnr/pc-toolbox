@@ -151,7 +151,8 @@ pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
 # Sort out and built the filters JSON
-print('Local - Building the filter JSON package...', end='')
+print('Local - Building the filter JSON package and checking for cloud provider specificed...')
+print (args.cloudtype)
 alerts_filter = {}
 
 if args.detailed:
@@ -248,45 +249,60 @@ if args.resourceid is not None:
 print('Done.')
 
 #In order to get an RQL query column populated and mapped to specific alerts, first we need to combine response from a policy list response and a saved search list response. Alerts response has a policyID field which we can map to this combo response to extract the associated RQL (if applicable)
-print('API - Getting current policylist...', end='')
+print('API - Data Call 1 - Getting current policy list, this will help tie alerts to an RQL query...')
 pc_settings, response_package = pc_lib_api.api_policy_v2_list_get_enabled(pc_settings)
 policy_v2_list = response_package['data']
-print('done')
+print('Done')
 
 pu = pandas.json_normalize(policy_v2_list) #put json inside a dataframe
+print('Putting JSON reponse inside dataframe #1')
+print('Done')
 
+print('API - Data Call 2 - Getting saved search history list, this will help tie alerts to an RQL query...')
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 
 pu2 = pandas.json_normalize(saved_searches)
+print('Putting JSON response inside dataframe #2')
+print('Done')
 
+
+print('API - Mapping "policy" and "saved search" dataframes before appending RQL "query" column')
 pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
-
+print('Done')
 
 # Get alerts list
-print('API - Getting alerts list...', end='')
+print('API - Data Call 3 - Getting alerts list...')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
 print('Done.')
-print('Please wait as our script does some magic. This procedure will map current alerts to an associated RQL(requires 2 additional calls to the API: GET POLICIES and GET SEARCH HISTORY')
+
 #Save as CSV from JSON (requires pandas library to be installed) <-------------------
-print('Saving JSON contents as a CSV...')
+
+
+
+rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
+print('Putting JSON response inside dataframe #3')
+print('Done')
 
 type = args.cloudtype
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
 
 #Now that the query column from the Saved Search response has been merged into the policy dataframe. Next step is to map the policy dataframe to the alerts dataframe (policy ID is the index). Once mapped one can associate the "query" from the saved search with a specific alert. 
+print('API - Mapping "policy" dataframe with appended RQL column to "alerts" data frame. This will allow the script to add the query column to the alerts dump.')
 rr['query'] = rr['policy.policyId'].map(pu.set_index('policyId')['query'])
+print('Done')
 
-#Convert column in DF which stores the timestamp as Unix Time to Time/Date. This will also convert the default time zone from UTC to Chicago.
 
+print ('Converting column in DF to time/date since Prisma Cloud stores the timestamp as Unix Time. This will also convert the default time zone from UTC to Chicago.')
 rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 column_exist_check = "investigateOptions.searchId" in rr
-print (column_exist_check)
-print (args.cloudtype)
 
-#Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case)
+
+print (column_exist_check)
+print ('Assembling columns specific to AWS or GCP, this includes all tag/label information pulled in from ServiceNow(SNOW). If tags/labels from SNOW exists for a specific alert, they will show in CSV.')
+
+#Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case). Condition check above is for the investigate column which isn't always populated with data.
 if args.cloudtype == "gcp": 
     if column_exist_check == True:
         gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId", "query"]
@@ -325,6 +341,6 @@ if args.cloudtype == "aws":
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
         rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
 
-
+print('Saving JSON contents as a CSV...')
 print('Done.')
  
