@@ -44,6 +44,11 @@ parser.add_argument(
     '--detailed',
     action='store_true',
     help='(Optional) - Detailed alerts response.')
+	
+parser.add_argument(
+    '--matrixmode',
+    action='store_true',
+    help='(Optional) - Print out JSON responses.')
 
 parser.add_argument(
     '-fas',
@@ -254,6 +259,12 @@ pc_settings, response_package = pc_lib_api.api_policy_v2_list_get_enabled(pc_set
 policy_v2_list = response_package['data']
 print('Done')
 
+if args.matrixmode == True:
+    print(policy_v2_list)
+	
+else:
+    print('Done')
+
 pu = pandas.json_normalize(policy_v2_list) #put json inside a dataframe
 print('Putting JSON reponse inside dataframe #1  - policy_v2_list')
 print('Done')
@@ -261,6 +272,12 @@ print('Done')
 print('API - Data Call 2 - Getting saved search history list, this will help tie alerts to an RQL query...')
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
+
+if args.matrixmode == True:
+    print(saved_searches)
+	
+else:
+    print('Done')
 
 pu2 = pandas.json_normalize(saved_searches)
 print('Putting JSON response inside dataframe #2 - saved_searches')
@@ -275,9 +292,15 @@ print('Done')
 print('API - Data Call 3 - Getting alerts list. The more days pulled, the longer this step will take. Please wait, if this times out with a 504 server side error, apply more filters or lower the days pulled.')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
-print('Done.')
 
-#Save as CSV from JSON (requires pandas library to be installed) <-------------------
+#print(args.matrixmode)
+
+if args.matrixmode == True:
+    print(alerts_list)
+	
+else:
+    print('Done')
+
 
 rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
 print('Putting JSON response inside dataframe #3 - alerts_list')
