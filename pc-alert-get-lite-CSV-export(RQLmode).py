@@ -255,7 +255,7 @@ policy_v2_list = response_package['data']
 print('Done')
 
 pu = pandas.json_normalize(policy_v2_list) #put json inside a dataframe
-print('Putting JSON reponse inside dataframe #1')
+print('Putting JSON reponse inside dataframe #1  - policy_v2_list')
 print('Done')
 
 print('API - Data Call 2 - Getting saved search history list, this will help tie alerts to an RQL query...')
@@ -263,7 +263,7 @@ pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 
 pu2 = pandas.json_normalize(saved_searches)
-print('Putting JSON response inside dataframe #2')
+print('Putting JSON response inside dataframe #2 - saved_searches')
 print('Done')
 
 
@@ -272,17 +272,15 @@ pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
 print('Done')
 
 # Get alerts list
-print('API - Data Call 3 - Getting alerts list...')
+print('API - Data Call 3 - Getting alerts list. The more days pulled, the longer this step will take. Please wait, if this times out with a 504 server side error, apply more filters or lower the days pulled.')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
 print('Done.')
 
 #Save as CSV from JSON (requires pandas library to be installed) <-------------------
 
-
-
 rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
-print('Putting JSON response inside dataframe #3')
+print('Putting JSON response inside dataframe #3 - alerts_list')
 print('Done')
 
 type = args.cloudtype
@@ -294,13 +292,14 @@ rr['query'] = rr['policy.policyId'].map(pu.set_index('policyId')['query'])
 print('Done')
 
 
-print ('Converting column in DF to time/date since Prisma Cloud stores the timestamp as Unix Time. This will also convert the default time zone from UTC to Chicago.')
+print ('Converting the main time stamp column in dataframe to time/date. By default, Prisma Cloud stores the time stamp in Unix epoch time. This code will also convert the default time zone from Coordinated Universal Time (UTC) to Chicago/Central Time (CDT).')
 rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 column_exist_check = "investigateOptions.searchId" in rr
 
 
-print (column_exist_check)
-print ('Assembling columns specific to AWS or GCP, this includes all tag/label information pulled in from ServiceNow(SNOW). If tags/labels from SNOW exists for a specific alert, they will show in CSV.')
+print ('Check on whether any investigation links were provided in the JSON response: ' + str(column_exist_check))
+print('Done')
+print ('Assembling columns specific to AWS or GCP, this includes all tag/label information pulled in from ServiceNow(SNOW). If tags/labels from SNOW exists for a specific alert in Prisma Cloud, they will show up in the CSV.')
 
 #Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case). Condition check above is for the investigate column which isn't always populated with data.
 if args.cloudtype == "gcp": 
@@ -341,6 +340,7 @@ if args.cloudtype == "aws":
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
         rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
 
+print('Done')
 print('Saving JSON contents as a CSV...')
 print('Done.')
  
