@@ -254,7 +254,7 @@ if args.resourceid is not None:
 print('Done.')
 
 #In order to get an RQL query column populated and mapped to specific alerts, first we need to combine response from a policy list response and a saved search list response. Alerts response has a policyID field which we can map to this combo response to extract the associated RQL (if applicable)
-print('API - Data Call 1 - Getting current policy list, this will help tie alerts to an RQL query...')
+print('API - Data Call 1 - Getting current policy list, this will help tie alerts to an RQL query. "rule.criteria" to "id" mapping from saved search in data call 2')
 pc_settings, response_package = pc_lib_api.api_policy_v2_list_get_enabled(pc_settings)
 policy_v2_list = response_package['data']
 print('Done')
@@ -269,7 +269,7 @@ pu = pandas.json_normalize(policy_v2_list) #put json inside a dataframe
 print('Putting JSON reponse inside dataframe #1  - policy_v2_list')
 print('Done')
 
-print('API - Data Call 2 - Getting saved search history list, this will help tie alerts to an RQL query...')
+print('API - Data Call 2 - Getting saved search history list, this will help tie alerts to an RQL query. "id" to "rule.criteria" mapping from policy in data call 1')
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 
@@ -289,7 +289,7 @@ pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
 print('Done')
 
 # Get alerts list
-print('API - Data Call 3 - Getting alerts list. The more days pulled, the longer this step will take. Please wait, if this times out with a 504 server side error, apply more filters or lower the days pulled.')
+print('API - Data Call 3 - Getting alerts list. "policy.policyid" to "policyId" mapping from policy in data call 1. The more days pulled, the longer this step will take. Please wait, if this times out with a 504 server side error, apply more filters or lower the days pulled. If a policy ID error pops up, please check that an alert even exists for your specificied time range in the UI')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
 
@@ -334,7 +334,7 @@ if args.cloudtype == "gcp":
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
     #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
         gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query"]
@@ -342,7 +342,7 @@ if args.cloudtype == "gcp":
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
+        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 	
 if args.cloudtype == "aws": 
     if column_exist_check == True:
@@ -353,7 +353,7 @@ if args.cloudtype == "aws":
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
     #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
         aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query"]
@@ -361,7 +361,7 @@ if args.cloudtype == "aws":
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
+        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
 
 print('Done')
 print('Saving JSON contents as a CSV...')
