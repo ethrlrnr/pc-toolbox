@@ -74,6 +74,9 @@ print('Done.')
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 
+pc_settings, response_package = pc_lib_api.api_search_get_all_recent(pc_settings)
+saved_searches_recent = response_package['data']
+
 
 # Save JSON to CSV with date/time and cloud type 
 print('Saving JSON contents as a CSV...', end='')
@@ -81,11 +84,14 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(policy_v2_list) #put json inside a dataframe
 pu['ruleLastModifiedOn']=(pandas.to_datetime(pu['ruleLastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 pu['lastModifiedOn']=(pandas.to_datetime(pu['lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
-POLICY_FIELDS = ["name", "policyType", "policyClass", "policySubTypes", "policyUpi", "remediable", "systemDefault", "rule.type", "ruleLastModifiedOn", "cloudType", "severity", "owner", "policyMode", "complianceMetadata", "labels", "description", "recommendation", "enabled", "lastModifiedBy", "lastModifiedOn", "policyId", "rule.name", "rule.criteria", "rule.parameters.withIac", "rule.children", "rule.parameters.savedSearch", "query"]
+POLICY_FIELDS = ["name", "policyType", "policyClass", "policySubTypes", "policyUpi", "remediable", "systemDefault", "rule.type", "ruleLastModifiedOn", "cloudType", "severity", "owner", "policyMode", "complianceMetadata", "labels", "description", "recommendation", "enabled", "lastModifiedBy", "lastModifiedOn", "policyId", "rule.name", "rule.criteria", "rule.parameters.withIac", "rule.children", "rule.parameters.savedSearch", "query", "custom_query"]
 
 pu2 = pandas.json_normalize(saved_searches) #put json inside a dataframe
+pu3 = pandas.json_normalize(saved_searches_recent)
 
 pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
+pu['custom_query'] = pu['rule.criteria'].map(pu3.set_index('id')['query'])
+
 
 pu[POLICY_FIELDS].to_csv('policy_v2_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
