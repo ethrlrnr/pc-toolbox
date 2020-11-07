@@ -284,12 +284,33 @@ print('Putting JSON response inside dataframe #2 - saved_searches')
 print('Done')
 
 
-print('API - Mapping "policy" and "saved search" dataframes before appending RQL "query" column')
+print('API - Mapping "policy" and "saved search (saved)" dataframes before appending RQL "query" column')
 pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
 print('Done')
 
+#----------------------------------------------------------------------
+
+print('API - Data Call 2.5 - Getting saved search history list, this will help tie alerts to an custom RQL query. "id" to "rule.criteria" mapping from policy in data call 1')
+pc_settings, response_package = pc_lib_api.api_search_get_all_recent(pc_settings)
+saved_searches_recent = response_package['data']
+
+if args.matrixmode == True:
+    print(saved_searches_recent)
+	
+else:
+    print('Done')
+
+pu3 = pandas.json_normalize(saved_searches_recent)
+print('Putting JSON response inside dataframe #2.5 - saved_searches_recent')
+print('Done')
+
+print('API - Mapping "policy" and "saved search (recent)" dataframes before appending RQL "query" column')
+pu['custom_query'] = pu['rule.criteria'].map(pu3.set_index('id')['query'])
+print('Done')
+
+
 # Get alerts list
-print('API - Data Call 3 - Getting alerts list. "policy.policyid" to "policyId" mapping from policy in data call 1. The more days pulled, the longer this step will take. Please wait, if this times out with a 504 server side error, apply more filters or lower the days pulled. If a policy ID error pops up, please check that an alert even exists for your specificied time range in the UI')
+print('API - Data Call 3 - Getting alerts list. "policy.policyid" to "policyId" mapping from policy in data call 1. The more days pulled, the longer this step will take. If this times out with a 504 server side error, apply more filters or lower the days pulled. If a policy ID error pops up, please check that an alert even exists for your specificied time range in the UI. Please wait...')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
 
@@ -312,6 +333,7 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 #Now that the query column from the Saved Search response has been merged into the policy dataframe. Next step is to map the policy dataframe to the alerts dataframe (policy ID is the index). Once mapped one can associate the "query" from the saved search with a specific alert. 
 print('API - Mapping "policy" dataframe with appended RQL column to "alerts" data frame. This will allow the script to add the query column to the alerts dump.')
 rr['query'] = rr['policy.policyId'].map(pu.set_index('policyId')['query'])
+rr['custom_query'] = rr['policy.policyId'].map(pu.set_index('policyId')['custom_query'])
 print('Done')
 
 
@@ -327,41 +349,41 @@ print ('Assembling columns specific to AWS or GCP, this includes all tag/label i
 #Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case). Condition check above is for the investigate column which isn't always populated with data.
 if args.cloudtype == "gcp": 
     if column_exist_check == True:
-        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId", "query"]
+        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
     #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
-        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query"]
+        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 	
 if args.cloudtype == "aws": 
     if column_exist_check == True:
-        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "investigateOptions.searchId", "query"]
+        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "investigateOptions.searchId", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
         rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
     #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
-        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query"]
+        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
 #We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
 
 print('Done')
 print('Saving JSON contents as a CSV...')
