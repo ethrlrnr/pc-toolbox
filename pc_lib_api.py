@@ -144,8 +144,8 @@ def api_policy_v2_list_get_enabled(pc_settings):
 # Get Custom Policy list (v2)
 def api_policy_custom_v2_list_get(pc_settings):
     action = "GET"
-    url = "https://" + pc_settings['apiBase'] + "/v2/policy"
-    filters = [('policy.policyMode', 'redlock_default')]
+    url = "https://" + pc_settings['apiBase'] + "/v2/policy?policy.enabled=true"
+    filters = [('policy.policyMode', 'custom')]
     return pc_call_api(action, url, pc_settings, params=filters)
 
 
@@ -186,6 +186,11 @@ def api_search_get(pc_settings, search_id):
 def api_search_get_all(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=saved&limit=10000"
+    return pc_call_api(action, url, pc_settings)
+	
+def api_search_get_all_recent(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=recent&limit=10000"
     return pc_call_api(action, url, pc_settings)
 
 
