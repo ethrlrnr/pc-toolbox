@@ -77,7 +77,8 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(saved_searches) #put json inside a dataframe
 
 #strip everything except the policy ID in the "policies" column, useful for mapping purposes for other objectives.
-pu.policies = pu.id.str.replace(".+\['|'].+", '')  
+#policies column is only available in the "saved" search and not "recent" search unfortunately. 
+#pu.policies = pu.id.str.replace(".+\['|'].+", '')  
 
 pu.to_csv('saved_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
