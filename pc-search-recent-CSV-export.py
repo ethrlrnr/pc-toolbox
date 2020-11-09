@@ -76,7 +76,8 @@ print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(saved_searches) #put json inside a dataframe
 
-#pu.policies = pu.id.str.replace(".+\['|'].+", '')  The policies nested key (column) doesn't provide the correct "policy ID". Right now it's pulling the Search ID and not the Policy ID which is the label it carries. Will submit a ticket to Palo. This code was able to strip all nonalpha numeric items in a cell. Policy info description in this cell if stripped can be useful.  
+#strip everything except the policy ID in the "policies" column, useful for mapping purposes for other objectives.
+pu.policies = pu.id.str.replace(".+\['|'].+", '')  
 
 pu.to_csv('saved_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
