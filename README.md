@@ -18,49 +18,50 @@ pip install pandas
 ------------------------------------------------------------------
 What's new in this fork (extended edition)?
 
-Exports (in CSV format, uses Pandas library to put various normalized JSON responses from the API into a dataframe):
+**Exports** (in CSV format, uses Pandas library to put various normalized JSON responses from the API into a dataframe):
 
-- Cloud Accounts (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
-- Cloud Accounts (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
-- Cloud Accounts (Filters items out based on a string within the data frame) - pc-cloud-account-gcp-projects-string-filter-CSV-export.py
+- **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
+- **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
+- **Cloud Accounts** (Filters items out based on a string within the data frame) - pc-cloud-account-gcp-projects-string-filter-CSV-export.py
 
-- Account Groups (Main, export all account groups) - pc-account-groups-names-CSV-export.py 
-- Account Groups (Filters items out based on string within the data frame) - pc-account-groups-names-string-filter-CSV-export.py
+- **Account Groups** (Main, export all account groups) - pc-account-groups-names-CSV-export.py 
+- **Account Groups** (Filters items out based on string within the data frame) - pc-account-groups-names-string-filter-CSV-export.py
 
-- User Roles (Main, export all user roles) - pc-user-role-CSV-export.py
-- User Roles (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
+- **User Roles** (Main, export all user roles) - pc-user-role-CSV-export.py
+- **User Roles** (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
 
-- Alerts (Main, full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
-- Alerts (Lite version, Output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
+- **Alerts** (Main, full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
+- **Alerts** (Lite version, Output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
 
-- Policies (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
-- Policies (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
+- **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
+- **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
 
-- Search Recent (Export all recent searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-recent-CSV-export.py
-- Search Saved (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
+- **Search Recent** (Export all recent searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-recent-CSV-export.py
+- **Search Saved** (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
 
-Imports:
+**Imports**:
 
-- Account Groups (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries. Code - pc-account-group-import-bulk-gcp_mapping.py
+- **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries. Code - pc-account-group-import-bulk-gcp_mapping.py
 
-- User Roles (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py 
+- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py 
 
-Other:
-- API library file (pc_lib_api.py), edited to add in a lot more API calls from: https://api.docs.prismacloud.io/reference#try-the-apis
-- Epoch Unix time (displays as scientific notification on CSV) was converted to time/date (central USA) for most scripts.
-- Automation (imports) currently works off CSV dumps because the CSVs serve as a guard rail. At my company our Prisma Cloud is treated as "PROD" since we don't have a test account. CSVs at least offer option for the user to double check content before it's imported in (easily a large import). I advocate starting with CSV imports before working strictly with normalized JSON responses stored in dataframes. One JSON mishap on a large import could make things messy (account groups, user roles).
-- CRON jobs for importing and creating user roles and groups is more effective than a Lamda function/Cloud function. This is due to the sync interval controlled from Palo Alto which makes launching on-demand scripts based on an event pointless. 
+**Other Notes**:
+- **API library file (pc_lib_api.py)**, edited to add in a lot more API calls from: https://api.docs.prismacloud.io/reference#try-the-apis
+- **Default API Epoch Unix time (displays as scientific notification on CSV)** was converted to time/date (central USA) for most scripts.
+- **Automation (imports)** currently works off CSV dumps because the CSVs serve as a guard rail. At my company our Prisma Cloud is treated as "PROD" since we don't have a test account. CSVs at least offer option for the user to double check content before it's imported in (easily a large import). I advocate starting with CSV imports before working strictly with normalized JSON responses stored in dataframes. One JSON mishap on a large import could make things messy (account groups, user roles).
+- **CRON** jobs for importing and creating user roles and groups is more effective than a Lamda function/Cloud function. This is due to the sync interval controlled from Palo Alto which makes launching on-demand scripts based on an event pointless.
+- **Backups**, today Prisma doesn't offer any method for a user to backup all settings in the UI. Prisma claims they keep some snapshot information on their back-end. The backup scripts should provide some peace of mind to fill the gap, better to be safe than sorry (destruction via an automation issue or a nefarious party). 
 
-CRON:
+**CRON**:
 - Backup scripts above can easily be ran as a CRON job/schedule task (Windows or Linux). 
 
-
-Coming Soon:
+**Coming Soon**:
 - Creating second option for import files to work only with normalized JSONs stored dataframes (with no output to CSV) to create user roles or account groups. 
 - Alert rules export
 - Alert settings export
 - Bulk alerts dismissal
-- Compliance report for resources (output in CSV), stop gap until Prisma offers something natively. Right now only PDF and it doesn't list out resources if large).
+- IaC scripts 
+- Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDF and it doesn't list out resources if large.
 
 ------------------------------------------------------------------
 
