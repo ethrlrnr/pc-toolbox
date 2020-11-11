@@ -18,6 +18,8 @@ pip install pandas
 ------------------------------------------------------------------
 What's new in this fork (extended edition)?
 
+Requires Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas
+
 **Exports** (in CSV format, uses Pandas library to put various normalized JSON responses from the API into a dataframe):
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
@@ -43,7 +45,11 @@ What's new in this fork (extended edition)?
 
 - **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries. Code - pc-account-group-import-bulk-gcp_mapping.py
 
-- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py 
+- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py
+
+**CRON**:
+- Backup scripts above can easily be ran as a CRON job/schedule task (Windows or Linux).
+- Creating second option for import files to work only with normalized JSONs stored dataframes (with no output to CSV) to create user roles or account groups. 
 
 **Other Notes**:
 - **API library file (pc_lib_api.py)**, edited to add in a lot more API calls from: https://api.docs.prismacloud.io/reference#try-the-apis
@@ -52,11 +58,7 @@ What's new in this fork (extended edition)?
 - **CRON** jobs for importing and creating user roles and groups is more effective than a Lamda function/Cloud function. This is due to the sync interval controlled from Palo Alto which makes launching on-demand scripts based on an event pointless.
 - **Backups**, today Prisma doesn't offer any method for a user to backup all settings in the UI. Prisma claims they keep some snapshot information on their back-end. The backup scripts should provide some peace of mind to fill the gap, better to be safe than sorry (destruction via an automation issue or a nefarious party). 
 
-**CRON**:
-- Backup scripts above can easily be ran as a CRON job/schedule task (Windows or Linux). 
-
 **Coming Soon**:
-- Creating second option for import files to work only with normalized JSONs stored dataframes (with no output to CSV) to create user roles or account groups. 
 - Alert rules export
 - Alert settings export
 - Bulk alerts dismissal
