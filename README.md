@@ -49,7 +49,7 @@ pip3 install pandas
 - **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py
 
 **Cron Job**:
-- Backup scripts above can easily be ran as a CRON job/schedule task (Windows or Linux).
+- Scripts listed under "exports" above, can easily be ran as a cron job/scheduled task (Windows or Linux).
 - Creating second option for import files to work only with normalized JSONs stored dataframes (with no output to CSV) to create user roles or account groups. 
 
 **Other Notes**:
