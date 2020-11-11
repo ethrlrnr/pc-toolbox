@@ -1,4 +1,4 @@
-# pc-toolbox-extended
+# pc-toolbox-extended-edition
 Prisma Cloud API tools for convenience and general utility.
 
 There are multiple tools that can be used (listed below).  Everything here is written in Python (2.7, origionally, now updated and tested in Python 3.7, but both should still work).
