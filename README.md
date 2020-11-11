@@ -21,7 +21,7 @@ pip3 install pandas
 
 [This requires installation of the Pandas library (data analysis and manipulation): https://pandas.pydata.org/
 
-**Exports**:
+**Export Scripts**:
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
 - **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
@@ -42,7 +42,7 @@ pip3 install pandas
 - **Search Recent** (Export all recent searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-recent-CSV-export.py
 - **Search Saved** (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
 
-**Imports**:
+**Import Scripts**:
 
 - **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries. Code - pc-account-group-import-bulk-gcp_mapping.py
 
