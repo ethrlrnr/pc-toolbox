@@ -18,7 +18,7 @@ pip install pandas
 ------------------------------------------------------------------
 **What's new in this fork (extended edition) compared against the base project?**
 
-[This requires Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas]
+[This requires installation of the Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas]
 
 **Exports**:
 
