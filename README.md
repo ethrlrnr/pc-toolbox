@@ -7,7 +7,7 @@ If you need to install python, you can get more information at [Python's Page](h
 
 To set up your python environment, you will need the following packages:
 - requests
-- pandas
+- **pandas**
 
 To install/check for this:
 ```
@@ -16,7 +16,7 @@ pip install pandas
 ```
 
 ------------------------------------------------------------------
-What's new in this fork (extended edition)?
+**What's new in this fork (extended edition)?**
 
 Requires Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas
 
