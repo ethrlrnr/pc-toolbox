@@ -34,7 +34,7 @@ pip3 install pandas
 - **User Roles** (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
 
 - **Alerts** (Main, full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
-- **Alerts** (Lite version, Output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
+- **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
 
 - **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
 - **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
