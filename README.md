@@ -16,7 +16,7 @@ pip install pandas
 ```
 
 ------------------------------------------------------------------
-**What's new in this fork (extended edition)?**
+**What's new in this fork (extended edition) compared against the base project?**
 
 Requires Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas
 
