@@ -12,13 +12,14 @@ To set up your python environment, you will need the following packages:
 To install/check for this:
 ```
 pip install requests --upgrade
-pip install pandas 
+pip install pandas
+pip3 install pandas 
 ```
 
 ------------------------------------------------------------------
 **What's new in this fork (extended edition) compared against the base project?**
 
-[This requires installation of the Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas]
+[This requires installation of the Pandas library (data analysis and manipulation): https://pandas.pydata.org/
 
 **Exports**:
 
