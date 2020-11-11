@@ -20,7 +20,7 @@ What's new in this fork (extended edition)?
 
 Requires Pandas library (data analysis and manipulation): https://pandas.pydata.org/ | pip3 install pandas | pip install pandas
 
-**Exports** (in CSV format, uses Pandas library to put various normalized JSON responses from the API into a dataframe):
+**Exports**:
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
 - **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
@@ -47,7 +47,7 @@ Requires Pandas library (data analysis and manipulation): https://pandas.pydata.
 
 - **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py
 
-**CRON**:
+**Cron Job**:
 - Backup scripts above can easily be ran as a CRON job/schedule task (Windows or Linux).
 - Creating second option for import files to work only with normalized JSONs stored dataframes (with no output to CSV) to create user roles or account groups. 
 
@@ -56,7 +56,13 @@ Requires Pandas library (data analysis and manipulation): https://pandas.pydata.
 - **Default API Epoch Unix time (displays as scientific notification on CSV)** was converted to time/date (central USA) for most scripts.
 - **Automation (imports)** currently works off CSV dumps because the CSVs serve as a guard rail. At my company our Prisma Cloud is treated as "PROD" since we don't have a test account. CSVs at least offer option for the user to double check content before it's imported in (easily a large import). I advocate starting with CSV imports before working strictly with normalized JSON responses stored in dataframes. One JSON mishap on a large import could make things messy (account groups, user roles).
 - **CRON** jobs for importing and creating user roles and groups is more effective than a Lamda function/Cloud function. This is due to the sync interval controlled from Palo Alto which makes launching on-demand scripts based on an event pointless.
-- **Backups**, today Prisma doesn't offer any method for a user to backup all settings in the UI. Prisma claims they keep some snapshot information on their back-end. The backup scripts should provide some peace of mind to fill the gap, better to be safe than sorry (destruction via an automation issue or a nefarious party). 
+- **Backups**, today Prisma doesn't offer any method for a user to backup all settings in the UI. Prisma claims they keep some snapshot information on their back-end. The backup scripts should provide some peace of mind to fill the gap, better to be safe than sorry (destruction via an automation issue or a nefarious party).
+- Pandas, allows this project to easily exported nested JSONs to CSV once they are normalized and placed into a data frame. Pandas also allows us to do many things like take in multiple JSON responses from the API and map them to each other. Alerts and policies JSON responses don't include RQL queries by default, with Pandas you can append an RQL column succesfully once you map the correct values. Appending an RQL column to an alerts export takes 3 to 4 JSON responses (get alerts, get policies, get saved searches, get recent searches). Since alerts can't map directly to an RQL response (saved or recent search), it requires pulling in the GET POLICIES to complete the association. 
+
+**Baseline RBAC Strategy for GCP in Prisma Cloud that organizations should consider:**
+Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Projects) <--> Account Groups (Level 3, uses GCP project names) <--> User Role (Level 4 , uses GCP project names) <--> User roles
+-Example: GCP <--> GO-DEV-Patriots-12 [level 2] <--> GO-DEV-Patriots-12 [Level 3] <--> GO-DEV-Patriots-12 [Level 4] <--> tom.smith@organization.domain (SSO)
+- User (Tom Smith) is given a read-only role (GO-DEV-Patriots-12) that links up to only 1 account group (GO-DEV-Patriots-12), this 1 account group links up to the cloud account of the same name (GO-DEV-Patriots-12). 
 
 **Coming Soon**:
 - Alert rules export
