@@ -36,6 +36,7 @@ pip3 install pandas
 
 - **Alerts** (Main, full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
 - **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
+**Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
 
 - **Anomalies Trusted list** (Export existing whitelist) - pc-anomalies-trusted-list-CSV.py
 - **Anomalies Settings** (Export Anomaly settings for network and UEBA). 
