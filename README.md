@@ -39,7 +39,6 @@ pip3 install pandas
 
 - **Anomalies** (Trusted list) - pc-anomalies-trusted-list-CSV.py
 
-
 - **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
 - **Policies** (Export all enabled custom default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
 
@@ -48,6 +47,7 @@ pip3 install pandas
 
 - **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
 - **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
+- **Audit Logs** (Export list based on filtered days) - pc-audit-logs-CSV.py
 
 **Import Scripts**:
 
