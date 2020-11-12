@@ -36,6 +36,9 @@ pip3 install pandas
 - **Alerts** (Main, full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
 - **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
 
+- **Anomalies** (Trusted list)
+
+
 - **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
 - **Policies** (Export all enabled custom default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
 
