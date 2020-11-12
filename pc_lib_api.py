@@ -192,8 +192,24 @@ def api_search_get_all_recent(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=recent&limit=10000"
     return pc_call_api(action, url, pc_settings)
-
-
+	
+def api_anomalies_get_all(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/anomalies/settings"
+    return pc_call_api(action, url, pc_settings)
+	
+def api_anomalies_trusted_list(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/anomalies/trusted_list"
+    return pc_call_api(action, url, pc_settings)
+	
+# Get audit logs
+def api_audit_logs_get(pc_settings, params=None, data=None):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/audit/redlock"
+    return pc_call_api(action, url, pc_settings, params=data)
+    
+	
 # Add a Saved Search
 def api_search_add(pc_settings, type_of_search, search_to_add):
     action = "POST"
@@ -254,7 +270,19 @@ def api_alert_v2_list_get(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/v2/alert"
     return pc_call_api(action, url, pc_settings, params=params, data=data)
+	
 
+# Get resource list with filters (V2)
+def api_resource_scan_info(pc_settings, params=None, data=None):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/resource/scan_info"
+    return pc_call_api(action, url, pc_settings, params=params, data=data)	
+
+
+# def api_resource_scan_info_1(pc_settings, params=None, data=None):
+    # action = "POST"
+    # url = "https://" + pc_settings['apiBase'] + "/resource/scan_info/?timeType=relative&timeAmount=9&timeUnit=day&scan.status=failed"
+    # return pc_call_api(action, url, pc_settings, params=params, data=data)	
 
 # Get Compliance Reports list
 def api_compliance_report_list_get(pc_settings):
@@ -288,6 +316,25 @@ def api_compliance_report_download(pc_settings, report_id):
     elif response_status == 200:
         #download ready
         pass
+
+# Get Access Key list
+def api_access_key_list_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/access_keys"
+    return pc_call_api(action, url, pc_settings)
+	
+# Get Third Party Integrations
+def api_third_party_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/integration"
+    return pc_call_api(action, url, pc_settings)	
+
+# Get Third Party Integrations
+def api_asset_inventory_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/filter/inventory"
+    return pc_call_api(action, url, pc_settings)	
+	
 
 
 # Get Cloud Accounts list - level 1 get
@@ -324,4 +371,5 @@ def api_accounts_groups_add(pc_settings, new_accounts_group):
     url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
     return pc_call_api(action, url, pc_settings, data=new_accounts_group)
 	
-	
+
+
