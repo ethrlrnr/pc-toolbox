@@ -53,9 +53,9 @@ pip3 install pandas
 
 **Import Scripts**:
 
-- **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries. Code - pc-account-group-import-bulk-gcp_mapping.py
+- **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries.) - pc-account-group-import-bulk-gcp_mapping.py
 
-- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries. Code - pc-user-role-import-bulk.py
+- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries.) - pc-user-role-import-bulk.py
 
 **Cron Job**:
 - Scripts listed under "exports" above, can easily be ran as a cron job/scheduled task (Windows or Linux).
