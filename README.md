@@ -36,7 +36,7 @@ pip3 install pandas
 
 - **Alerts** (Main, full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
 - **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
-**Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
+- **Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
 
 - **Anomalies Trusted list** (Export existing whitelist) - pc-anomalies-trusted-list-CSV.py
 - **Anomalies Settings** (Export Anomaly settings for network and UEBA). 
@@ -76,8 +76,6 @@ Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Proje
 - User (Tom Smith) is given a read-only role (GO-DEV-Patriots-12) that links up to only 1 account group (GO-DEV-Patriots-12), this 1 account group links up to the cloud account of the same name (GO-DEV-Patriots-12). 
 
 **Coming Soon**:
-- Alert rules export
-- Alert settings export
 - Bulk alerts dismissal
 - IaC scripts 
 - Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDF and it doesn't list out resources if large.
