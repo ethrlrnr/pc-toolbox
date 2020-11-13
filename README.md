@@ -50,6 +50,7 @@ pip3 install pandas
 - **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
 - **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
 - **Audit Logs** (Export list based on filtered days) - pc-audit-logs-CSV.py
+- **Notification Templates** (Export notification templates with configs) - pc-notification-templates-CSV.py
 
 **Import Scripts**:
 
