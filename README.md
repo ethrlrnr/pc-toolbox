@@ -59,7 +59,7 @@ pip3 install pandas
 
 - **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries.) - pc-user-role-import-bulk.py
 
-- **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id". One alert ID per row.)
+- **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row.)
 
 **Cron Job**:
 - Scripts listed under "exports" above, can easily be ran as a cron job/scheduled task (Windows or Linux).
