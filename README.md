@@ -59,6 +59,8 @@ pip3 install pandas
 
 - **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries.) - pc-user-role-import-bulk.py
 
+- **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id". One alert ID per row.)
+
 **Cron Job**:
 - Scripts listed under "exports" above, can easily be ran as a cron job/scheduled task (Windows or Linux).
 - Creating second option for import files to work only with normalized JSONs stored dataframes (with no output to CSV) to create user roles or account groups. 
@@ -77,7 +79,6 @@ Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Proje
 - User (Tom Smith) is given a read-only role (GO-DEV-Patriots-12) that links up to only 1 account group (GO-DEV-Patriots-12), this 1 account group links up to the cloud account of the same name (GO-DEV-Patriots-12). 
 
 **Coming Soon**:
-- Bulk alerts dismissal
 - IaC scripts 
 - Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDF and it doesn't list out resources if large.
 
