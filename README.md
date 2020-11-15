@@ -32,26 +32,23 @@ pip3 install pandas
 
 - **User Roles** (Main, export all user roles) - pc-user-role-CSV-export.py
 - **User Roles** (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
-- **User List** (List of all users) - pc-user-list-CSV.py
-
+--------------------------
+-
+- **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
 - **Alerts** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
 - **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
 - **Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
-
 - **Anomalies Trusted list** (Export existing whitelist) - pc-anomalies-trusted-list-CSV.py
 - **Anomalies Settings** (Export Anomaly settings for network and UEBA). 
-
-- **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
-- **Policies** (Export all enabled custom default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
-
-- **Search Recent** (Export all recent searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-recent-CSV-export.py
-- **Search Saved** (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
-
-- **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
-- **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
 - **Audit Logs** (Export list based on filtered days) - pc-audit-logs-CSV.py
 - **Audit Logs, Filter for User** (Export list based on filtered days and user) - pc-audit-logs-filter-CSV.py
 - **Notification Templates** (Export notification templates with configs) - pc-notification-templates-CSV.py
+- **Policies** (Export all enabled default policies and append the RQL statements) - pc-policy-enabled-CSV-export(with-RQL).py 
+- **Policies** (Export all enabled custom default policies and append the RQL statements) - pc-policy-enabled-custom-CSV-export(with-RQL).py
+- **Search Recent** (Export all recent searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-recent-CSV-export.py
+- **Search Saved** (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
+- **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
+ **User List** (List of all users) - pc-user-list-CSV.py
 
 **Import Scripts [Python 3]**:
 
