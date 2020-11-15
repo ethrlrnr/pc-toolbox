@@ -36,7 +36,7 @@ pip3 install pandas
 - **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
 - **Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
 - **Anomalies Trusted list** (Export existing whitelist) - pc-anomalies-trusted-list-CSV.py
-- **Anomalies Settings** (Export Anomaly settings for network and UEBA). 
+- **Anomalies Settings** (Export Anomaly settings for network and UEBA) - pc-anomalies-settings(UEBA and Network)-CSV.py 
 - **Audit Logs** (Export list based on filtered days) - pc-audit-logs-CSV.py
 - **Audit Logs, Filter for User** (Export list based on filtered days and user) - pc-audit-logs-filter-CSV.py
 - **Notification Templates** (Export notification templates with configs) - pc-notification-templates-CSV.py
