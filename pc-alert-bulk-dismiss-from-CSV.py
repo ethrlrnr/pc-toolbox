@@ -109,7 +109,7 @@ alert_info['filter']['timeRange']['value']['unit'] = "day"
 alert_info['filter']['timeRange']['value']['amount'] = args.timerange
 alert_info['filter']['detailed'] = "true"
 
-alert_info["dismissalNote"] = 'Alert dismissed from API. Action can be tracked in Prisma audit logs. Please reach out to Risk & Security for more information.'
+alert_info["dismissalNote"] = 'Alert(s) dismissed from API. Action can be tracked in Prisma audit logs. Please reach out to Risk & Security for more information.'
 
 # print(alert_info)
 
