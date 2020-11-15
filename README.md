@@ -46,7 +46,7 @@ pip3 install pandas
 - **Search Saved** (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
 - **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
 - **User List** (List of all users) - pc-user-list-CSV.py
-
+-------------------------------
 **Import Scripts [Python 3]**:
 
 - **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries.) - pc-account-group-import-bulk-gcp_mapping.py
