@@ -193,11 +193,20 @@ def api_search_get_all_recent(pc_settings):
     url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=recent&limit=10000"
     return pc_call_api(action, url, pc_settings)
 	
-def api_anomalies_get_all(pc_settings):
+	
+#Join UEBA and Network together, easier this way. 	
+def api_anomalies_settings_get_UEBA(pc_settings):
     action = "GET"
-    url = "https://" + pc_settings['apiBase'] + "/anomalies/settings"
+    url = "https://" + pc_settings['apiBase'] + "/anomalies/settings?type=UEBA"
     return pc_call_api(action, url, pc_settings)
 	
+def api_anomalies_settings_get_Network(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/anomalies/settings?type=Network"
+    return pc_call_api(action, url, pc_settings)	
+	
+	
+		
 def api_anomalies_trusted_list(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/anomalies/trusted_list"
@@ -272,17 +281,27 @@ def api_alert_v2_list_get(pc_settings, params=None, data=None):
     return pc_call_api(action, url, pc_settings, params=params, data=data)
 	
 
+
+# Dismiss alerts
+def api_dismiss_alert_post(pc_settings, params=None, data=None):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/alert/dismiss"
+    return pc_call_api(action, url, pc_settings, params=params, data=data)
+	
+	
+# Get alert names
+def api_alert_names_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/v2/alert/rule?enabled=true"
+    return pc_call_api(action, url, pc_settings)
+	
+
 # Get resource list with filters (V2)
 def api_resource_scan_info(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/resource/scan_info"
     return pc_call_api(action, url, pc_settings, params=params, data=data)	
 
-
-# def api_resource_scan_info_1(pc_settings, params=None, data=None):
-    # action = "POST"
-    # url = "https://" + pc_settings['apiBase'] + "/resource/scan_info/?timeType=relative&timeAmount=9&timeUnit=day&scan.status=failed"
-    # return pc_call_api(action, url, pc_settings, params=params, data=data)	
 
 # Get Compliance Reports list
 def api_compliance_report_list_get(pc_settings):
@@ -333,6 +352,12 @@ def api_third_party_get(pc_settings):
 def api_asset_inventory_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/filter/inventory"
+    return pc_call_api(action, url, pc_settings)
+
+# Get Notification Templates
+def api_notification_template_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/notification/template?type=service_now"
     return pc_call_api(action, url, pc_settings)	
 	
 
