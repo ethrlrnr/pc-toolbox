@@ -45,7 +45,7 @@ pip3 install pandas
 - **Search Recent** (Export all recent searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-recent-CSV-export.py
 - **Search Saved** (Export all saved searches made on Prisma Cloud, useful for RQL mapping purposes) - pc-search-saved-CSV-export.py
 - **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
- **User List** (List of all users) - pc-user-list-CSV.py
+- **User List** (List of all users) - pc-user-list-CSV.py
 
 **Import Scripts [Python 3]**:
 
