@@ -83,7 +83,7 @@ print('Done.')
 
 data = pandas.read_csv(args.source_csv_alerts_list)
 data1 = data.filter(['id'])
-print(data1)
+#print(data1)
 
 # # Sort out and built the filters JSON
 # print('Local - Building the filter JSON package...', end='')
@@ -104,7 +104,7 @@ alert_info['filter']['detailed'] = "true"
 
 alert_info["dismissalNote"] = 'Alert dismissed from API. Action can be tracked in Prisma audit logs. Please reach out to Risk & Security for more information.'
 
-print(alert_info)
+#print(alert_info)
 
 # {"alerts":["P-431","P-4315"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements
 # {'alerts': ['P-431', 'P-4315'], 'filter': {'timeRange': {'type': 'relative', 'value': {'unit': 'day', 'amount': 9}}, 'detailed': 'true'}, 'dismissalNote': 'Alert dismissed from API. Test'} <----Python print elements matches successful JSON post from Postman cURL
