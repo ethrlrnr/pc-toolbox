@@ -33,7 +33,6 @@ pip3 install pandas
 - **User Roles** (Main, export all user roles) - pc-user-role-CSV-export.py
 - **User Roles** (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
 --------------------------
--
 - **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
 - **Alerts** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
 - **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
