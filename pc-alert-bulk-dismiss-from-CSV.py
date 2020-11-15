@@ -113,7 +113,7 @@ alert_info["dismissalNote"] = 'Alert dismissed from API. Action can be tracked i
 
 # print(alert_info)
 
-# {"alerts":["P-43","P-432"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements
+# {"alerts":["P-43","P-432"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements in Postman
 # {'alerts': ['P-43', 'P-432'], 'filter': {'timeRange': {'type': 'relative', 'value': {'unit': 'day', 'amount': 9}}, 'detailed': 'true'}, 'dismissalNote': 'Alert dismissed from API. Test'} <----Python print elements matches successful JSON post from Postman cURL
 
 pc_settings, response_package = pc_lib_api.api_dismiss_alert_post(pc_settings, data=alert_info)
