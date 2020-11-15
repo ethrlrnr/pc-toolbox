@@ -53,7 +53,10 @@ parser.add_argument(
     default=30,
     help='(Optional) - Time Range in days.  Defaults to 30.')
 
-
+parser.add_argument(
+    'source_csv_alerts_list',
+    type=str,
+    help='CSV filename of the file with the list of alerts to dismiss via POST.')
 
 args = parser.parse_args()
 # --End parse command line arguments-- #
@@ -78,38 +81,35 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
+data = pandas.read_csv(args.source_csv_alerts_list)
+data1 = data.filter(['id'])
+print(data1)
+
 # # Sort out and built the filters JSON
 # print('Local - Building the filter JSON package...', end='')
-resource_info_scan = {}
-
-data = pandas.read_csv("sample.csv")
-
-#take all values in ID column and make a list. The numby array method would fail here. 
-resource_info_scan["alerts"] = data["id"].values.tolist()
+alert_info = {}
 
 
-
-resource_info_scan['filter'] = {}
-resource_info_scan['filter']['timeRange'] = {}
-resource_info_scan['filter']['timeRange']['type'] = "relative"
-resource_info_scan['filter']['timeRange']['value'] = {}
-resource_info_scan['filter']['timeRange']['value']['unit'] = "day"
-resource_info_scan['filter']['timeRange']['value']['amount'] = args.timerange
-resource_info_scan['filter']['detailed'] = "true"
-
-resource_info_scan["dismissalNote"] = 'Alert dismissed from API. Action can be tracked in Prisma audit logs. Please reach out to Risk & Security for more information.'
-
-# {"alerts":["P-4316284","P-4316285"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements
-# {'alerts': ['P-4316284', 'P-4316285'], 'filter': {'timeRange': {'type': 'relative', 'value': {'unit': 'day', 'amount': 9}}, 'detailed': 'true'}, 'dismissalNote': 'Alert dismissed from API. Test'} <----Python elements matches successful JSON post 
+#take all values in ID column and make a list. The numby array method would fail here, complain JSON wasn't serializable: alert_info["alerts"] = data["id"].values
+alert_info["alerts"] = data1["id"].values.tolist()
 
 
-print(resource_info_scan)
+alert_info['filter'] = {}
+alert_info['filter']['timeRange'] = {}
+alert_info['filter']['timeRange']['type'] = "relative"
+alert_info['filter']['timeRange']['value'] = {}
+alert_info['filter']['timeRange']['value']['unit'] = "day"
+alert_info['filter']['timeRange']['value']['amount'] = args.timerange
+alert_info['filter']['detailed'] = "true"
 
+alert_info["dismissalNote"] = 'Alert dismissed from API. Action can be tracked in Prisma audit logs. Please reach out to Risk & Security for more information.'
 
-# print('Done.')
-# # Get alerts list
-# print('API - Getting alerts list...', end='')
-pc_settings, response_package = pc_lib_api.api_dismiss_alert_post(pc_settings, data=resource_info_scan)
+print(alert_info)
+
+# {"alerts":["P-431","P-4315"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements
+# {'alerts': ['P-431', 'P-4315'], 'filter': {'timeRange': {'type': 'relative', 'value': {'unit': 'day', 'amount': 9}}, 'detailed': 'true'}, 'dismissalNote': 'Alert dismissed from API. Test'} <----Python print elements matches successful JSON post from Postman cURL
+
+# pc_settings, response_package = pc_lib_api.api_dismiss_alert_post(pc_settings, data=resource_info_scan)
 print('Done.')
 
 
