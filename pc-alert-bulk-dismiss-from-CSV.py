@@ -81,19 +81,26 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
+#Put column values from CSV into a dataframe
 data = pandas.read_csv(args.source_csv_alerts_list)
-data1 = data.filter(['id'])
-#print(data1)
 
-# # Sort out and built the filters JSON
+#Filter out all columns in dataframe and focus on one.
+data1 = data.filter(['id'])
+
+#Method to ensure any rows with NaN values are dropped before we build out list. 
+# data1.dropna(subset=['id']) - Drops NaN value for a specific column. Below drops NaN everywhere, either will work here. 
+data2 = data1.dropna()
+# print(data2)
+
+# # Sort out and build the filters JSON
 # print('Local - Building the filter JSON package...', end='')
 alert_info = {}
 
 
-#take all values in ID column and make a list. The numby array method would fail here, complain JSON wasn't serializable: alert_info["alerts"] = data["id"].values
-alert_info["alerts"] = data1["id"].values.tolist()
+#take all values in ID column and make a list of strings. The numby array method would fail here, complain JSON wasn't serializable: alert_info["alerts"] = data["id"].values
+alert_info["alerts"] = data2["id"].values.tolist()
 
-
+#Using the API documentation,nesting filters requires knowledge whether the element is something like an object, string, array of strings.  Objects require "{}" before you can flow down to the next value. See code below as an example.
 alert_info['filter'] = {}
 alert_info['filter']['timeRange'] = {}
 alert_info['filter']['timeRange']['type'] = "relative"
@@ -104,12 +111,12 @@ alert_info['filter']['detailed'] = "true"
 
 alert_info["dismissalNote"] = 'Alert dismissed from API. Action can be tracked in Prisma audit logs. Please reach out to Risk & Security for more information.'
 
-#print(alert_info)
+# print(alert_info)
 
-# {"alerts":["P-431","P-4315"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements
-# {'alerts': ['P-431', 'P-4315'], 'filter': {'timeRange': {'type': 'relative', 'value': {'unit': 'day', 'amount': 9}}, 'detailed': 'true'}, 'dismissalNote': 'Alert dismissed from API. Test'} <----Python print elements matches successful JSON post from Postman cURL
+# {"alerts":["P-4316284","P-4316285"],"filter":{"timeRange":{"value":{"unit":"year","amount":1},"type":"relative"},"detailed":true},"dismissalNote":"Alert dismissed from API. Test'"}  <----JSON successful 200 post elements
+# {'alerts': ['P-4316284', 'P-4316285'], 'filter': {'timeRange': {'type': 'relative', 'value': {'unit': 'day', 'amount': 9}}, 'detailed': 'true'}, 'dismissalNote': 'Alert dismissed from API. Test'} <----Python print elements matches successful JSON post from Postman cURL
 
-# pc_settings, response_package = pc_lib_api.api_dismiss_alert_post(pc_settings, data=resource_info_scan)
+pc_settings, response_package = pc_lib_api.api_dismiss_alert_post(pc_settings, data=alert_info)
 print('Done.')
 
 
