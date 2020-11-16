@@ -21,7 +21,7 @@ pip3 install pandas
 
 [This fork requires installation of the Pandas library (data analysis and manipulation): https://pandas.pydata.org/]
 
-**Export Scripts [Python 3]**:
+**Export Scripts [Python 3] for backup and/or automation purposes**:
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
 - **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
@@ -47,7 +47,7 @@ pip3 install pandas
 - **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
 - **User List** (List of all users) - pc-user-list-CSV.py
 -------------------------------
-**Import Scripts [Python 3]**:
+**Import Scripts [Python 3] for one time usage or continuous automation on Prisma Cloud**:
 
 - **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Will check for duplicates and only create new entries.) - pc-account-group-import-bulk-gcp_mapping.py
 - **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Will check for duplicates and only create new entries.) - pc-user-role-import-bulk.py
