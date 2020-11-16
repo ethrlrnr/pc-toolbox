@@ -73,7 +73,7 @@ Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Proje
 **Coming Soon to the Extended Edition**:
 - IaC scripts 
 - Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDFs are offered on Prisma Cloud, reports don't list out resources if it's large.
-** - CLI argument documentation for the 26 new scripts will be coming before Thanksgiving.**  
+- CLI argument documentation for the 26 new scripts will be coming before Thanksgiving.  
 ------------------------------------------------------------------
 
 On to the tools themselves (Everything requires the pc_api_lib.py and pc_lib_general.py library files - keep them in the same directory as the other tools):
