@@ -72,7 +72,7 @@ Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Proje
 ---------------------------------
 **Coming Soon**:
 - IaC scripts 
-- Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDF and it doesn't list out resources if large.
+- Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDFs are offered on Prisma Cloud, reports don't list out resources if it's large.
 
 ------------------------------------------------------------------
 
