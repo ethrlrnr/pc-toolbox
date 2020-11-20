@@ -64,17 +64,20 @@ pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
 
-
+#Call the top level API for cloud accounts 
 print('API - Getting current user list...', end='')
 pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_get(pc_settings)
 cloud_accounts_list = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+#Grab the current date/time 
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(cloud_accounts_list) #put json inside a dataframe
+
+#put json inside a dataframe
+pu = pandas.json_normalize(cloud_accounts_list)
+
+print('Saving JSON contents as a CSV...', end='')
 pu.to_csv('prisma_cloud_accounts_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
 print('Done.')
 
