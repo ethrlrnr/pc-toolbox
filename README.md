@@ -215,7 +215,8 @@ python pc-account-groups-names-CSV-export.py -y
 
 **pc-account-groups-names-string-filter-CSV-export.py**
 - Grab the account groups.
-- Within code you can customize the script to filter out specific strings. Filtered items won't show up in the output CSV. 
+- Within code you can customize the script to filter out specific strings. Filtered items won't show up in the output CSV.
+- Can use the output CSV with the user role import creation script from this project. 
 
 Example:
 ```
