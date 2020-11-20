@@ -69,12 +69,19 @@ cloud_accounts_list_names = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time 
-print('Saving JSON contents as a CSV...', end='')
+# Save JSON to CSV with the current date/time 
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a dataframe
+
+# Put json inside a dataframe
+pu = pandas.json_normalize(cloud_accounts_list_names)
+
+# For the items returned, in the cloud type column, will focus on GCP only. 
 mvp = pu.query('cloudType == "gcp"')
+
+# Filters out the remaining GCP items to just the "id" column.
 mvp1 = mvp.filter(['id'])
+
+print('Saving JSON contents as a CSV...', end='')
 mvp1.to_csv('prisma_cloud_accounts_list_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
 print('Done.')
 
