@@ -63,20 +63,24 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-print('API - Getting current user list...', end='')
+print('API - Getting current notification templates list...', end='')
 pc_settings, response_package = pc_lib_api.api_notification_template_get(pc_settings)
 notification_template = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time 
-print('Saving JSON contents as a CSV...', end='')
+# Get the current time/date
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(notification_template) #put json inside a dataframe
+
+#Put JSON inside a dataframe
+pu = pandas.json_normalize(notification_template) 
+
+# Change the timestamp from Unix time to a specific time zone on a column:
 pu['createdTs']=(pandas.to_datetime(pu['createdTs'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 pu['lastModifiedTs']=(pandas.to_datetime(pu['lastModifiedTs'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 pu['reason.lastUpdated']=(pandas.to_datetime(pu['reason.lastUpdated'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 
+print('Saving JSON contents as a CSV...', end='')
 pu.to_csv('notification_template_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
 
