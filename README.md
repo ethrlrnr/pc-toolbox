@@ -328,31 +328,28 @@ Example:
 python pc-search-recent-CSV-export.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-search-saved-CSV-export.py**
+- Grab saved searches list (RQLs).
 
 Example:
 ```
-python pc-search-recent-CSV-export.py -y
+python pc-search-saved-CSV-export.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
-
-Example:
-```
-python pc-cloud-account-main-export.py -y
-```
-
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-third-party-integration-CSV.py**
+- Grab list of third party integrations. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-third-party-integration-CSV.py -y
+```
+
+**pc-user-list-CSV.py**
+- Grab list of users. 
+
+Example:
+```
+python pc-user-list-CSV.py -y
 ```
 
 **pc-cloud-account-main-export.py**
