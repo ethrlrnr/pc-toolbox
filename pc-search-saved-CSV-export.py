@@ -65,7 +65,7 @@ print('Done.')
 
 
 
-print('API - Getting current user list...', end='')
+print('API - Getting saved searches list...', end='')
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 print('Done.')
@@ -77,10 +77,16 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(saved_searches) #put json inside a dataframe
 
 #strip everything except the policy ID in the "policies" column, useful for mapping purposes for other objectives.
-pu.policies = pu.id.str.replace(".+\['|'].+", '')  
+#pu.policies = pu.id.str.replace(".+\['|'].+", '')  
 
-pu.to_csv('saved_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False) 
-#print('Done.')
+# Change timestamp for specific column from UNIX time to any time zone. 
+pu['timestamp']=(pandas.to_datetime(pu['timestamp'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+pu['searchModel.timeRange.value.startTime']=(pandas.to_datetime(pu['searchModel.timeRange.value.startTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+pu['searchModel.timeRange.value.endTime']=(pandas.to_datetime(pu['searchModel.timeRange.value.endTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+print('Saving JSON contents as a CSV...', end='')
+pu.to_csv('saved_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+print('Done.')
 
 
 
