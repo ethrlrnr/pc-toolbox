@@ -65,18 +65,25 @@ print('Done.')
 
 
 
-print('API - Getting current user list...', end='')
+print('API - Getting current user roles list...', end='')
 pc_settings, response_package = pc_lib_api.api_user_role_list_get(pc_settings)
 user_role_list = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+# Get the current date/time
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(user_role_list) #put json inside a dataframe
+
+# Put json inside a dataframe
+pu = pandas.json_normalize(user_role_list)
+
+# Query a specific column (description in this case) and match on a string
 mvp = pu.query('description == "Role Mapped to GCP Project"')
+
+# Once all items are matched above, filter out all remaining columns except ID and Name. 
 mvp1 = mvp.filter(['id', 'name'])
+
+print('Saving JSON contents as a CSV...', end='')
 mvp1.sort_values(by=['id'], ascending = True).to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
 print('Done.')
 
