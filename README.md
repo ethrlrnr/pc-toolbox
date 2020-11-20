@@ -241,40 +241,36 @@ Example:
 python pc-user-role-filter-CSV-export.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-access-key-list-CSV.py**
+- Grab list of users issued an access key.
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-access-key-list-CSV.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
-
-Example:
-```
-python pc-cloud-account-main-export.py -y
-```
-
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-alert-names-CSV.py**
+- Grab list of alert names.
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-alert-names-CSV.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-anomalies-trusted-list-CSV.py**
+- Grab anomalies trust list.
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-anomalies-trusted-list-CSV.py -y
+```
+
+**pc-anomalies-settings(UEBA_and_Network)-CSV.py**
+- Grab list of anomaly settings specific to UEBA and Network.
+
+Example:
+```
+python pc-anomalies-settings(UEBA_and_Network)-CSV.py -y
 ```
 
 **pc-cloud-account-main-export.py**
