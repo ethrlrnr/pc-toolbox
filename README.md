@@ -213,13 +213,13 @@ Example:
 python pc-account-groups-names-CSV-export.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-account-groups-names-string-filter-CSV-export.py**
+- Grab the account groups.
+- Within code you can customize the script to filter out specific strings. Filtered items won't show up in the output CSV. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-account-groups-names-string-filter-CSV-export.py -y
 ```
 
 **pc-cloud-account-main-export.py**
