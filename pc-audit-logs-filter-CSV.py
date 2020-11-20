@@ -88,14 +88,18 @@ audit_logs_get = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+# Get the current date/time
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(audit_logs_get) #put json inside a dataframe
-              
+
+#put json inside a dataframe
+pu = pandas.json_normalize(audit_logs_get) 
+
+# Focus on a specific column then target an email (called out in CLI argument)
 pu1 = pu[pu['user'].str.contains(args.userfindemail)]
-# print(contain_values)
-# pu[pu.user  == "antoine.sylvia@sabre.com"]
+
+# Change specific timestamp from Unix Time to any timezone
 pu1['timestamp']=(pandas.to_datetime(pu1['timestamp'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+print('Saving JSON contents as a CSV...', end='')
 pu1.sort_values(by=['timestamp'], ascending=False).to_csv('audit_logs_get_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
