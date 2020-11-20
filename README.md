@@ -232,13 +232,13 @@ Example:
 python pc-user-role-CSV-export.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-user-role-filter-CSV-export.py**
+- Grab list of user roles.
+- Within code you can customize the script to filter out specific strings. Filtered items won't show up in the output CSV.
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-user-role-filter-CSV-export.py -y
 ```
 
 **pc-cloud-account-main-export.py**
