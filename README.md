@@ -300,8 +300,10 @@ python pc-notification-templates-CSV.py -y
 ```
 
 **pc-policy-enabled-CSV-export(with-RQL).py**
-- Grab the list of enabled polices (non-custom)
+- Grab the list of enabled polices 
 - Use a second JSON response to "saved search" API to map RQLs to policies.
+- Use a third JSON response to "recent search" API to map RQLs to policies. 
+- Map all and output dataframe to a CSV. 
 
 Example:
 ```
