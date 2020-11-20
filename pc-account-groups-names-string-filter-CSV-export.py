@@ -65,7 +65,7 @@ print('Done.')
 
 
 
-print('API - Getting current user list...', end='')
+print('API - Getting current account groups...', end='')
 pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
 accounts_groups_list = response_package['data']
 print('Done.')
@@ -81,7 +81,7 @@ mvp = pu.query('description == "GCP Project Mapped to Account Group"')
 mvp1 = mvp.filter(['id', 'name'])
 #8 columns are returned, only need "id" and "name".
 #alternate method to filter the columns returned ---> mvp1 = mvp.drop(columns=['accounts','alertRules', 'autoCreated', 'accountIds', 'lastModifiedTs', 'lastModifiedBy', 'description'])
-mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|66278518872|retrieveseatmap01|playground')]
+mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|6627851|retrieveseatmap01|playground')]
 #str.contains filters out rows containing certain strings you specify 
 mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
 #index= false removes index on far left
