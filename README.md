@@ -175,12 +175,13 @@ python pc-alert-get-lite.py -y -fas open -tr 90 --detailed -fct gcp
 python pc-alert-get-lite.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-lite.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 
+Example:
+```
 **pc-cloud-account-main-export.py**
 - Grab top level cloud accounts. 
 - On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
 
-Example:
-```
+
 python pc-cloud-account-main-export.py -y
 
 **WILL COMPLETE DOCUMENTATION IN DEC 2020 FOR ALL THE NEW SCRIPTS***
