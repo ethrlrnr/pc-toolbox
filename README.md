@@ -375,13 +375,15 @@ Example:
 python pc-alert-bulk-reopen-from-CSV.py -tr 9 -y sample.csv
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-compliance-report-beta.py**
+- Prisma Cloud as of November 2020 doesn't provide a compliance report in CSV format. 
+- The PDF version provided by Prisma doesn't list out all the failed resources if it's a large list.
+- I am attempting to provide a stop gap solution to the problems above, this is in beta and won't be available until December 2020 (not doing any Prisma coding over Thxgiving Break). 
+- For the first pass I will try this against the resources API, if that doesn't work well in the end, I'll attempt using the assets API instead. Stay tuned. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-compliance-report-beta.py -tr 15 -y
 ```
 
 **pc-cloud-account-main-export.py**
