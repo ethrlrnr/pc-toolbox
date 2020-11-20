@@ -291,13 +291,12 @@ Example:
 python pc-audit-logs-filter-CSV.py -tr 20 -uf user@domain.com -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-notification-templates-CSV.py**
+- Grab the list of notification templates.
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-notification-templates-CSV.py -y
 ```
 
 **pc-cloud-account-main-export.py**
