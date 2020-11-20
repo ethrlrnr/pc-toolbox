@@ -162,18 +162,21 @@ python pc-alert-get.py -y -fas open -tr 90 --detailed -fct gcp
 python pc-alert-get.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
 python pc-alert-get.py -y -fas open -tr 30 --detailed -fpt config -fct azure
 ```
-**pc-alert-get-lite.py**
+**python pc-alert-get-lite-rql.py**
 - This code is geared towards GCP and AWS.
 - Pandas library is required.
 - Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
 - Columns found in CSV output can be easily customized with other JSON elements.
+- Can handle 90% of the alert filters mentioned in the API: https://api.docs.prismacloud.io/reference#get-alerts-v2
+- Try matrix mode if you want to see all the json responses printed. 
 
 Example:
 ```
-python pc-alert-get-lite.py -y -fas open -tr 120 --detailed -fct aws
-python pc-alert-get-lite.py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get-lite.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
-python pc-alert-get-lite.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
+python pc-alert-get-lite-rql.py -y -fas open -tr 120 --detailed -fct aws
+python pc-alert-get-lite-rql.py -y -fas open -tr 90 --detailed -fct gcp
+python pc-alert-get-lite-rql.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite-rql.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
+python pc-alert-get-lite-rql.py -y -fas open -tr 5 --detailed -fct aws --matrixmode
 ```
 **pc-cloud-account-main-export.py**
 - Grab top level cloud accounts. 
