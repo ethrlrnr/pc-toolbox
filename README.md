@@ -273,13 +273,12 @@ Example:
 python pc-anomalies-settings(UEBA_and_Network)-CSV.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-audit-logs-CSV.py**
+- Grab audit logs, specify a time range. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-audit-logs-CSV.py -tr 20 -y
 ```
 
 **pc-cloud-account-main-export.py**
