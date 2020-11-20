@@ -175,20 +175,14 @@ python pc-alert-get-lite.py -y -fas open -tr 90 --detailed -fct gcp
 python pc-alert-get-lite.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-lite.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 
-**WILL COMPLETE DOCUMENTATION IN DEC 2020 FOR ALL THE NEW SCRIPTS***
-
-**pc-alert-get-lite.py**
-- This code is geared towards GCP and AWS.
-- Pandas library is required.
-- Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
-- Columns found in CSV output can be easily customized with other JSON elements.
+**pc-cloud-account-main-export.py**
+- Grab top level cloud accounts. 
+- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
 
 Example:
 ```
-python pc-alert-get-lite.py -y -fas open -tr 120 --detailed -fct aws
-python pc-alert-get-lite.py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get-lite.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
-python pc-alert-get-lite.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
+python pc-cloud-account-main-export.py -y
+
 
 **WILL COMPLETE DOCUMENTATION IN DEC 2020 FOR ALL THE NEW SCRIPTS***
 
