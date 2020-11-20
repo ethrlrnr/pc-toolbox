@@ -64,19 +64,26 @@ pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
 
-
-print('API - Getting current user list...', end='')
+print('API - Getting current account group list...', end='')
 pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
 accounts_groups_list = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+# Grab the current date/time 
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(accounts_groups_list) #put json inside a dataframe
-pu.to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
+
+# Put json inside a dataframe
+pu = pandas.json_normalize(accounts_groups_list) 
+
+#Change specific column from Unix time to central. Can be changed to any time zone.
+pu['lastModifiedTs']=(pandas.to_datetime(pu['lastModifiedTs'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+print('Saving JSON contents as a CSV...', end='')
+pu.to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
 
 
 
+
+ 
