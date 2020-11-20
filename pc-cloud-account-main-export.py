@@ -10,7 +10,6 @@ import json
 import pandas
 from datetime import datetime, date, time
 
-
 # --Execution Block-- #
 # --Parse command line arguments-- #
 parser = argparse.ArgumentParser(prog='rltoolbox')
@@ -63,13 +62,11 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-
 #Call the top level API for cloud accounts 
 print('API - Getting current user list...', end='')
 pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_get(pc_settings)
 cloud_accounts_list = response_package['data']
 print('Done.')
-
 
 #Grab the current date/time 
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
