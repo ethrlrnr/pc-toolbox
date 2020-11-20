@@ -66,33 +66,44 @@ pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
 
-print('API - Getting current policylist...', end='')
+# Grab the policies
+print('API - Getting current policy list...', end='')
 pc_settings, response_package = pc_lib_api.api_policy_v2_list_get_enabled(pc_settings)
 policy_v2_list = response_package['data']
 print('Done.')
 
+# Grab the RQLs which are "Saved"
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 
+# Grab the RQLs which are "Recent"
 pc_settings, response_package = pc_lib_api.api_search_get_all_recent(pc_settings)
 saved_searches_recent = response_package['data']
 
 
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+# Get the current date/time
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(policy_v2_list) #put json inside a dataframe
+
+# Put json inside a dataframe
+pu = pandas.json_normalize(policy_v2_list) 
+
+# Change timestamp for specific column from UNIX time to any time zone. 
 pu['ruleLastModifiedOn']=(pandas.to_datetime(pu['ruleLastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 pu['lastModifiedOn']=(pandas.to_datetime(pu['lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+# List of columns that we want to specify, query and custom_query are additional items we are adding into the default set. Each of these 2 columns will take in mapped RQL data either from RECENT or SAVED json responses. 
 POLICY_FIELDS = ["name", "policyType", "policyClass", "policySubTypes", "policyUpi", "remediable", "systemDefault", "rule.type", "ruleLastModifiedOn", "cloudType", "severity", "owner", "policyMode", "complianceMetadata", "labels", "description", "recommendation", "enabled", "lastModifiedBy", "lastModifiedOn", "policyId", "rule.name", "rule.criteria", "rule.parameters.withIac", "rule.children", "rule.parameters.savedSearch", "query", "custom_query"]
 
+# Put json(s) inside a dataframe
 pu2 = pandas.json_normalize(saved_searches) #put json inside a dataframe
 pu3 = pandas.json_normalize(saved_searches_recent)
 
+#For custom column name "query" on our PU dataframe, map on "rule.criteria" column (policy v2 json response) to "id" column (saved search json response). Pull in the associated query column (not our custom one) from the saved search response. Once done, populate the data into our own "query" column that we specified. 
 pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
+#For custom column name "query" on our PU dataframe, map on "rule.criteria" column (policy v2 json response) to "id" column (recent search json response). Pull in the associated query column (not our custom one) from the saved search response. Once done, populate the data into our own "query" column that we specified. 
 pu['custom_query'] = pu['rule.criteria'].map(pu3.set_index('id')['query'])
 
-
+print('Adding specified columns and saving JSON contents as a CSV...', end='')
 pu[POLICY_FIELDS].to_csv('policy_v2_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
 
