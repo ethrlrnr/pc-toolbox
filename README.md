@@ -186,6 +186,7 @@ python pc-cloud-account-main-export.py -y
 
 **pc-cloud-account-gcp-projects-CSV-export.py**
 - Grab the list of GCP projects which are represented in Prisma Cloud as child cloud accounts.
+- This will also grab the one GCP top level account. 
 
 Example:
 ```
