@@ -157,10 +157,10 @@ python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_templa
 
 Example:
 ```
-python pc-alert-get.py -y -fas open -tr 120 --detailed -fct aws
-python pc-alert-get.py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
-python pc-alert-get.py -y -fas open -tr 30 --detailed -fpt config -fct azure
+pc-alert-get-full-CSV-export.py -y -fas open -tr 5 --detailed -fct aws
+pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
+pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
+pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
 ```
 **python pc-alert-get-lite-rql.py**
 - This code is geared towards GCP and AWS.
