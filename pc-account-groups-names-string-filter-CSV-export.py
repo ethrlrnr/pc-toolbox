@@ -73,16 +73,24 @@ print('Done.')
 
 # Save JSON to CSV with date/time and cloud type 
 print('Saving JSON contents as a CSV...', end='')
+
+#Get the current date/time
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(accounts_groups_list) #put json inside a dataframe
-pu.to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
+
+# Put json inside a dataframe
+pu = pandas.json_normalize(accounts_groups_list)
+
+# Query a specific column (description in this case) and match on a specific string in the rows, customize to your liking.
 mvp = pu.query('description == "GCP Project Mapped to Account Group"')
-#query method matches for criteria in a column, in this case in the column description find things that match "GCP Project.."
-mvp1 = mvp.filter(['id', 'name'])
-#8 columns are returned, only need "id" and "name".
+
+# Onced matched, filter out the remaining columns and docus on just ID and Name.
 #alternate method to filter the columns returned ---> mvp1 = mvp.drop(columns=['accounts','alertRules', 'autoCreated', 'accountIds', 'lastModifiedTs', 'lastModifiedBy', 'description'])
+mvp1 = mvp.filter(['id', 'name'])
+
+# For the filtered columns that remain, go through each row and filter out items based on the strings you customize below. 
 mvp2 = mvp1[~mvp1['id'].str.contains('sbx|sandbox|test|6627851|retrieveseatmap01|playground')]
-#str.contains filters out rows containing certain strings you specify 
+
+# Sort the "id" column and save to a CSV without filtered items. 
 mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_accounts_groups_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
 #index= false removes index on far left
 print('Done.')
