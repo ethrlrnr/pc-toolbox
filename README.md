@@ -223,7 +223,7 @@ Example:
 python pc-account-groups-names-string-filter-CSV-export.py -y
 ```
 
-**python3 pc-user-role-CSV-export.py -y**
+**pc-user-role-CSV-export.py -y**
 - Grab list of user roles.
 
 
