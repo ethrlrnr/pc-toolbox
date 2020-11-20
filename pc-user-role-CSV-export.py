@@ -65,17 +65,23 @@ print('Done.')
 
 
 
-print('API - Getting current user list...', end='')
+print('API - Getting current user roles list...', end='')
 pc_settings, response_package = pc_lib_api.api_user_role_list_get(pc_settings)
 user_role_list = response_package['data']
 print('Done.')
 
 
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+# Get current date/time
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-pu = pandas.json_normalize(user_role_list) #put json inside a dataframe
-pu.to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
+
+# Put json inside a dataframe
+pu = pandas.json_normalize(user_role_list)
+
+# Change a column timestamp from Unix Time to any time zone
+pu['lastModifiedTs']=(pandas.to_datetime(pu['lastModifiedTs'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+print('Saving JSON contents as a CSV...', end='')
+pu.to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
 
 
