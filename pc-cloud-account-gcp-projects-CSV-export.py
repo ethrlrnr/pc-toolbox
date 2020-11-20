@@ -63,7 +63,7 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-print('API - Getting current user list...', end='')
+print('API - Getting current cloud accounts list...', end='')
 pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_names_get(pc_settings)
 cloud_accounts_list_names = response_package['data']
 print('Done.')
