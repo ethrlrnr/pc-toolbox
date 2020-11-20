@@ -77,18 +77,14 @@ pc_settings, response_package = pc_lib_api.api_anomalies_settings_get_Network(pc
 anomalies_settings_Network = response_package['data']
 print('Done.')
 
-
-# Save JSON to CSV with date/time and cloud type 
-print('Saving JSON contents as a CSV...', end='')
+# Get the current date/time 
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 
+# Put JSON(s) inside a data frame
 pu1 = pandas.json_normalize(anomalies_settings_UEBA) #put json inside a dataframe
-print(pu1)
 pu2 = pandas.json_normalize(anomalies_settings_Network)
-print(pu2)
 
-
-# # pu3['timestamp']=(pandas.to_datetime(pu['timestamp'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+print('Saving JSON contents as a CSV...', end='')
 pu1.to_csv('anomalies_settings_UEBA_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 pu2.to_csv('anomalies_settings_Network_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 # print('Done.')
