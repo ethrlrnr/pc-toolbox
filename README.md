@@ -362,7 +362,7 @@ python pc-user-list-CSV.py -y
 
 Example:
 ```
-python pc-alert-dismiss.py -tr 9 -y sample.csv
+python pc-alert-dismiss.py -tr 9 -y sample_with_alert_ids.csv
 ```
 
 **pc-alert-bulk-reopen-from-CSV.py**
@@ -386,47 +386,32 @@ Example:
 python pc-compliance-report-beta.py -tr 15 -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-account-group-import-bulk-gcp_mapping.py**
+- Bulk import/creation of account groups using GCP project names listed under cloud accounts child (level 2 in Prisma Cloud, level 1 is cloud accounts and top level GCP account). The cloud account (child) list is pulled from the CSV. Users can utilize the cloud account child backup script (filtered) above to create this CSV
+- v1 (this version), is focused on a one time import. 
+- v2, will be able to take any list, check for duplicates when mapping the CSV against Prisma and only make unique items.
+- v3, will be split out to be used as a CRON job using only pure JSON responses with no CSV outputs. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-account-group-import-bulk-gcp_mapping.py -y sample_with_cloud_account_list_names.csv
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
-
-Example:
-```
-python pc-cloud-account-main-export.py -y
-```
-
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-user-role-import-bulk.py**
+- Bulk import/creation of user roles using GCP project names listed under account groups. The account groups list is pulled from the CSV. Users can utilize the account groups backup script (filtered) above to create this CSV. 
+- v1 (this version), is focused on a one time import. 
+- v2, will be able to take any list, check for duplicates when mapping the CSV against Prisma and only make unique items.
+- v3, will be split out to be used as a CRON job using only pure JSON responses with no CSV outputs. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-user-role-import-bulk.py -y sample_with_account_group_names.csv
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
-
-Example:
-```
-python pc-cloud-account-main-export.py -y
-```
-
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**place_holder.py**
+- Description (account group CRON and user role CRON import working only with JSON and no CSV is coming in Dec 2020)
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python place_holder.py -y
 ```
