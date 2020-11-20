@@ -10,6 +10,7 @@ import json
 import pandas
 from datetime import datetime, date, time
 
+
 # --Execution Block-- #
 # --Parse command line arguments-- #
 parser = argparse.ArgumentParser(prog='rltoolbox')
@@ -62,21 +63,32 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
+
 #Call the top level API for cloud accounts 
 print('API - Getting current user list...', end='')
 pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_get(pc_settings)
 cloud_accounts_list = response_package['data']
 print('Done.')
 
-#Grab the current date/time 
-now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 
+# Save JSON to CSV with current date/time and cloud type 
+now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 #put json inside a dataframe
 pu = pandas.json_normalize(cloud_accounts_list)
 
+#Change Epoch Unix Time on specific columns to Chicago/Central. Users can change to any timezone.
+pu['lastModifiedTs']=(pandas.to_datetime(pu['lastModifiedTs'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+pu['addedOn']=(pandas.to_datetime(pu['addedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+
 print('Saving JSON contents as a CSV...', end='')
-pu.to_csv('prisma_cloud_accounts_list_{}.csv'.format(now), sep=',', encoding='utf-8') 
+pu.to_csv('prisma_cloud_accounts_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+
 print('Done.')
+
+
+
+ 
 
 
 
