@@ -252,21 +252,26 @@ pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, da
 alerts_list = response_package['data']
 print('Done.')
 
-#NEW - Save as CSV from JSON (requires pandas library to be installed) <-------------------
-print('Saving JSON contents as a CSV...', end='')
+#Save as CSV from JSON (requires pandas library to be installed) <-------------------
 
+
+# Get the cloud type specified in the argument (CLI)
 type = args.cloudtype
+
+# Get the current time/date 
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-rr = pandas.json_normalize(alerts_list['items']) #put json inside a dataframe
-#print (rr)
 
-#columnsgroupextra = ['firstSeen', 'lastSeen', 'alertTime', 'eventOccurred', 'policy.lastModifiedOn','resource.data.timestamp', 'investigateOptions.startTs', 'investigateOptions.endTs']
+# Put the json inside a dataframe
+rr = pandas.json_normalize(alerts_list['items']) 
 
+
+# Change timestamp for specific column from UNIX time to any time zone. 
 rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 rr['lastSeen']=(pandas.to_datetime(rr['lastSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 rr['firstSeen']=(pandas.to_datetime(rr['firstSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['policy.lastModifiedOn']=(pandas.to_datetime(rr['policy.lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 
-#rr['investigateOptions.searchId'] = rr['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
-#rr['alertTime'] = rr['alertTime'].apply(pandas.to_datetime, unit = 'ms')
-rr.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
+
+print('Saving JSON contents as a CSV...', end='')
+rr.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
 print('Done.')
