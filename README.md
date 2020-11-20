@@ -299,13 +299,13 @@ Example:
 python pc-notification-templates-CSV.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-policy-enabled-CSV-export(with-RQL).py**
+- Grab the list of enabled polices (non-custom)
+- Use a second JSON response to "saved search" API to map RQLs to policies.
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-policy-enabled-CSV-export(with-RQL).py  -y
 ```
 
 **pc-cloud-account-main-export.py**
