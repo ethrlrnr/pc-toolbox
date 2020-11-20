@@ -70,7 +70,7 @@ print('Done.')
 
 
 # Save JSON to CSV with date/time
-# Output CSV file can be used to create a bulk upload of account groups that are associated with existing GCP sub cloud accounts. Call item in GCP Account Group creator file in this project.
+# Output CSV file can be used to create a bulk upload of account groups that are associated with existing GCP sub cloud accounts. Use the GCP Account Group creator script in this project.
 print('Saving JSON contents as a CSV...', end='')
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 pu = pandas.json_normalize(cloud_accounts_list_names) #put json inside a dataframe
