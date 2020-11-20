@@ -84,7 +84,7 @@ pu['searchModel.timeRange.value.startTime']=(pandas.to_datetime(pu['searchModel.
 pu['searchModel.timeRange.value.endTime']=(pandas.to_datetime(pu['searchModel.timeRange.value.endTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 
 print('Saving JSON contents as a CSV...', end='')
-pu.to_csv('saved_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+pu.to_csv('recent_searches_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
 
 
