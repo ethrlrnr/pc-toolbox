@@ -320,22 +320,21 @@ Example:
 python pc-policy-enabled-custom-CSV-export(with-RQL).py -y
 ```
 
+**pc-search-recent-CSV-export.py**
+- Grab recent searches list (RQLs).
+
+Example:
+```
+python pc-search-recent-CSV-export.py -y
+```
+
 **pc-cloud-account-main-export.py**
 - Grab top level cloud accounts. 
 - On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
-```
-
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
-
-Example:
-```
-python pc-cloud-account-main-export.py -y
+python pc-search-recent-CSV-export.py -y
 ```
 
 **pc-cloud-account-main-export.py**
