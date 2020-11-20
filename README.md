@@ -355,22 +355,24 @@ Example:
 python pc-user-list-CSV.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-alert-dismiss.py**
+- Dismiss 1 or many alerts using this script alongside a CSV.
+- CSV can be a custom one or one from one of our alert dump scripts. 
+- CSV must have a column named "id" that has one alert per row. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-alert-dismiss.py -tr 9 -y sample.csv
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-alert-bulk-reopen-from-CSV.py**
+- Reopen 1 or many alerts using this script alongside a CSV.
+- CSV can be a custom one or one from one of our alert dump scripts. 
+- CSV must have a column named "id" that has one alert per row. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-alert-bulk-reopen-from-CSV.py -tr 9 -y sample.csv
 ```
 
 **pc-cloud-account-main-export.py**
