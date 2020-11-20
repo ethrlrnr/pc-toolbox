@@ -197,19 +197,20 @@ python pc-cloud-account-gcp-projects-CSV-export.py  -y
 - Grab the list of GCP projects which are represented in Prisma Cloud as child cloud accounts and one top level GCP account.
 - This will then filter out the top level account (user must add this account number inside code) to focus on just the projects/child accounts.
 - User has the option to add in additional row filters within code (example: remove all projects with sandbox in the string from CSV output).
+- Can use the output CSV with the account group import creation script in this project GCP.
 
 Example:
 ```
 python pc-cloud-account-gcp-projects-string-filter-CSV-export.py -y
 ```
 
-**pc-cloud-account-main-export.py**
-- Grab top level cloud accounts. 
-- On the GCP side this will grab the main account and not the child cloud accounts (which represent projects in Prisma Cloud).
+**pc-account-groups-names-CSV-export.py**
+- Grab the account groups. 
+- If the "accountIds" column shows "[]" that means the cloud account it was linked to above was offboarded. 
 
 Example:
 ```
-python pc-cloud-account-main-export.py -y
+python pc-account-groups-names-CSV-export.py -y
 ```
 
 **pc-cloud-account-main-export.py**
