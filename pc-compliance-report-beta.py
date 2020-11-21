@@ -185,7 +185,7 @@ resource_list = response_package['data']
 print('Done.')
 
 #NEW - Save as CSV from JSON (requires pandas library to be installed) <-------------------
-print('Saving JSON contents as a CSV...', end='')
+
 
 type = args.cloudtype
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
@@ -210,18 +210,27 @@ str1 = passed.apply(str).str.replace('.', ',')
 #Removes text "dtype" from output
 str2 = str1.to_string()
 
-# str2 = str1.replace(r"\n", "\t")
-# print(str2)
+# str3 = str2.replace('\n'," ")
 
-#Take lists of policies contained within each column "scannedPolicies and break them out into their own respective columns. Drop the column once complete. The concat piece ensures we stick the results back to the orginal dataframe. 
-rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).drop('scannedPolicies', axis = 1)
+str3 = "| ".join(str2.splitlines())
 
 
+print(str3)
 
-# specifies the column we want to focus on, index starts at 0 and 6 represents "overallPassed". We are alway replacing the column title with the total count for passed, failed, and untested.
-rr2.columns.values[6] = str2
+# # #Take lists of policies contained within each column "scannedPolicies and break them out into their own respective columns. Drop the column once complete. The concat piece ensures we stick the results back to the orginal dataframe. 
+# rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).drop('scannedPolicies', axis = 1)
+
+# # # specifies the column we want to focus on, index starts at 0 and 6 represents "overallPassed". We are alway replacing the column title with the total count for passed, failed, and untested.
+# rr2.columns.values[6] = str3
+
+# # print('Saving JSON contents as a CSV...', end='')
+# rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
+# # # print('Done.')
 
 
+
+
+#future-=------------------------------------------------------
 
 # pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 # saved_searches = response_package['data']
@@ -237,5 +246,4 @@ rr2.columns.values[6] = str2
 
 
 
-rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
-# print('Done.')
+
