@@ -212,19 +212,20 @@ str2 = str1.to_string()
 
 # str3 = str2.replace('\n'," ")
 
+#Takes the multi-line string and makes it one line. "|" is used as the seperator. 
 str3 = "| ".join(str2.splitlines())
 
 
-#print(str3)
+# print(str3)
 
 # # #Take lists of policies contained within each column "scannedPolicies and break them out into their own respective columns. Drop the column once complete. The concat piece ensures we stick the results back to the orginal dataframe. 
-# rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).drop('scannedPolicies', axis = 1)
+rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).drop('scannedPolicies', axis = 1)
 
 # # # specifies the column we want to focus on, index starts at 0 and 6 represents "overallPassed". We are alway replacing the column title with the total count for passed, failed, and untested.
-# rr2.columns.values[6] = str3
+rr2.columns.values[6] = str3
 
 # # print('Saving JSON contents as a CSV...', end='')
-# rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
+rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
 # # # print('Done.')
 
 
