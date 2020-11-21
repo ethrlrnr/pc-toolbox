@@ -215,7 +215,7 @@ str2 = str1.to_string()
 str3 = "| ".join(str2.splitlines())
 
 
-print(str3)
+#print(str3)
 
 # # #Take lists of policies contained within each column "scannedPolicies and break them out into their own respective columns. Drop the column once complete. The concat piece ensures we stick the results back to the orginal dataframe. 
 # rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).drop('scannedPolicies', axis = 1)
