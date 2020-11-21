@@ -193,12 +193,12 @@ now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 rr = pandas.json_normalize(resource_list['resources']) #put json inside a dataframe
 rr.drop(['id', 'accountName'], axis=1, inplace=True)  #don't need these 2 columns, duplicates of others.
 
-# rr2 = pandas.concat([rr[['name', 'accountId', 'regionId', 'regionName', 'cloudType', 'rrn', 'overallPassed']], rr['scannedPolicies'].str.split('id', axis=1)
-
-#print(rr.overallPassed)
 
 #This will take the overPassed column and turn it into a string dtype value from a int64 or float64 value. If not the value_counts code below will not work which gives us the total number of pass/fails. 
 rr['overallPassed'] = rr['overallPassed'].apply(str).str.replace('.', ',')
+
+#Replace string values in column, true to passed, false to failed, nan to untested
+rr["overallPassed"] = rr["overallPassed"].replace(['True','False','nan'],['Passed','Failed','Untested'])
 
 #Counts the frequence of true or false which will be appended to the column title. NaN means item wasn't scanned. 
 passed = rr.overallPassed.str.split(expand=True).stack().value_counts()
@@ -209,8 +209,8 @@ passed = rr.overallPassed.str.split(expand=True).stack().value_counts()
 str1 = passed.apply(str).str.replace('.', ',')
 #print(str1)
 
-str2 = str1.replace(r"\n", "\t")
-print(str2)
+# str2 = str1.replace(r"\n", "\t")
+# print(str2)
 
 #Take lists of policies contained within each column "scannedPolicies and break them out into their own respective columns. Drop the column once complete. The concat piece ensures we stick the results back to the orginal dataframe. 
 rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).drop('scannedPolicies', axis = 1)
@@ -218,7 +218,7 @@ rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).
 
 
 
-rr2.columns.values[6] = ['overallPassed'] + str2
+rr2.columns.values[6] = ['overallPassed'] + str1
 # print(test)
 # pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 # saved_searches = response_package['data']
@@ -234,5 +234,5 @@ rr2.columns.values[6] = ['overallPassed'] + str2
 
 
 
-rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
+# rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
 # print('Done.')
