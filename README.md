@@ -379,11 +379,13 @@ python pc-alert-bulk-reopen-from-CSV.py -tr 9 -y sample.csv
 - Prisma Cloud as of November 2020 doesn't provide a compliance report in CSV format. 
 - The PDF version provided by Prisma doesn't list out all the failed resources if it's a large list.
 - I am attempting to provide a stop gap solution to the problems above, this is in beta and won't be available until December 2020 (not doing any Prisma coding over Thxgiving Break). 
-- For the first pass I will try this against the resources API, if that doesn't work well in the end, I'll attempt using the assets API instead. Stay tuned. 
 
 Example:
 ```
 python pc-compliance-report-beta.py -tr 15 -y
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP
+python pc-compliance-report-beta.py -tr 15 -y -fct AWS
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs GDPR
 ```
 
 **pc-account-group-import-bulk-gcp_mapping.py**
