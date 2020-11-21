@@ -386,6 +386,12 @@ python pc-compliance-report-beta.py -tr 15 -y
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP
 python pc-compliance-report-beta.py -tr 15 -y -fct AWS
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs GDPR
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "SOC 2"
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "PCI DSS v3.2"
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs HIPAA
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.1.0(GKE)
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.1.0(GCP)
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.3.0(AWS)
 ```
 
 **pc-account-group-import-bulk-gcp_mapping.py**
