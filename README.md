@@ -384,7 +384,11 @@ Example:
 ```
 python pc-compliance-report-beta.py -tr 15 -y
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP
-python pc-compliance-report-beta.py -tr 15 -y -fct AWS
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP -fca YOUR_CLOUD_ACCOUNT
+python pc-compliance-report-beta.py -tr 15 -y -fct AWS 
+python pc-compliance-report-beta.py -tr 15 -y -fct AWS -ss passed
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs GDPR
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "SOC 2"
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "PCI DSS v3.2"
