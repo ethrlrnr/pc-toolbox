@@ -136,7 +136,6 @@ resource_info_scan['timeRange']['value']['amount'] = args.timerange
 
 resource_info_scan['filters'] = []
 
-
 if args.cloudaccount is not None:
     temp_filter = {}
     temp_filter['operator'] = "="
@@ -207,7 +206,9 @@ passed = rr.overallPassed.str.split(expand=True).stack().value_counts()
 
 #This will take the "passed" returned multi-line values and turn it into a string dtype value.
 str1 = passed.apply(str).str.replace('.', ',')
-#print(str1)
+
+#Removes text "dtype" from output
+str2 = str1.to_string()
 
 # str2 = str1.replace(r"\n", "\t")
 # print(str2)
@@ -217,9 +218,11 @@ rr2 = pandas.concat([rr, rr['scannedPolicies'].apply(pandas.Series)], axis = 1).
 
 
 
+# specifies the column we want to focus on, index starts at 0 and 6 represents "overallPassed". We are alway replacing the column title with the total count for passed, failed, and untested.
+rr2.columns.values[6] = str2
 
-rr2.columns.values[6] = ['overallPassed'] + str1
-# print(test)
+
+
 # pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 # saved_searches = response_package['data']
 
@@ -234,5 +237,5 @@ rr2.columns.values[6] = ['overallPassed'] + str1
 
 
 
-# rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
+rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
 # print('Done.')
