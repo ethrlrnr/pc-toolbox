@@ -19,7 +19,8 @@ pip3 install pandas
 ------------------------------------------------------------------
 **What's new in this fork (extended edition) compared against the base project?**
 
-This fork requires installation of the Pandas library (data analysis and manipulation): 
+This fork requires installation of the popular Pandas open source library. If you are unfamiliar with the Pandas project which has over 27,000 stars, 11,000 forks, and 1,000 watchers (as of December 2020), here's a brief intro from the creators:
+"Pandas is a Python package that provides fast, flexible, and expressive data structures designed to make working with "relational" or "labeled" data both easy and intuitive. It aims to be the fundamental high-level building block for doing practical, real world data analysis in Python. Additionally, it has the broader goal of becoming the most powerful and flexible open source data analysis / manipulation tool available in any language. It is already well on its way towards this goal."
 - https://pandas.pydata.org/
 - https://github.com/pandas-dev/pandas
 
