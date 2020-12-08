@@ -155,7 +155,7 @@ python pc-cloud-account-import-azure.py prisma_cloud_account_import_azure_templa
 - Grab alerts from Prisma Cloud, this is a full dump with 150+ columns.
 - Pandas library is required.
 - Specify your parameters in the command-line and run. Results will be saved to a CSV file with the cloud type and time appended to the file name.
-- If your response is large sometimes you will receive a server side error. The only way to handle this issue at the moment is to pull less days or do more filtering.
+- **If your response is large sometimes you will receive a server side 504 error. The only way to handle this issue at the moment is to pull less days or do more filtering.**
 - For specific commandline argument filters (outside of what's shown in the example below) just look inside the first block of the code. 
 
 Example:
@@ -172,13 +172,14 @@ pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct 
 - Columns found in CSV output can be easily customized with other JSON elements.
 - Can handle 90% of the alert filters mentioned in the API: https://api.docs.prismacloud.io/reference#get-alerts-v2
 - For specific commandline argument filters (outside of what's shown in the example below) just look inside the first block of the code. 
-- Try matrix mode if you want to see all the json responses printed. 
+- Try matrix mode if you want to see all the json responses printed.
+- **If your response is large sometimes you will receive a server side 504 error. The only way to handle this issue at the moment is to pull less days or do more filtering.**
 
 Example:
 ```
 python pc-alert-get-lite-rql.py -y -fas open -tr 120 --detailed -fct aws
 python pc-alert-get-lite-rql.py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get-lite-rql.py -y -fas open -tr 60 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite-rql.py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-lite-rql.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 python pc-alert-get-lite-rql.py -y -fas open -tr 5 --detailed -fct aws --matrixmode
 ```
