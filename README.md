@@ -181,11 +181,11 @@ pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct 
 
 Example:
 ```
-python pc-alert-get-lite-rql.py -y -fas open -tr 120 --detailed -fct aws
-python pc-alert-get-lite-rql.py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get-lite-rql.py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
-python pc-alert-get-lite-rql.py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
-python pc-alert-get-lite-rql.py -y -fas open -tr 5 --detailed -fct aws --matrixmode
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 120 --detailed -fct aws
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 90 --detailed -fct gcp
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 5 --detailed -fct aws --matrixmode
 ```
 **pc-cloud-account-main-export.py**
 - Grab top level cloud accounts. 
