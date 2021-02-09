@@ -56,8 +56,8 @@ This fork requires installation of the popular Pandas open source library. Why P
 -------------------------------
 **Import Scripts [Python 3] for one time usage or continuous automation on Prisma Cloud**:
 
-- **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-account-group-import-bulk-gcp_mapping.py
-- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-user-role-import-bulk.py
+- **Account Groups** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-account-group-bulk-gcp-mapping-CSV-import.py
+- **User Roles** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-user-role-bulk-CSV-import.py
 - **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) - pc-alert-bulk-dismiss-from-CSV.py
 - **Alerts Reopen** (Can reopen 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) -pc-alert-bulk-reopen-from-CSV.py
 
@@ -407,7 +407,7 @@ python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City"
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.3.0(AWS)
 ```
 
-**pc-account-group-import-bulk-gcp_mapping.py**
+**pc-account-group-bulk-gcp-mapping-CSV-import.py**
 - Bulk import/creation of account groups using GCP project names listed under cloud accounts child (level 2 in Prisma Cloud, level 1 is cloud accounts and top level GCP account). The cloud account (child) list is pulled from the CSV. Users can utilize the cloud account child backup script (filtered) above to create this CSV
 - v1 (this version), is focused on a one time import. 
 - v2, will be able to take any list, check for duplicates when mapping the CSV against Prisma and only make unique items.
