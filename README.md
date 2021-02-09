@@ -409,30 +409,41 @@ python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City"
 
 **pc-account-group-bulk-gcp-mapping-CSV-import.py**
 - Bulk import/creation of account groups using GCP project names listed under cloud accounts child (level 2 in Prisma Cloud, level 1 is cloud accounts and top level GCP account). The cloud account (child) list is pulled from the CSV. Users can utilize the cloud account child backup script (filtered) above to create this CSV
-- v1 (this version), is focused on a one time import. 
-- v2, will be able to take any list, check for duplicates when mapping the CSV against Prisma and only make unique items.
-- v3, will be split out to be used as a CRON job using only pure JSON responses with no CSV outputs. 
+- This is focused on a one time import. 
 
 Example:
 ```
 python pc-account-group-import-bulk-gcp_mapping.py -y sample_with_cloud_account_list_names.csv
 ```
 
-**pc-user-role-bulk-CSV-import.py*
+**pc-account-group-gcp-mapping-CRON-import.py**
+- Cron job capability since it uses JSON responses (no output to CSV).
+- 2 API calls, child cloud accounts (shows GCP projects) and accounts groups. Does a compare for both, drops duplicates and makes a new dataframe with only new items.
+- New account groups are imported (based on dataframe with new items) then created within Prisma Cloud.
+- These account groups will hook up one level to a child cloud account (GCP project).
+- Error handling is in place, if an item exists in the new dataframe and also already in Prisma Cloud, it will skip this and continue to next item. This sometimes occur because Prisma doesn't update account groups data (using API) if an attached child cloud account is deleted. The pre-work for dataframe creates a new item (ultimately a duplicate) due to a gap between child cloud accounts and account groups on the compare, this will remain the case until Palo provides and update.
+
+Example:
+```
+python pc-account-group-gcp-mapping-CRON-import.py
+```
+**pc-user-role-bulk-CSV-import.py**
 - Bulk import/creation of user roles using GCP project names listed under account groups. The account groups list is pulled from the CSV. Users can utilize the account groups backup script (filtered) above to create this CSV. 
-- v1 (this version), is focused on a one time import. 
-- v2, will be able to take any list, check for duplicates when mapping the CSV against Prisma and only make unique items.
-- v3, will be split out to be used as a CRON job using only pure JSON responses with no CSV outputs. 
+- This is focused on a one time import. 
 
 Example:
 ```
 python pc-user-role-import-bulk.py -y sample_with_account_group_names.csv
 ```
 
-**place_holder.py**
-- Description (account group CRON and user role CRON import working only with JSON and no CSV is coming in Dec 2020)
+**pc-user-role-gcp-mapping-CRON-import.py**
+- Cron job capability since it uses JSON responses (no output to CSV).
+- 2 API calls, account groups and user roles. Does a compare for both, drops duplicates and makes a new dataframe with only new items.
+- New roles are imported (based on dataframe with new items) then created within Prisma Cloud.
+- These roles will hook up one level to a account groups.
+- Error handling is in place, if an item exists in the new dataframe and also already in Prisma Cloud, it will skip this and continue to next item. 
 
 Example:
 ```
-python place_holder.py -y
+python pc-user-role-gcp-mapping-CRON-import.py
 ```
