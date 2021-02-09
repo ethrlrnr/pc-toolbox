@@ -399,15 +399,15 @@ python pc-compliance-report-beta.py -tr 15 -y -fct GCP
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP -fca YOUR_CLOUD_ACCOUNT
-python pc-compliance-report-beta.py -tr 15 -y -fct AWS 
+python pc-compliance-report-beta.py -tr 15 -y -fct AWS -fpcs "CIS v1.3.0 (AWS)"
 python pc-compliance-report-beta.py -tr 15 -y -fct AWS -ss passed
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs GDPR
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "GDPR"
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "SOC 2"
 python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "PCI DSS v3.2"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs HIPAA
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.1.0(GKE)
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.1.0(GCP)
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs CISv1.3.0(AWS)
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "HIPAA"
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "CISv1.1.0 (GKE)"
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "CISv1.1.0 (GCP)"
+python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "MITRE ATT%26CK [Beta]"
 ```
 
 **pc-account-group-bulk-gcp-mapping-CSV-import.py**
