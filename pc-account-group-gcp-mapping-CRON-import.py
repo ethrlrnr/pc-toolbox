@@ -106,7 +106,7 @@ pmvp3.sort_values(by=['id'], ascending = True)
 #Make a newly prepared dataframe by combining both dataframes and drop all duplicates
 pmvp3_mvp3 = pandas.concat([pmvp3,mvp3]).drop_duplicates(keep=False)
 
-#Sort "ID" column alphabetically, remove index on left side. Create a CSV for backup. 
+#Sort "ID" column alphabetically
 pmvp3_mvp3.sort_values(by=['id'], ascending = True)
 
 #Sort "ID" column alphabetically, remove index on left side. Create a CSV for backup. 
@@ -125,7 +125,7 @@ accounts_groups_to_import = []
 
 #iterate through all rows in dictionary
 for row_dict in pmvp4_mvp4:
-    #Check for duplicates in the imported CSV
+    #Check for duplicates in the imported dataframe
     account_group_exists = False
     for account_group_duplicate_check in accounts_groups_to_import:
         if account_group_duplicate_check['name'].lower() == row_dict['id'].lower():
