@@ -128,7 +128,7 @@ for row_dict in pmvp4_mvp4:
     #Check for duplicates in the imported CSV
     account_group_exists = False
     for account_group_duplicate_check in accounts_groups_to_import:
-        if account_group_duplicate_check['id'].lower() == row_dict['id'].lower():
+        if account_group_duplicate_check['name'].lower() == row_dict['id'].lower():
             account_groups_duplicate_count = account_groups_duplicate_count + 1
             account_group_exists = True
             break
