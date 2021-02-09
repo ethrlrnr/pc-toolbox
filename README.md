@@ -418,7 +418,7 @@ Example:
 python pc-account-group-import-bulk-gcp_mapping.py -y sample_with_cloud_account_list_names.csv
 ```
 
-**pc-user-role-import-bulk.py**
+**pc-user-role-bulk-CSV-import.py*
 - Bulk import/creation of user roles using GCP project names listed under account groups. The account groups list is pulled from the CSV. Users can utilize the account groups backup script (filtered) above to create this CSV. 
 - v1 (this version), is focused on a one time import. 
 - v2, will be able to take any list, check for duplicates when mapping the CSV against Prisma and only make unique items.
