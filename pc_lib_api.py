@@ -258,6 +258,12 @@ def api_user_add(pc_settings, user_to_add):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/user"
     return pc_call_api(action, url, pc_settings, data=user_to_add)
+	
+# Add new User v2
+def api_user_add_v2(pc_settings, user_to_add_v2):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/v2/user"
+    return pc_call_api(action, url, pc_settings, data=user_to_add_v2)
 
 
 # Update a User
@@ -266,6 +272,11 @@ def api_user_update(pc_settings, user_to_update):
     url = "https://" + pc_settings['apiBase'] + "/user/" + user_to_update['email']
     return pc_call_api(action, url, pc_settings, data=user_to_update)
 
+# Update a User v2
+def api_user_update(pc_settings, user_to_update_v2):
+    action = "PUT"
+    url = "https://" + pc_settings['apiBase'] + "/v2/user/" + user_to_update_v2['email']
+    return pc_call_api(action, url, pc_settings, data=user_to_update_v2)
 
 # Get alert list with filters
 def api_alert_list_get(pc_settings, params=None, data=None):
@@ -280,7 +291,10 @@ def api_alert_v2_list_get(pc_settings, params=None, data=None):
     url = "https://" + pc_settings['apiBase'] + "/v2/alert"
     return pc_call_api(action, url, pc_settings, params=params, data=data)
 	
-
+def api_search_config(pc_settings, params=None, data=None):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/search/config"
+    return pc_call_api(action, url, pc_settings, params=params, data=data)
 
 # Dismiss alerts
 def api_dismiss_alert_post(pc_settings, params=None, data=None):
@@ -301,6 +315,13 @@ def api_resource_scan_info(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/resource/scan_info"
     return pc_call_api(action, url, pc_settings, params=params, data=data)	
+
+# Get resource list with filters (V2)
+def api_asset_inventory(pc_settings, params=None, data=None):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/v2/inventory"
+    return pc_call_api(action, url, pc_settings, params=params, data=data)		
+
 
 
 # Get Compliance Reports list
