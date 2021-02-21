@@ -273,7 +273,7 @@ def api_user_update(pc_settings, user_to_update):
     return pc_call_api(action, url, pc_settings, data=user_to_update)
 
 # Update a User v2
-def api_user_update(pc_settings, user_to_update_v2):
+def api_user_update_v2(pc_settings, user_to_update_v2):
     action = "PUT"
     url = "https://" + pc_settings['apiBase'] + "/v2/user/" + user_to_update_v2['email']
     return pc_call_api(action, url, pc_settings, data=user_to_update_v2)
