@@ -277,6 +277,18 @@ def api_user_update_v2(pc_settings, user_to_update_v2):
     action = "PUT"
     url = "https://" + pc_settings['apiBase'] + "/v2/user/" + user_to_update_v2['email']
     return pc_call_api(action, url, pc_settings, data=user_to_update_v2)
+	
+# Delete Account Group
+def api_delete_account_group(pc_settings, account_group_to_delete):
+    action = "DELETE"
+    url = "https://" + pc_settings['apiBase'] + "/cloud/group/" + account_group_to_delete['id']
+    return pc_call_api(action, url, pc_settings, data=account_group_to_delete)
+	
+# Delete User Role
+def api_delete_user_role(pc_settings, user_role_to_delete):
+    action = "DELETE"
+    url = "https://" + pc_settings['apiBase'] + "/user/role/" + user_role_to_delete['id']
+    return pc_call_api(action, url, pc_settings, data=user_role_to_delete)
 
 # Get alert list with filters
 def api_alert_list_get(pc_settings, params=None, data=None):
