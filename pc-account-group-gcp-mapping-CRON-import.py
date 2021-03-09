@@ -34,7 +34,6 @@ parser.add_argument(
          'Formatted as app.prismacloud.io or app2.prismacloud.io or app.eu.prismacloud.io, etc.  '
          'You can also input the api version of the URL if you know it and it will be passed through.')
 		 
-
 args = parser.parse_args()
 # --End parse command line arguments-- #
 
@@ -177,9 +176,7 @@ print('Import Complete.')
 # (2) The formatting of is incorrect. This was initial error, had to make accountIds an array of strings to meet api requirements. 
 # (3) Use the API try out tool on the Prisma API website to get an example of syntax it expects (brackets, no brackets etc.)
 
-
 print('Final Stage. The following code will go back into account groups and delete account groups. Specifically, account groups that are no longer attached to a child cloud account such as a recently off-boarded GCP project etc.')
-
 
 #pull down an UPDATED list of account groups which has applied our operation above (if an account group was made).
 pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
