@@ -24,7 +24,7 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 - https://pandas.pydata.org/
 - https://github.com/pandas-dev/pandas
 
-**Export Scripts [Python 3] for backup and/or automation purposes**:
+**Export Scripts [Python 3] for backup and/or input "testing" for automation purposes in this repo**:
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
 - **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
@@ -35,8 +35,6 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 - **User Roles** (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
 --------------------------
 - **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
-- **Alerts** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
-- **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
 - **Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
 - **Anomalies Trusted list** (Export existing whitelist) - pc-anomalies-trusted-list-CSV.py
 - **Anomalies Settings** (Export Anomaly settings for network and UEBA) - pc-anomalies-settings(UEBA and Network)-CSV.py 
@@ -66,6 +64,11 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 - **User Create or Update** (CRON job, pulls in list of GCP users via a custom saved search. Associates GCP users with their specific projects. These projects are represented as roles and account groups using the same name, which takes advantage of the script work done to create account groups and user roles (based on GCP projects, CRON job). If SSO is configured properly on Prisma and hooked to the correct AD group, soon as the users are created, they will have SSO on day 1. Ensure the correct SSO link is provided in welcome emails. This script is the last script in the automation job: 1. child cloud account (native sync to pulling in GCP projects), 2. account groups (created with our scripts, names on based on projects list in child cloud accouts), 3. user roles (created with our scripts, names are based on account groups which use GCP project names), 4. user create or update (created with our scripts, if existing user it updates if new projects are added or removed. Users a hooked to their respective GCP projects (response from SAVED SEARCH, leverages GCP resource manager API). Once created and SSO is enabled, they will be able to log via SSO. pc-user-create-update-CRON-import.py
 
 ---------------------------------------------
+**Alerts Central**
+
+- **Alerts** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
+- **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
+
 - **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) - pc-alert-bulk-dismiss-from-CSV.py
 - **Alerts Reopen** (Can reopen 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) -pc-alert-bulk-reopen-from-CSV.py
 
