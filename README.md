@@ -52,10 +52,13 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 -------------------------------
 **Import Scripts [Python 3] for one time usage or continuous automation on Prisma Cloud**:
 
-**Testing scripts against CSV before go-live using only JSON response put into dataframes**
+**Testing scripts against "CSV" input source, conduct this before using the go-live script which uses only JSON response/dataframes with "no" CSV used as an input source.**
+
 - **Account Groups Create (CSV, this is for testing before moving to working with just JSON responses on the CRON script.)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-account-group-bulk-gcp-mapping-CSV-import.py
 - **User Roles Create (CSV, this is for testing before moving to working with just JSON responses on the CRON script.)** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-user-role-bulk-CSV-import.py
 -------------------------------
+**Go-live scripts which use input from JSON responses/data frames for creation or cleanup purposes.**
+
 - **Account Groups Create and Clean up (CRON job using JSON responses)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code works off JSON responses. The two API responses are compared (child cloud accounts and account groups), a new list is created with items that will be imported (duplicates are dropped). Will link up one level to the cloud account of the same name). pc-account-group-gcp-mapping-CRON-import.py
 
 - **User Roles Create and Clean Up**  (CRON job using JSON responses)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code works off JSON responses. The two API responses are compared (account groups and user roles), a new list is created with items that will be imported (duplicates are dropped). Will link up one level to the account group of the same name). pc-user-role-gcp-mapping-CRON-import.py
