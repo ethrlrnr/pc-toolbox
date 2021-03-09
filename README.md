@@ -81,10 +81,10 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 ---------------------------------------------
 **Baseline RBAC Strategy for GCP in Prisma Cloud that organizations should consider:**
 Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Projects) <--> Account Groups (Level 3, uses GCP project names) <--> User Role (Level 4 , uses GCP project names) <--> User roles
--Example: GCP <--> GO-DEV-Patriots-12 [level 2] <--> GO-DEV-Patriots-12 [Level 3] <--> GO-DEV-Patriots-12 [Level 4] <--> tom.smith@organization.domain (SSO)
+-Example: GCP <--> GO-DEV-Patriots-12 [level 2] <--> GO-DEV-Patriots-12 [Level 3] <--> GO-DEV-Patriots-12 [Level 4] <--> tom.smith@organization.domain (SSO, leveraging AD group)
 - User (Tom Smith) is given a read-only role (GO-DEV-Patriots-12) that links up to only 1 account group (GO-DEV-Patriots-12), this 1 account group links up to the cloud account of the same name (GO-DEV-Patriots-12). 
 
-- **Order of operation for our scripts used in a CRON job (ties into hierarchy)**:
+**Order of operation for our scripts used in a CRON job (ties into hierarchy)**:
 - Step 1. Level 1 - Cloud Account - Cloud account used by Prisma (no script needed, active sync).
 - Step 2. Level 2 - Child Cloud Account - GCP projects sync into Prisma at this level (no script needed active sync).
 - Step 3. Level 3 - Account Group - Create account groups which map up to a child account (level 2) of the same GCP project name (pc-account-group-gcp-mapping-CRON-import.py).
