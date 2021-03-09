@@ -83,18 +83,26 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 
 ---------------------------------------------
 **Baseline RBAC Strategy for GCP in Prisma Cloud that organizations should consider:**
-Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Projects) <--> Account Groups (Level 3, uses GCP project names) <--> User Role (Level 4 , uses GCP project names) <--> User roles
--Example: GCP <--> GO-DEV-Patriots-12 [level 2] <--> GO-DEV-Patriots-12 [Level 3] <--> GO-DEV-Patriots-12 [Level 4] <--> tom.smith@organization.domain (SSO, leveraging AD group)
-- User (Tom Smith) is given a read-only role (GO-DEV-Patriots-12) that links up to only 1 account group (GO-DEV-Patriots-12), this 1 account group links up to the cloud account of the same name (GO-DEV-Patriots-12). 
+Cloud Account (Level 1, GCP, native sync) <--> Child Cloud Account (Level 2, Lists GCP Projects, native sync) <--> Account Groups (Level 3, Uses GCP project names, requires our custom script) <--> User Role (Level 4 , uses GCP project names, requires our custom script) <--> User Create/Update (Level 5, Ties GCP users to their respective GCP projects, requires our custom script) <--> SSO (Setup in Prisma and tie to an AD group under a Azure App as an example. Upon login, Prisma will check the user email against what's in the database, if it exists the user will be able to log in. If user doesn't email doesn't exist in Prisma it will result in a SAML user error on the Prisma audit logs.
 
-**Order of operation for our scripts used in a CRON job (ties into hierarchy)**:
+Example using a user name Dak Prescott (GCP user/developer):
+GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
+Prisma cloud account: GCP
+Prisma child cloud accounts: "dallas-cert-project-001", "dallas-prod-project-001"
+Prisma account groups: "dallas-cert-project-001", "dallas-prod-project-001"
+Prisma user roles: "dallas-cert-project-001", "dallas-prod-project-001"
+Prisma User: Dak.Prescott@dallascowboys.com
+
+Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<--> Dak(SSO user)
+Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-project-001"(account group)<-->"dallas-prod-project-001" (user role) <-->Dak(SSO user)
+
+**Order of operation for our scripts used in a CRON job (ties into RBAC strategy/hierarchy listed a few lines above)**:
 - Step 1. Level 1 - Cloud Account - Cloud account used by Prisma (no script needed, native sync).
 - Step 2. Level 2 - Child Cloud Account - GCP projects sync into Prisma at this level (no script needed, native sync).
 - Step 3. Level 3 - Account Group - Create account groups which map up to a child account (level 2) of the same GCP project name (pc-account-group-gcp-mapping-CRON-import.py).
 - Step 4. Level 4 - User Role - Create user roles which map up to a account group (level 3) of the same GCP project name (pc-user-role-gcp-mapping-CRON-import.py).
 - Step 5. Level 5 - User Create or User Update - Create or update a user and ensure they are tied to only roles which represent their actual GCP projects (pc-user-create-update-CRON-import.py).
-
-- Note: If onboarding lots of users from GCP into Prisma, ensure SSO is already setup in Prisma with the proper AD group ready to go. SSO link from your IdP app (Azure AD etc.) must be correctly entered on Prisma Cloud SSO config under "Prisma Cloud Access SAML URL" or welcome email link will take users to the wrong place. 
+- Step 6. Level 6 - If onboarding lots of users from GCP into Prisma, ensure SSO is already setup in Prisma with the proper AD group ready to go. SSO link from your IdP app (Azure AD etc.) must be correctly entered on Prisma Cloud SSO config under "Prisma Cloud Access SAML URL" or welcome email link will take users to the wrong place. 
 ---------------------------------
 **Coming Soon to the Extended Edition**:
 - IaC scripts 
