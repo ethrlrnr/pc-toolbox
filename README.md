@@ -24,7 +24,7 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 - https://pandas.pydata.org/
 - https://github.com/pandas-dev/pandas
 
-**Export Scripts [Python 3] for backup and/or input "testing" for automation purposes in this repo**:
+**Export Scripts [Python 3] for backup and/or input for "testing" using automation purposes in this repo**:
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
 - **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
