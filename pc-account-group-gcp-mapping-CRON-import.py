@@ -66,7 +66,7 @@ mvp = pu.query('cloudType == "gcp"')
 mvp1 = mvp.filter(['id'])
 
 #filter for lines that contain a specific string
-mvp2 = mvp1[mvp1['id'].str.contains('sab-')]
+mvp2 = mvp1[mvp1['id'].str.contains('cab-')]
 
 #Filter out rows which contain certain strings, add your own items below, this is useful for bulk upload purposes and/or cron jobs. "~" symbol filters out.
 mvp3 = mvp2[~mvp2['id'].str.contains('sbx | sandbox | test | retrieveseatmap01 | playground | your_GCP_main_account_ID')]
@@ -82,14 +82,14 @@ pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_setti
 account_group_list = response_package['data']
 
 #put json inside a dataframe
-pmvp = pandas.json_normalize(account_group_list) 
+pmvp = pandas.json_normalize(account_group_list)
 
 #filter for column called "name" in dataframe
 #another filter option -->mvp1 = mvp.drop(columns=['name','cloudType','parentAccountName'])
 pmvp1 = pmvp.filter(['name'])
 
 #filter for lines that contain a specific string
-pmvp2 = pmvp1[pmvp1['name'].str.contains('sab-')]
+pmvp2 = pmvp1[pmvp1['name'].str.contains('cab-')]
 
 #Filter out rows which contain certain strings, add your own items below, this is useful for bulk upload purposes and/or cron jobs. "~" symbol filters out.
 pmvp3 = pmvp2[~pmvp2['name'].str.contains('sbx | sandbox | test | retrieveseatmap01 | playground | your_GCP_main_account_ID')]
@@ -106,7 +106,7 @@ pmvp3.sort_values(by=['id'], ascending = True)
 #Make a newly prepared dataframe by combining both dataframes and drop all duplicates
 pmvp3_mvp3 = pandas.concat([pmvp3,mvp3]).drop_duplicates(keep=False)
 
-#Sort "ID" column alphabetically
+#Sort "ID" column alphabetically, remove index on left side. Create a CSV for backup. 
 pmvp3_mvp3.sort_values(by=['id'], ascending = True)
 
 #Sort "ID" column alphabetically, remove index on left side. Create a CSV for backup. 
@@ -119,6 +119,7 @@ account_groups_duplicate_count = 0
 
 #to_dict uses the pandas dataframe and turns it into a dictionary. Orient Records=do it by row (and not columns) 
 pmvp4_mvp4 = pmvp3_mvp3.to_dict(orient="records")
+#print(pmvp4_mvp4)
 
 #creates a dictionary inside a blank list. Each row in the dataframe needs to be a dicitonary. Loop through each row and turn it into dictionary. 
 accounts_groups_to_import = []
@@ -145,13 +146,13 @@ for row_dict in pmvp4_mvp4:
             temp_accounts_group['description'] = 'GCP Project Mapped to Account Group'
             temp_accounts_group['name'] = row_dict['id']
             account_groups_added_count = account_groups_added_count + 1
-			#each temp account group row will look like ---> {'accountIds': ['automationxx-tooling-xxxx'], 'name': 'automationxx-tooling-xxx'}
+			#each temp account group row will look like ---> {'accountIds': ['automation-tooling-4857'], 'name': 'automation-tooling-4857'}
 	
 	#append each new dictionary to the master array (user_roles_to_import)
             accounts_groups_to_import.append(temp_accounts_group)
 	
 print(accounts_groups_to_import)
-#the master array should look like this---->[{'accountIds': ['autx-tooling-xxxx'], 'name': 'autx-tooling-xxxx'}, {'accountIds': ['crewx-max-gen-xxxx'], 'name': 'crewx-max-gen-xxxx'}, {'accountIds': ['egressgatexxx-xxxx'], 'name': 'gateway-xxxx'}]
+#the master array should look like this---->[{'accountIds': ['autx-tooling-xxxx'], 'name': 'autx-tooling-xxxx'}, {'accountIds': ['crewx-ma-gen-xxxx'], 'name': 'crewx-ma-gen-xxxx'}, {'accountIds': ['egressgatexxx-xxxx'], 'name': 'gateway-xxxx'}]
 print('Done.')
 
 #for each dictionary in the master array, send one row at a time to pc_lib_api. 
@@ -175,3 +176,49 @@ print('Import Complete.')
 # (1) This exact cloud account group/role already exists. Most likely this is why getting Error 400. 
 # (2) The formatting of is incorrect. This was initial error, had to make accountIds an array of strings to meet api requirements. 
 # (3) Use the API try out tool on the Prisma API website to get an example of syntax it expects (brackets, no brackets etc.)
+
+
+print('Final Stage. The following code will go back into account groups and delete account groups. Specifically, account groups that are no longer attached to a child cloud account such as a recently off-boarded GCP project etc.')
+
+
+#pull down an UPDATED list of account groups which has applied our operation above (if an account group was made).
+pc_settings, response_package = pc_lib_api.api_accounts_groups_list_get(pc_settings)
+account_group_list1 = response_package['data']
+
+#put json inside a dataframe.
+ndrun = pandas.json_normalize(account_group_list1)
+
+#search all the rows in the dataframe for a specific match and pull these results in. 
+mmvp = ndrun.query('description == "GCP Project Mapped to Account Group"')
+
+#only need "id","name", and "accountIds" column.
+mmvp1 = mmvp.filter(['id', 'name', 'accountIds'])
+
+#search rows and drop them if they contain a certain string.
+mmvp2 = mmvp1[~mmvp1['id'].str.contains('sbx|sandbox|test|GCP_CLOUD_ACCOUNT_ID|retrieveseatmap01|playground')]
+
+#focus on the accountIds column and keep only rows that show an empty list "[]" for the cloud account. This will present only account groups that don't have a cloud account attached to them. 
+mmvp3 = mmvp2[mmvp2['accountIds'].str.len() == 0]
+
+#column is no longer needed.
+mmvp3.drop(columns=['accountIds'], inplace=True)
+
+#convert dataframe to dictionary. 
+mmvp4 = mmvp3.to_dict('records')
+
+#build a dictionary from an empty list
+accounts_groups_remove = []
+#iterate through the dictionary that was already created. 
+for row_dict1 in mmvp4:
+    temp_AG = {}
+	#row_dict1 values pull from the dictionary above
+    temp_AG['id']= row_dict1['id']
+    accounts_groups_remove.append(temp_AG)
+				
+print(accounts_groups_remove)
+
+#plug in the account Ids to be deleted. Go through the list with the loop and delete each, one by one. Important to push function for DELETE account group under the For Loop. If it's outside the loop, only 1 item will be deleted from the list. 
+for account_group_to_delete in accounts_groups_remove:
+    print('account group ID: ',account_group_to_delete['id'])
+    pc_settings, response_package = pc_lib_api.api_delete_account_group(pc_settings, account_group_to_delete)
+print('Done.')
