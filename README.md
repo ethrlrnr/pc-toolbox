@@ -85,8 +85,8 @@ Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Proje
 - User (Tom Smith) is given a read-only role (GO-DEV-Patriots-12) that links up to only 1 account group (GO-DEV-Patriots-12), this 1 account group links up to the cloud account of the same name (GO-DEV-Patriots-12). 
 
 **Order of operation for our scripts used in a CRON job (ties into hierarchy)**:
-- Step 1. Level 1 - Cloud Account - Cloud account used by Prisma (no script needed, active sync).
-- Step 2. Level 2 - Child Cloud Account - GCP projects sync into Prisma at this level (no script needed active sync).
+- Step 1. Level 1 - Cloud Account - Cloud account used by Prisma (no script needed, native sync).
+- Step 2. Level 2 - Child Cloud Account - GCP projects sync into Prisma at this level (no script needed, native sync).
 - Step 3. Level 3 - Account Group - Create account groups which map up to a child account (level 2) of the same GCP project name (pc-account-group-gcp-mapping-CRON-import.py).
 - Step 4. Level 4 - User Role - Create user roles which map up to a account group (level 3) of the same GCP project name (pc-user-role-gcp-mapping-CRON-import.py).
 - Step 5. Level 5 - User Create or User Update - Create or update a user and ensure they are tied to only roles which represent their actual GCP projects (pc-user-create-update-CRON-import.py).
