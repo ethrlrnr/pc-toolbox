@@ -91,8 +91,8 @@ pmvp1_mvp1 = pandas.concat([pmvp1,mvp1]).drop_duplicates(subset=['name'], keep=F
 #drop rows with empty cells
 pmvp1_mvp1 = pmvp1_mvp1.dropna()
 
-#within "name" column, pull in only rows which contain a specfic string
-pmvp1_mvp2 = pmvp1_mvp1[pmvp1_mvp1['name'].str.contains('sab-')]
+#within "name" column, pull in only rows which contain a specfic string. I added company name to my roles list to distinguish security/audit members vs. developers, example "company-systemadmin".
+pmvp1_mvp2 = pmvp1_mvp1[pmvp1_mvp1['name'].str.contains('company-')]
 
 #within "name" exclude rows which feature a specific string
 pmvp1_mvp3 = pmvp1_mvp2[~pmvp1_mvp2['name'].str.contains('sbx')]
@@ -169,3 +169,49 @@ print('Import Complete.')
 # (1) This exact cloud account group/role already exists. Most likely this is why getting Error 400. 
 # (2) The formatting of is incorrect. This was initial error, had to make accountIds an array of strings to meet api requirements. 
 # (3) Use the API try out tool on the Prisma API website to get an example of syntax it expects (brackets, no brackets etc.)
+
+
+print('Final Stage. The following code will go back into user roles and delete user roles. Specifically, user roles that are no longer attached to a account group (recently off-boarded GCP project etc.')
+
+pc_settings, response_package = pc_lib_api.api_user_role_list_get(pc_settings)
+user_role_list1 = response_package['data']
+print('Done.')
+
+
+# Get the current date/time
+now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
+
+# Put json inside a dataframe
+ppu = pandas.json_normalize(user_role_list1)
+
+# Query a specific column (description in this case) and match on a string
+mmvp = ppu.query('description == "Role Mapped to GCP Project"')
+
+# Once all items are matched above, filter out all remaining columns except ID and Name. 
+mmvp1 = mmvp.filter(['id', 'name', 'accountGroupIds'])
+
+mmvp2 = mmvp1[mmvp1['accountGroupIds'].str.len() == 0]
+
+mmvp2.drop(columns=['accountGroupIds'], inplace=True)
+
+# print('Saving JSON contents as a CSV...', end='')
+# mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
+# print('Done.')
+
+mmvp3 = mmvp2.to_dict('records')
+
+#print(mvp4)
+
+user_role_remove = []
+for row_dict1 in mmvp3:
+    temp_UR = {}
+	#row_dict values pull from the dictionary
+    temp_UR['id']= row_dict1['id']
+    user_role_remove.append(temp_UR)
+				
+print(user_role_remove)
+
+for user_role_to_delete in user_role_remove:
+    print('user role ID: ',user_role_to_delete['id'])
+    pc_settings, response_package = pc_lib_api.api_delete_user_role(pc_settings, user_role_to_delete)
+print('Done.')
