@@ -86,11 +86,17 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 Cloud Account (Level 1, GCP, native sync) <--> Child Cloud Account (Level 2, Lists GCP Projects, native sync) <--> Account Groups (Level 3, Uses GCP project names, requires our custom script) <--> User Role (Level 4 , uses GCP project names, requires our custom script) <--> User Create/Update (Level 5, Ties GCP users to their respective GCP projects, requires our custom script) <--> SSO (Setup in Prisma and tie to an AD group under a Azure App as an example. Upon login, Prisma will check the user email against what's in the database, if it exists the user will be able to log in. If user doesn't email doesn't exist in Prisma it will result in a SAML user error on the Prisma audit logs.
 
 Example using a user name Dak Prescott (GCP user/developer):
+
 GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
+
 Prisma cloud account: GCP
+
 Prisma child cloud accounts: "dallas-cert-project-001", "dallas-prod-project-001"
+
 Prisma account groups: "dallas-cert-project-001", "dallas-prod-project-001"
+
 Prisma user roles: "dallas-cert-project-001", "dallas-prod-project-001"
+
 Prisma User: Dak.Prescott@dallascowboys.com
 
 Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<--> Dak(SSO user)
