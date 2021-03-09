@@ -91,7 +91,7 @@ Cloud Account (Level 1, GCP) <--> Cloud Account (Level 2, child, lists GCP Proje
 - Step 4. Level 4 - User Role - Create user roles which map up to a account group (level 3) of the same GCP project name (pc-user-role-gcp-mapping-CRON-import.py).
 - Step 5. Level 5 - User Create or User Update - Create or update a user and ensure they are tied to only roles which represent their actual GCP projects (pc-user-create-update-CRON-import.py).
 
-Note: If onboarding lots of users from GCP into Prisma, ensure SSO is already setup in Prisma with the proper AD group ready to go. SSO link from your IdP app (Azure AD etc.) must be correctly enter on Prisma Cloud SSO config under "Prisma Cloud Access SAML URL" or welcome email link will take users to the wrong place. 
+- Note: If onboarding lots of users from GCP into Prisma, ensure SSO is already setup in Prisma with the proper AD group ready to go. SSO link from your IdP app (Azure AD etc.) must be correctly enter on Prisma Cloud SSO config under "Prisma Cloud Access SAML URL" or welcome email link will take users to the wrong place. 
 ---------------------------------
 **Coming Soon to the Extended Edition**:
 - IaC scripts 
