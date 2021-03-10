@@ -15,7 +15,7 @@ Python 3.x:
 pip3 install requests --upgrade
 pip3 install pandas 
 ```
-
+Do not run live scripts against a Prisma Cloud PROD instance before testing!
 ------------------------------------------------------------------
 **What's new in this fork (extended edition) compared against the base project?**
 
