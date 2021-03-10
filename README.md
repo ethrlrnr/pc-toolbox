@@ -91,13 +91,13 @@ Dak's GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
 
 Level 1. Prisma cloud account: GCP
 
-Level 2. Prisma child cloud accounts: "dallas-cert-project-001", "dallas-prod-project-001"
+Level 2. Prisma child cloud accounts (created via native sync): "dallas-cert-project-001", "dallas-prod-project-001"
 
-Level 3. Prisma account groups: "dallas-cert-project-001", "dallas-prod-project-001"
+Level 3. Prisma account groups (created via custom script): "dallas-cert-project-001", "dallas-prod-project-001"
 
-Level 4. Prisma user roles: "dallas-cert-project-001", "dallas-prod-project-001"
+Level 4. Prisma user roles (created via custom script): "dallas-cert-project-001", "dallas-prod-project-001"
 
-Level 5. Prisma User: Dak.Prescott@dallascowboys.com
+Level 5. Prisma User (created via custom script): Dak.Prescott@dallascowboys.com
 
 Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<-->Dak.Prescott@dallascowboys.com (SSO enabled user, tied to an AD group/Azure App)
 
@@ -113,7 +113,7 @@ Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-pr
 - Step 6. Level 6 - If onboarding lots of users from GCP into Prisma, ensure SSO is already setup in Prisma with the proper AD group ready to go. SSO link from your IdP app (Azure AD etc.) must be correctly entered on Prisma Cloud SSO config under "Prisma Cloud Access SAML URL" or welcome email link will take users to the wrong place. 
 ---------------------------------
 **Coming Soon to the Extended Edition**:
-- IaC scripts 
+
 - Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDFs are offered on Prisma Cloud, reports don't list out resources if it's large. The beta is out and on this repo, the last piece is plugging the associated RQLs to specific policies that are split out (injecting into the cell). 
 ------------------------------------------------------------------
 
