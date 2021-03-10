@@ -437,3 +437,20 @@ Example:
 ```
 python pc-user-role-gcp-mapping-CRON-import.py
 ```
+
+**pc-user-create-update-CRON-import.py**
+- Cron job capability since it uses JSON responses (no output to CSV).
+- For user create, does an API call to list all GCP users and associated projects (leverages a saved search ID - custom RQL).
+- Compares a prepared GCP user list against the list of users in the Prisma user database, if user doesn't exist then they are created.
+- For user update, does an API call to list all GCP users and associated projects (leverages a saved search ID - custom RQL).
+- Compares a prepared GCP user list against the list of users in the Prisa user database, if a user exists then they are updated if a new project is added or removed (compares the list of projects/roles associated with a user in the GCP user list and the Prisma user list. The GCP user list which also has project information is the source of truth). 
+- If you don't want live changes made against your environment, then comment out the following two lines:
+
+"pc_settings, response_package = pc_lib_api.api_user_add_v2(pc_settings, user_to_add_v2)"
+
+"pc_settings, response_package = pc_lib_api.api_user_update_v2(pc_settings, user_to_update_v2)"
+
+Example:
+```
+python pc-user-create-update-CRON-import.py
+```
