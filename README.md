@@ -84,6 +84,7 @@ Just wanted to contribute something back to the community, this repo is a result
 **Baseline RBAC Strategy for GCP in Prisma Cloud that organizations should consider:**
 Cloud Account (Level 1, GCP, native sync) <--> Child Cloud Account (Level 2, Lists GCP Projects, native sync) <--> Account Groups (Level 3, Uses GCP project names, requires our custom script) <--> User Role (Level 4 , uses GCP project names, requires our custom script) <--> User Create/Update (Level 5, Ties GCP users to their respective GCP projects, requires our custom script) <--> SSO (Setup in Prisma and tie to an AD group under a Azure App as an example. Upon login, Prisma will check the user email against what's in the database, if it exists the user will be able to log in. If user doesn't email doesn't exist in Prisma it will result in a SAML user error on the Prisma audit logs.
 
+------------------------------------------------------------------
 **Example using a user named Dak Prescott (GCP user/developer):**
 
 GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
@@ -101,7 +102,7 @@ Prisma User: Dak.Prescott@dallascowboys.com
 Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<-->Dak.Prescott@dallascowboys.com (SSO enabled user, tied to an AD group/Azure App)
 
 Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-project-001"(account group)<-->"dallas-prod-project-001" (user role) <-->Dak.Prescott@dallascowboys.com (SSO enabled user, tied to an AD group/Azure App)
-
+------------------------------------------------------------------
 **Order of operation for our scripts used in a CRON job (ties into RBAC strategy/hierarchy listed a few lines above)**:
 - Step 1. Level 1 - Cloud Account - Cloud account used by Prisma (no script needed, native sync).
 - Step 2. Level 2 - Child Cloud Account - GCP projects sync into Prisma at this level (no script needed, native sync).
