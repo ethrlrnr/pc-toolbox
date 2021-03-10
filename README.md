@@ -87,7 +87,7 @@ Cloud Account (Level 1, GCP, native sync) <--> Child Cloud Account (Level 2, Lis
 ------------------------------------------------------------------
 **Example using a user named Dak Prescott (GCP user/developer):**
 
-GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
+Dak's GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
 
 Prisma cloud account: GCP
 
