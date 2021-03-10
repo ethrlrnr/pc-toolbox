@@ -98,9 +98,9 @@ Prisma user roles: "dallas-cert-project-001", "dallas-prod-project-001"
 
 Prisma User: Dak.Prescott@dallascowboys.com
 
-Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<--> Dak(SSO user)
+Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<-->Dak.Prescott@dallascowboys.com (SSO user)
 
-Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-project-001"(account group)<-->"dallas-prod-project-001" (user role) <-->Dak(SSO user)
+Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-project-001"(account group)<-->"dallas-prod-project-001" (user role) <-->Dak.Prescott@dallascowboys.com (SSO user)
 
 **Order of operation for our scripts used in a CRON job (ties into RBAC strategy/hierarchy listed a few lines above)**:
 - Step 1. Level 1 - Cloud Account - Cloud account used by Prisma (no script needed, native sync).
