@@ -403,6 +403,7 @@ python pc-account-group-import-bulk-gcp_mapping.py -y sample_with_cloud_account_
 - Will clean up leftover account groups tied to deleted projects (in Prisma's case, child cloud accounts).
 - If you don't want live changes made against your environment, then comment out the following two lines:
 "pc_settings, response_package = pc_lib_api.api_accounts_groups_add(pc_settings, new_accounts_group)"
+
 "pc_settings, response_package = pc_lib_api.api_delete_account_group(pc_settings, account_group_to_delete)"
 
 Example:
