@@ -123,10 +123,10 @@ On to the tools themselves (Everything requires the pc_api_lib.py and pc_lib_gen
 - Use this to set up your Prisma Cloud username, password, and URL for use in the remaining tools.
 - REQUIRED - -u switch for the Access Key ID generated from your Prisma Cloud user.
 - REQUIRED - -p switch for the Secred Key generated from your Prisma Cloud user.
-- REQUIRED - -url switch for the Prisma Cloud UI base URL found in the URL used to access the Prisma Cloud UI (app.prismacloud.io, app2.prismacloud.io, etc.).  This will try to translate from the older redlock.io addresses.  You can also put in the direct api.* link as well.
+- REQUIRED - -url switch for the Prisma Cloud UI base URL found in the URL used to access the Prisma Cloud UI (app2.prismacloud.io, app3.prismacloud.io, etc.).  This will try to translate from the older redlock.io addresses.  You can also put in the direct api.* link as well (api2.prismacloud.io, api3.prismacloud.io).
 - Also you can run this without any args to see what Access Key ID and URL is being used.
 
-NOTE: This is stored in clear JSON text in the same folder as the tools.  Keep the resulting conf file protected and do not give it out to anyone.
+NOTE: This is stored in clear JSON text in the same folder as the tools.  Keep the resulting conf file ("pc-settings.conf")protected and do not give it out to anyone.
 
 Example:
 ```
