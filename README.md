@@ -427,6 +427,11 @@ python pc-user-role-import-bulk.py -y sample_with_account_group_names.csv
 - These roles will hook up one level to a account groups.
 - Error handling is in place, if an item exists in the new dataframe and also already in Prisma Cloud, it will skip this and continue to next item.
 - Will clean up leftover user roles tied to deleted projects (in Prisma's case, child cloud accounts).
+- If you don't want live changes made against your environment, then comment out the following two lines:
+
+"pc_settings, response_package = pc_lib_api.api_user_role_add(pc_settings, user_role_to_add)"
+
+"pc_settings, response_package = pc_lib_api.api_delete_user_role(pc_settings, user_role_to_delete)"
 
 Example:
 ```
