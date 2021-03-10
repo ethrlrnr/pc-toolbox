@@ -24,6 +24,30 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 - https://pandas.pydata.org/
 - https://github.com/pandas-dev/pandas
 
+**Import Scripts [Python 3] for one time usage or testing (manually edit a CSV for a small sample size). These scripts run against "CSV" input source, conduct this before using the go-live script which uses only JSON response/dataframes with "no" CSV used as an input source.**
+
+- **Account Groups Create (CSV as input source.)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-account-group-bulk-gcp-mapping-CSV-import.py
+- **User Roles Create (CSV as input source.)** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-user-role-bulk-CSV-import.py
+-------------------------------
+**Import Scripts [Python 3] for continous automation, run as a cron job. These go-live scripts use input from JSON responses/data frames for creation or cleanup purposes.**
+
+- **Account Groups Create and Clean up (CRON job using JSON responses)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code works off JSON responses. The two API responses are compared (child cloud accounts and account groups), a new list is created with items that will be imported (duplicates are dropped). Will link up one level to the cloud account of the same name). pc-account-group-gcp-mapping-CRON-import.py
+
+- **User Roles Create and Clean Up**  (CRON job using JSON responses)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code works off JSON responses. The two API responses are compared (account groups and user roles), a new list is created with items that will be imported (duplicates are dropped). Will link up one level to the account group of the same name). pc-user-role-gcp-mapping-CRON-import.py
+
+- **User Create or Update** (CRON job, pulls in list of GCP users via a custom saved search. Associates GCP users with their specific projects. These projects are represented as roles and account groups using the same name, which takes advantage of the script work done to create account groups and user roles (based on GCP projects, CRON job). If SSO is configured properly on Prisma and hooked to the correct AD group, soon as the users are created, they will have SSO on day 1. Ensure the correct SSO link is provided in welcome emails. This script is the last script in the automation job: 1. child cloud account (native sync to pulling in GCP projects), 2. account groups (created with our scripts, names on based on projects list in child cloud accouts), 3. user roles (created with our scripts, names are based on account groups which use GCP project names), 4. user create or update (created with our scripts, if existing user it updates if new projects are added or removed. Users a hooked to their respective GCP projects (response from SAVED SEARCH, leverages GCP resource manager API). Once created and SSO is enabled, they will be able to log via SSO. pc-user-create-update-CRON-import.py
+
+---------------------------------------------
+**Alerts Central**
+
+- **Alerts** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
+- **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
+
+- **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) - pc-alert-bulk-dismiss-from-CSV.py
+- **Alerts Reopen** (Can reopen 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) -pc-alert-bulk-reopen-from-CSV.py
+
+---------------------------------------------
+
 **Export Scripts [Python 3] for backup and/or input for "testing" using automation purposes in this repo**:
 
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
@@ -48,31 +72,6 @@ This fork is focused more on GCP and requires installation of the popular Pandas
 - **Third Party Integrations** (Export list of all integrations) - pc-third-party-integration-CSV.py
 - **User List** (List of all users) - pc-user-list-CSV.py
 -------------------------------
-**Import Scripts [Python 3] for one time usage or continuous automation on Prisma Cloud**:
-
-**Testing scripts against "CSV" input source, conduct this before using the go-live script which uses only JSON response/dataframes with "no" CSV used as an input source.**
-
-- **Account Groups Create (CSV as input source.)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code uses list from CSV export of Cloud Accounts level 2. Will link up one level to the cloud account of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-account-group-bulk-gcp-mapping-CSV-import.py
-- **User Roles Create (CSV as input source.)** (Geared towards GCP, can create 1 or thousands of user roles based on the names of GCP projects. Code uses the list from CSV export of Account Groups filtered. This will also link up one level to the account group of the same name. Next release coming before Thanksgiving 2020, will check for duplicates and only create new entries.) - pc-user-role-bulk-CSV-import.py
--------------------------------
-**Go-live scripts which use input from JSON responses/data frames for creation or cleanup purposes.**
-
-- **Account Groups Create and Clean up (CRON job using JSON responses)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code works off JSON responses. The two API responses are compared (child cloud accounts and account groups), a new list is created with items that will be imported (duplicates are dropped). Will link up one level to the cloud account of the same name). pc-account-group-gcp-mapping-CRON-import.py
-
-- **User Roles Create and Clean Up**  (CRON job using JSON responses)** (Geared towards GCP, can create 1 or thousands of account groups based on the names of GCP projects. Code works off JSON responses. The two API responses are compared (account groups and user roles), a new list is created with items that will be imported (duplicates are dropped). Will link up one level to the account group of the same name). pc-user-role-gcp-mapping-CRON-import.py
-
-- **User Create or Update** (CRON job, pulls in list of GCP users via a custom saved search. Associates GCP users with their specific projects. These projects are represented as roles and account groups using the same name, which takes advantage of the script work done to create account groups and user roles (based on GCP projects, CRON job). If SSO is configured properly on Prisma and hooked to the correct AD group, soon as the users are created, they will have SSO on day 1. Ensure the correct SSO link is provided in welcome emails. This script is the last script in the automation job: 1. child cloud account (native sync to pulling in GCP projects), 2. account groups (created with our scripts, names on based on projects list in child cloud accouts), 3. user roles (created with our scripts, names are based on account groups which use GCP project names), 4. user create or update (created with our scripts, if existing user it updates if new projects are added or removed. Users a hooked to their respective GCP projects (response from SAVED SEARCH, leverages GCP resource manager API). Once created and SSO is enabled, they will be able to log via SSO. pc-user-create-update-CRON-import.py
-
----------------------------------------------
-**Alerts Central**
-
-- **Alerts** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
-- **Alerts** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
-
-- **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) - pc-alert-bulk-dismiss-from-CSV.py
-- **Alerts Reopen** (Can reopen 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) -pc-alert-bulk-reopen-from-CSV.py
-
----------------------------------------------
 **Other Notes**:
 - **API library file (pc_lib_api.py)**, edited to add in a lot more API calls from: https://api.docs.prismacloud.io/reference#try-the-apis
 - **Automation (imports, cron)** Please see 2 import scripts for account groups and user roles, all the work is done in memory instead of from a CSV. 
