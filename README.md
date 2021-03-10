@@ -400,7 +400,10 @@ python pc-account-group-import-bulk-gcp_mapping.py -y sample_with_cloud_account_
 - New account groups are imported (based on dataframe with new items) then created within Prisma Cloud.
 - These account groups will hook up one level to a child cloud account (GCP project).
 - Error handling is in place, if an item exists in the new dataframe and also already in Prisma Cloud, it will skip this and continue to next item. This sometimes occur because Prisma doesn't update account groups data (using API) if an attached child cloud account is deleted. The pre-work for dataframe creates a new item (ultimately a duplicate) due to a gap between child cloud accounts and account groups on the compare, this will remain the case until Palo provides and update.
-- - Will clean up leftover account groups tied to deleted projects (in Prisma's case, child cloud accounts).
+- Will clean up leftover account groups tied to deleted projects (in Prisma's case, child cloud accounts).
+- If you don't want live changes made against your environment, then comment out the following two lines:
+"pc_settings, response_package = pc_lib_api.api_accounts_groups_add(pc_settings, new_accounts_group)"
+"pc_settings, response_package = pc_lib_api.api_delete_account_group(pc_settings, account_group_to_delete)"
 
 Example:
 ```
