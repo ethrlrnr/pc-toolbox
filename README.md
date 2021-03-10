@@ -89,15 +89,15 @@ Cloud Account (Level 1, GCP, native sync) <--> Child Cloud Account (Level 2, Lis
 
 Dak's GCP projects: "dallas-cert-project-001", "dallas-prod-project-001"
 
-Prisma cloud account: GCP
+Level 1. Prisma cloud account: GCP
 
-Prisma child cloud accounts: "dallas-cert-project-001", "dallas-prod-project-001"
+Level 2. Prisma child cloud accounts: "dallas-cert-project-001", "dallas-prod-project-001"
 
-Prisma account groups: "dallas-cert-project-001", "dallas-prod-project-001"
+Level 3. Prisma account groups: "dallas-cert-project-001", "dallas-prod-project-001"
 
-Prisma user roles: "dallas-cert-project-001", "dallas-prod-project-001"
+Level 4. Prisma user roles: "dallas-cert-project-001", "dallas-prod-project-001"
 
-Prisma User: Dak.Prescott@dallascowboys.com
+Level 5. Prisma User: Dak.Prescott@dallascowboys.com
 
 Map 1: GCP<-->"dallas-cert-project-001"(child cloud account)<-->"dallas-cert-project-001"(account group)<-->"dallas-cert-project-001" (user role)<-->Dak.Prescott@dallascowboys.com (SSO enabled user, tied to an AD group/Azure App)
 
