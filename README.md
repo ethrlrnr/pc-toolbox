@@ -440,6 +440,7 @@ python pc-user-role-gcp-mapping-CRON-import.py
 
 **pc-user-create-update-CRON-import.py**
 - Cron job capability since it uses JSON responses (no output to CSV).
+- Code can create a new user and also update an existing user. 
 - For user create, does an API call to list all GCP users and associated projects (leverages a saved search ID - custom RQL).
 - Compares a prepared GCP user list against the list of users in the Prisma user database, if user doesn't exist then they are created.
 - For user update, does an API call to list all GCP users and associated projects (leverages a saved search ID - custom RQL).
