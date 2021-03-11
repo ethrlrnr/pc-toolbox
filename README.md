@@ -17,7 +17,7 @@ pip3 install pandas
 ```
 --------------------------------------------------------------
 
-On to the tools themselves (Everything requires the pc_api_lib.py and pc_lib_general.py library files - keep them in the same directory as the other tools):
+Before proceeding, create an access key within the Prisma Cloud UI (under settings you will find "access keys").
 
 **pc-configure.py**
 - Use this to set up your Prisma Cloud username, password, and URL for use in the remaining tools.
@@ -26,7 +26,9 @@ On to the tools themselves (Everything requires the pc_api_lib.py and pc_lib_gen
 - REQUIRED - -url switch for the Prisma Cloud UI base URL found in the URL used to access the Prisma Cloud UI (app2.prismacloud.io, app3.prismacloud.io, etc.).  This will try to translate from the older redlock.io addresses.  You can also put in the direct api.* link as well (api2.prismacloud.io, api3.prismacloud.io).
 - Also you can run this without any args to see what Access Key ID and URL is being used.
 
-NOTE: This is stored in clear JSON text in the same folder as the tools.  Keep the resulting conf file ("pc-settings.conf")protected and do not give it out to anyone.
+NOTE 1: This is stored in clear JSON text in the same folder as the tools.  Keep the resulting conf file ("pc-settings.conf")protected and do not give it out to anyone.
+
+NOTE 2: Keep pc_api_lib.py and pc_lib_general.py library files in the same folder.
 
 Example:
 ```
