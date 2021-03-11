@@ -9,6 +9,11 @@ import pc_lib_general
 import json
 import pandas
 from datetime import datetime, date, time
+import sys
+import warnings
+
+if not sys.warnoptions:
+    warnings.simplefilter("ignore")
 
 # --Execution Block-- #
 # --Parse command line arguments-- #
@@ -179,8 +184,11 @@ gcp6['defaultRoleId'] = gcp6['defaultRoleId'].astype(str)
 #since account IDs are lets say 36 characters, using a "2" will allow the program to skip a bracket and apostrophe. This will then grab the ID and end on the 38th position, right before the closing apostrophe.
 gcp6['defaultRoleId'] = gcp6['defaultRoleId'].str[2:38]
 
+#Lets print how many GCP users will need to be created, the final number is the result of our finalized GCP dataframe prep work. Started with a list which was then sliced and diced based on specific parameters (removal of users from list that were on security, removal of GCP users that already existed in Prisma etc.) 
+print(len(gcp6), 'Total user account(s) on GCP cloud list will need to be created')
+
 #test prepped GCP list for new users to be created.
-#print(gcp5)
+#print(gcp6)
 
 #Grab the current date/time.
 # now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
@@ -414,6 +422,8 @@ ggcp7 = ggcp6.query("roleIds != roleIdsExistingInPrismaCompare")
 #Lets drop the roleIdsExistingInPrismaCompare column, now that the comparison is done between role IDs. We want the GCP roleIDs (which map to projects) to be the source of truth and not what's already in Prisma.
 ggcp7.drop(columns=['roleIdsExistingInPrismaCompare'], inplace=True)
 
+#Result of our dataframe prep work, how many users will need to be updated. 
+print(len(ggcp7), 'Total user account(s) on GCP cloud list will need to be created')
 
 #Grab the current date/time.
 # now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
