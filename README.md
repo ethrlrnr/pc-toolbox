@@ -15,6 +15,25 @@ Python 3.x:
 pip3 install requests --upgrade
 pip3 install pandas 
 ```
+--------------------------------------------------------------
+
+On to the tools themselves (Everything requires the pc_api_lib.py and pc_lib_general.py library files - keep them in the same directory as the other tools):
+
+**pc-configure.py**
+- Use this to set up your Prisma Cloud username, password, and URL for use in the remaining tools.
+- REQUIRED - -u switch for the Access Key ID generated from your Prisma Cloud user.
+- REQUIRED - -p switch for the Secred Key generated from your Prisma Cloud user.
+- REQUIRED - -url switch for the Prisma Cloud UI base URL found in the URL used to access the Prisma Cloud UI (app2.prismacloud.io, app3.prismacloud.io, etc.).  This will try to translate from the older redlock.io addresses.  You can also put in the direct api.* link as well (api2.prismacloud.io, api3.prismacloud.io).
+- Also you can run this without any args to see what Access Key ID and URL is being used.
+
+NOTE: This is stored in clear JSON text in the same folder as the tools.  Keep the resulting conf file ("pc-settings.conf")protected and do not give it out to anyone.
+
+Example:
+```
+python pc-configure.py -u "accesskeyidhere" -p "secretkeyhere" -url "app3.prismacloud.io"
+```
+--------------------------------------------------------------
+
 Do not run live scripts against a Prisma Cloud PROD instance before testing!
 ------------------------------------------------------------------
 **What's new in this fork (extended edition) compared against the base project?**
@@ -117,22 +136,6 @@ Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-pr
 - Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDFs are offered on Prisma Cloud, reports don't list out resources if it's large. The beta is out and on this repo, the last piece is plugging the associated RQLs to specific policies that are split out (injecting into the cell). 
 ------------------------------------------------------------------
 
-On to the tools themselves (Everything requires the pc_api_lib.py and pc_lib_general.py library files - keep them in the same directory as the other tools):
-
-**pc-configure.py**
-- Use this to set up your Prisma Cloud username, password, and URL for use in the remaining tools.
-- REQUIRED - -u switch for the Access Key ID generated from your Prisma Cloud user.
-- REQUIRED - -p switch for the Secred Key generated from your Prisma Cloud user.
-- REQUIRED - -url switch for the Prisma Cloud UI base URL found in the URL used to access the Prisma Cloud UI (app2.prismacloud.io, app3.prismacloud.io, etc.).  This will try to translate from the older redlock.io addresses.  You can also put in the direct api.* link as well (api2.prismacloud.io, api3.prismacloud.io).
-- Also you can run this without any args to see what Access Key ID and URL is being used.
-
-NOTE: This is stored in clear JSON text in the same folder as the tools.  Keep the resulting conf file ("pc-settings.conf")protected and do not give it out to anyone.
-
-Example:
-```
-python pc-configure.py -u "accesskeyidhere" -p "secretkeyhere" -url "app3.prismacloud.io"
-```
---------------------------------------------------------------
 **pc-alert-get-full-CSV-export.py**
 - Grab alerts from Prisma Cloud, this is a full dump with 150+ columns.
 - Pandas library is required.
