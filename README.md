@@ -71,6 +71,8 @@ Just wanted to contribute something back to the community, this repo is a result
 
 **Export Scripts [Python 3] for backup and/or input for "testing" using automation purposes in this repo. Please note Prisma Cloud doesn't provide the ability to backup account setting from the UI as of early 2021.**:
 
+- **Backup All Settings** (Combines all the exports scripts below into this one file) - pc-backup-all-settings.py
+
 - **Cloud Accounts** (Main, Level 1, geared towards GCP/AWS. This will grab the 1 top level GCP account and AWS accounts) - pc-cloud-account-main-export.py
 - **Cloud Accounts** (Main, Level 2, geared towards GCP. This will export all synced GCP projects found in Prisma) - pc-cloud-account-gcp-projects-CSV-export.py 
 - **Cloud Accounts** (Filters items out based on a string within the data frame) - pc-cloud-account-gcp-projects-string-filter-CSV-export.py
@@ -241,7 +243,7 @@ python pc-user-role-filter-CSV-export.py -y
 
 Example:
 ```
-python pc-access-key-list-CSV.py -y
+python pc-access-key-list-CSV-export.py -y
 ```
 
 **pc-alert-names-CSV.py**
@@ -252,7 +254,7 @@ Example:
 python pc-alert-names-CSV.py -y
 ```
 
-**pc-anomalies-trusted-list-CSV.py**
+**pc-anomalies-trusted-list-CSV-export.py**
 - Grab anomalies trust list.
 
 Example:
@@ -260,7 +262,7 @@ Example:
 python pc-anomalies-trusted-list-CSV.py -y
 ```
 
-**pc-anomalies-settings(UEBA_and_Network)-CSV.py**
+**pc-anomalies-settings(UEBA_and_Network)-CSV-export.py**
 - Grab list of anomaly settings specific to UEBA and Network.
 
 Example:
@@ -276,7 +278,7 @@ Example:
 python pc-audit-logs-CSV.py -tr 20 -y
 ```
 
-**pc-audit-logs-filter-CSV.py**
+**pc-audit-logs-filter-CSV-export.py**
 - Grab audit logs, specify a time range.
 - Filter by user.
 - More options coming soon but this is easily customizable to focus on other columns in terms of filtering. 
@@ -286,7 +288,7 @@ Example:
 python pc-audit-logs-filter-CSV.py -tr 20 -uf user@domain.com -y
 ```
 
-**pc-notification-templates-CSV.py**
+**pc-notification-templates-CSV-export.py**
 - Grab the list of notification templates.
 
 Example:
@@ -331,7 +333,7 @@ Example:
 python pc-search-saved-CSV-export.py -y
 ```
 
-**pc-third-party-integration-CSV.py**
+**pc-third-party-integration-CSV-export.py**
 - Grab list of third party integrations. 
 
 Example:
@@ -339,7 +341,7 @@ Example:
 python pc-third-party-integration-CSV.py -y
 ```
 
-**pc-user-list-CSV.py**
+**pc-user-list-CSV-export.py**
 - Grab list of users. 
 
 Example:
@@ -365,6 +367,14 @@ python pc-alert-dismiss.py -tr 9 -y sample_with_alert_ids.csv
 Example:
 ```
 python pc-alert-bulk-reopen-from-CSV.py -tr 9 -y sample.csv
+```
+
+**pc-backup-all-settings.py**
+- Backup all settings from one script (combination of all the export scripts).
+
+Example:
+```
+python pc-backup-all-settings.py 
 ```
 
 **pc-compliance-report-beta.py**
