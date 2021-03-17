@@ -247,3 +247,19 @@ pu['custom_query'] = pu['rule.criteria'].map(pu3.set_index('id')['query'])
 
 pu[POLICY_FIELDS].to_csv('policy_v2_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 print('Done.')
+
+#-------------------------------------->
+
+print('Backing up alert names')
+pc_settings, response_package = pc_lib_api.api_alert_names_get(pc_settings)
+alert_names = response_package['data']
+
+
+alert_names = pandas.json_normalize(alert_names) #put json inside a dataframe
+alert_names['createdOn']=(pandas.to_datetime(alert_names['createdOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+alert_names['lastModifiedOn']=(pandas.to_datetime(alert_names['lastModifiedOn']=(pandas.to_datetime(pu['lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+['lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+
+alert_names['lastModifiedOn']=(pandas.to_datetime(pu['lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+.to_csv('alert_names_{}.csv'.format(now), sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+print('Done.')
