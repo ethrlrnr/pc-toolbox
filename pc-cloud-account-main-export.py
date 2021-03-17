@@ -65,7 +65,7 @@ print('Done.')
 
 
 #Call the top level API for cloud accounts 
-print('API - Getting current user list...', end='')
+print('API - Getting cloud accounts list...', end='')
 pc_settings, response_package = pc_lib_api.api_cloud_accounts_list_get(pc_settings)
 cloud_accounts_list = response_package['data']
 print('Done.')
