@@ -63,9 +63,7 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-
-
-print('API - Getting current user list...', end='')
+print('API - Getting access key list...', end='')
 pc_settings, response_package = pc_lib_api.api_access_key_list_get(pc_settings)
 access_key_list_get = response_package['data']
 print('Done.')
