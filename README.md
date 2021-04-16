@@ -149,10 +149,10 @@ Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-pr
 
 Example:
 ```
-pc-alert-get-full-CSV-export.py -y -fas open -tr 5 --detailed -fct aws
-pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
-pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
-pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 5 --detailed -fct aws
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
 ```
 **python pc-alert-get-lite-rql.py**
 - This code is geared towards GCP and AWS.
