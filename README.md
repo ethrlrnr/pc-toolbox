@@ -1,4 +1,10 @@
 # PC-Toolbox-GCP-Extended-TX-Edition
+
+![GitHub top language](https://img.shields.io/github/languages/top/antoinesylvia/pc-toolbox?style=for-the-badge)
+![GitHub](https://img.shields.io/github/license/antoinesylvia/pc-toolbox?style=for-the-badge&v=2)
+![GitHub Repo stars](https://img.shields.io/github/stars/antoinesylvia/pc-toolbox?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/antoinesylvia/pc-toolbox?style=for-the-badge)
+
 Prisma Cloud API tools for convenience and general utility.
 
 There are multiple tools that can be used (listed below).  Everything here is written in Python (2.7, originally, now updated and tested in Python 3.7, but both should still work).
