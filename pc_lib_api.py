@@ -176,7 +176,6 @@ def api_policy_status_update(pc_settings, policy_id, status):
     url = "https://" + pc_settings['apiBase'] + "/policy/" + policy_id + "/status/" + status
     return pc_call_api(action, url, pc_settings)
 
-
 # Get a Saved Search
 def api_search_get(pc_settings, search_id):
     action = "GET"
@@ -295,6 +294,27 @@ def api_alert_list_get(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/alert"
     return pc_call_api(action, url, pc_settings, params=params, data=data)
+
+
+
+
+# Async Alerts Status
+def api_async_alerts_job_status(pc_settings, job_id, params=None, data=None):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/alert/jobs/" + job_id + "/status" 
+    return pc_call_api(action, url, pc_settings)
+	
+# Async Alerts JSON Response
+def api_async_alerts_job_download(pc_settings, job_id, params=None, data=None):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/alert/jobs/" + job_id + "/download" 
+    return pc_call_api(action, url, pc_settings)	
+
+# Async Alerts Job
+def api_async_alerts_job(pc_settings, params=None, data=None):
+    action = "POST"
+    url = "https://" + pc_settings['apiBase'] + "/alert/jobs"
+    return pc_call_api(action, url, pc_settings,params=params, data=data)
 
 
 # Get alert list with filters (V2)
@@ -428,7 +448,6 @@ def api_accounts_groups_add(pc_settings, new_accounts_group):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
     return pc_call_api(action, url, pc_settings, data=new_accounts_group)
-
-#Future
+	
 
 
