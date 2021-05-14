@@ -7,7 +7,7 @@
 
 Prisma Cloud API tools for convenience and general utility.
 
-There are multiple tools that can be used (listed below).  Everything here is written in Python (2.7, originally, now updated and tested in Python 3.9).
+There are multiple tools that can be used (listed below).  Everything here is written in Python (2.7, originally, now updated and tested in Python 3.9). I recommend the 64-bit version of Python 3, especially if you will pulling large amounts of data. 
 
 If you need to install python, you can get more information at [Python's Page](https://www.python.org/).  I also highly recommend you install the [PIP package manager for Python](https://pypi.python.org/pypi/pip) if you do not already have it installed.
 
