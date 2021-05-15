@@ -69,7 +69,7 @@ Just wanted to contribute something back to the community, this repo is a result
 
 - **Alerts via synchronus call** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
 - **Alerts via synchronus call** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
-
+- **Alerts via asynchronus call** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-async-export(RQLmode).py
 - **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) - pc-alert-bulk-dismiss-from-CSV.py
 - **Alerts Reopen** (Can reopen 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) -pc-alert-bulk-reopen-from-CSV.py
 
@@ -160,8 +160,27 @@ python pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
 ```
-**python pc-alert-get-lite-rql.py**
+**pc-alert-get-lite-CSV-export(RQLmode).py**
 - This code is geared towards GCP and AWS.
+- Pandas library is required.
+- Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
+- Columns found in CSV output can be easily customized with other JSON elements.
+- Can handle 90% of the alert filters mentioned in the API: https://api.docs.prismacloud.io/reference#get-alerts-v2
+- For specific commandline argument filters (outside of what's shown in the example below) just look inside the first block of the code. 
+- Try matrix mode if you want to see all the json responses printed.
+- **If your response is large sometimes you will receive a server side 504 error. The only way to handle this issue at the moment is to pull less days or do more filtering.**
+
+Example:
+```
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 120 --detailed -fct aws
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 90 --detailed -fct gcp
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 5 --detailed -fct aws --matrixmode
+
+**pc-alert-get-lite-CSV-async-export(RQLmode).py**
+- This code is geared towards GCP and AWS.
+- Prisma has limited responses for the synchronous alert call, this async version operates much better and has less limitations. 
 - Pandas library is required.
 - Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
 - Columns found in CSV output can be easily customized with other JSON elements.
