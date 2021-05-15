@@ -177,7 +177,7 @@ python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 90 --detailed -
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 5 --detailed -fct aws --matrixmode
-
+```
 **pc-alert-get-lite-CSV-async-export(RQLmode).py**
 - This code is geared towards GCP and AWS.
 - Prisma has limited responses for the synchronous alert call, this async version operates much better and has less limitations. 
