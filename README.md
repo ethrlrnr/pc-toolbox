@@ -68,7 +68,8 @@ Just wanted to contribute something back to the community, this repo is a result
 **Alerts Central**
 
 - **Alerts via synchronus call** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-export.py
-- **Alerts via synchronus call** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py
+- **Alerts via synchronus call** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-export(RQLmode).py 
+- **Alerts via asynchronus call** (Full dump of JSON response, results in over 200+ columns) - pc-alert-get-full-CSV-async-export.py
 - **Alerts via asynchronus call** (Lite version, output limited to around 20 columns with RQLs. Geared towards AWS/GCP with ServiceNOW Integration) - pc-alert-get-lite-CSV-async-export(RQLmode).py
 - **Alerts Dismissals** (Can dismiss 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) - pc-alert-bulk-dismiss-from-CSV.py
 - **Alerts Reopen** (Can reopen 1 or thousands of alerts. Requires the alert IDs to be stored in a column on a CSV called "id", one alert ID per row. Users can leverage the CSV output from the "lite" or "full" GET Alerts scripts above to build a list of IDs needed for this operation.) -pc-alert-bulk-reopen-from-CSV.py
@@ -160,6 +161,22 @@ python pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
 ```
+**pc-alert-get-full-CSV-aync-export.py**
+- Grab alerts from Prisma Cloud, this is a full dump with 150+ columns.
+- Prisma has limited responses for the synchronous alert call, this async version operates much better and has less limitations. 
+- Pandas library is required.
+- Specify your parameters in the command-line and run. Results will be saved to a CSV file with the cloud type and time appended to the file name.
+- **If your response is large sometimes you will receive a server side 504 error. The only way to handle this issue at the moment is to pull less days or do more filtering.**
+- For specific commandline argument filters (outside of what's shown in the example below) just look inside the first block of the code. 
+
+Example:
+```
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 5 --detailed -fct aws
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
+```
+
 **pc-alert-get-lite-CSV-export(RQLmode).py**
 - This code is geared towards GCP and AWS.
 - Pandas library is required.
