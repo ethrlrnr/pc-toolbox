@@ -141,10 +141,7 @@ Map 2: GCP <-->"dallas-prod-project-001"(child cloud account)<-->"dallas-prod-pr
 - Step 4. Level 4 - User Role - Create user roles which map up to a account group (level 3) of the same GCP project name (pc-user-role-gcp-mapping-CRON-import.py).
 - Step 5. Level 5 - User Create or User Update - Create or update a user and ensure they are tied to only roles which represent their actual GCP projects (pc-user-create-update-CRON-import.py).
 - Step 6. Level 6 - If onboarding lots of users from GCP into Prisma, ensure SSO is already setup in Prisma with the proper AD group ready to go. SSO link from your IdP app (Azure AD etc.) must be correctly entered on Prisma Cloud SSO config under "Prisma Cloud Access SAML URL" or welcome email link will take users to the wrong place. 
----------------------------------
-**Coming Soon to the Extended Edition**:
-
-- Compliance report for resources (output in CSV). Stop gap until Prisma offers something natively. Right now only PDFs are offered on Prisma Cloud, reports don't list out resources if it's large. The beta is out and on this repo, the last piece is plugging the associated RQLs to specific policies that are split out (injecting into the cell). 
+ 
 ------------------------------------------------------------------
 
 **pc-alert-get-full-CSV-export.py**
@@ -220,7 +217,6 @@ Example:
 ```
 python pc-cloud-account-main-export.py -y
 ```
-
 **pc-cloud-account-gcp-projects-CSV-export.py**
 - Grab the list of GCP projects which are represented in Prisma Cloud as child cloud accounts.
 - This will also grab the one GCP top level account. 
@@ -229,7 +225,6 @@ Example:
 ```
 python pc-cloud-account-gcp-projects-CSV-export.py  -y
 ```
-
 **pc-cloud-account-gcp-projects-string-filter-CSV-export.py**
 - Grab the list of GCP projects which are represented in Prisma Cloud as child cloud accounts and one top level GCP account.
 - This will then filter out the top level account (user must add this account number inside code) to focus on just the projects/child accounts.
@@ -417,27 +412,28 @@ Example:
 python pc-backup-all-settings.py 
 ```
 
-**pc-compliance-report-beta.py**
-- Prisma Cloud as of November 2020 doesn't provide a compliance report in CSV format. 
+**pc-compliance-report.py**
+- Prisma Cloud as of May 2021 doesn't provide a compliance report in CSV format. 
 - The PDF version provided by Prisma doesn't list out all the failed resources if it's a large list.
-- I am attempting to provide a stop gap solution to the problems above, this is in beta and won't be available until December 2020 (not doing any Prisma coding over Thxgiving Break). 
+- If using GCP, consider enabling the option to auto sync folders as account groups (for audit purposes, groups can be plugged in for a focused search). 
 
 Example:
 ```
-python pc-compliance-report-beta.py -tr 15 -y
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP -fca YOUR_CLOUD_ACCOUNT
-python pc-compliance-report-beta.py -tr 15 -y -fct AWS -fpcs "CIS v1.3.0 (AWS)"
-python pc-compliance-report-beta.py -tr 15 -y -fct AWS -ss passed
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "GDPR"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "SOC 2"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "PCI DSS v3.2"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "HIPAA"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "CISv1.1.0 (GKE)"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "CISv1.1.0 (GCP)"
-python pc-compliance-report-beta.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "MITRE ATT%26CK [Beta]"
+python pc-compliance-report.py -tr 15 -y
+python pc-compliance-report.py -tr 15 -y -fct GCP
+python pc-compliance-report.py -tr 15 -y -fct GCP -fagt YOUR_ACCOUNT_GROUP
+python pc-compliance-report.py -tr 15 -y -fct GCP -ss failed 
+python pc-compliance-report.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP
+python pc-compliance-report.py -tr 15 -y -fct GCP -ss failed -fagt YOUR_ACCOUNT_GROUP -fca YOUR_CLOUD_ACCOUNT
+python pc-compliance-report.py -tr 15 -y -fct AWS -fpcs "CIS v1.3.0 (AWS)"
+python pc-compliance-report.py -tr 15 -y -fct AWS -ss passed
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "GDPR"
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "SOC 2"
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "PCI DSS v3.2"
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "HIPAA"
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "CISv1.1.0 (GKE)"
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "CISv1.1.0 (GCP)"
+python pc-compliance-report.py -tr 15 -y -fct GCP -fcr "GCP Salt Lake City" -fpcs "MITRE ATT%26CK [Beta]"
 ```
 
 **pc-account-group-bulk-gcp-mapping-CSV-import.py**
