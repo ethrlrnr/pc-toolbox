@@ -108,12 +108,12 @@ parser.add_argument(
     default=30,
     help='(Optional) - Time Range in days.  Defaults to 30.')
 
-parser.add_argument(
-    '-l',
-    '--limit',
-    type=int,
-    default=500,
-    help='(Optional) - Return values limit (Default to 500).')
+#parser.add_argument(
+    #'-l',
+    #'--limit',
+    #type=int,
+    #default=5000000,
+    #help='(Optional) - Return values limit (Default to 500).')
 parser.add_argument(
     '-fagt',
     '--accountgroup',
@@ -175,7 +175,7 @@ alerts_filter['sortBy'] = ["id:asc"]
 
 alerts_filter['offset'] = 0
 
-alerts_filter['limit'] = args.limit
+#alerts_filter['limit'] = args.limit
 
 alerts_filter['filters'] = []
 if args.alertstatus is not None:
