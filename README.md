@@ -163,7 +163,6 @@ python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt confi
 ```
 **pc-alert-get-full-CSV-aync-export.py**
 - Grab alerts from Prisma Cloud, this is a full dump with 150+ columns.
-- Prisma has limited responses for the synchronous alert call, this async version operates much better and has less limitations. 
 - Pandas library is required.
 - Specify your parameters in the command-line and run. Results will be saved to a CSV file with the cloud type and time appended to the file name.
 - **If your response is large sometimes you will receive a server side 504 error. The only way to handle this issue at the moment is to pull less days or do more filtering.**
@@ -197,7 +196,6 @@ python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 5 --detailed -f
 ```
 **pc-alert-get-lite-CSV-async-export(RQLmode).py**
 - This code is geared towards GCP and AWS.
-- Prisma has limited responses for the synchronous alert call, this async version operates much better and has less limitations. 
 - Pandas library is required.
 - Grab alerts from Prisma Cloud, this is a lite dump with 15-18 columns (number differs based on whether GCP or AWS is selected).
 - Columns found in CSV output can be easily customized with other JSON elements.
