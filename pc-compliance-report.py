@@ -10,6 +10,10 @@ import json
 import sys
 import pandas
 from datetime import datetime, date, time
+import warnings
+
+if not sys.warnoptions:
+    warnings.simplefilter("ignore")
 
 # --Execution Block-- #
 # --Parse command line arguments-- #
