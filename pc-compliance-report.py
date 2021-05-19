@@ -292,18 +292,23 @@ str4 = " ".join(str3.split())
 str5 = str4.replace(" ", "_")
 
 #---------------------------------------------------------------------------------------------------------------#	
-#print(sys.argv[1:])
-
 #Used for CSV filename output 	
-type = args.cloudtype
+
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 
 #Lets combine the test results and cloud type into a string.
-str6 = str5 + "_" + type
+
+if args.accountgroup is not None and args.policycomplianceStandard is not None:
+	str6 = str5 + "_" + args.cloudtype + "_" + args.accountgroup + "_" + args.policycomplianceStandard
+
+else:
+	if args.accountgroup is not None:
+		str6 = str5 + "_" + args.cloudtype + "_" + args.accountgroup
+
+	else:
+		str6 = str5 + "_" + args.cloudtype
 
 #Finalized CSV, %s in filename refers to our combined string str6. 
 rr2.to_csv('Compliance_Report_%s_{}.csv'.format(now) % str6, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
 print('CSV saved.')
-
-
