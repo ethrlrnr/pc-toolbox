@@ -57,7 +57,6 @@ parser.add_argument(
     type=str,
     help='(Optional) - Filter - Policy Compliance Standard.')
 	
-
 		
 parser.add_argument(
     '-fct',
@@ -181,10 +180,6 @@ if args.scanstatus is not None:
 
 print('Done.')
 
-#Used for CSV filename output 	
-type = args.cloudtype
-now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
-
 #---------------------------------------------------------------------------------------------------------------#
 print('API Call #2 - Getting resource scan information')
 pc_settings, response_package = pc_lib_api.api_resource_scan_info(pc_settings, data=resource_info_scan)
@@ -266,15 +261,10 @@ gcp1 = gcp.filter(['id', 'accountId'])
 gcp1.sort_values(by=['accountId'], ascending = True, inplace=True)
 
 #dump rows which contain a specific string.
-gcp2 = gcp1[~gcp1['accountId'].str.contains('some_value|some_value')]
-
+gcp2 = gcp1[~gcp1['accountId'].str.contains('some_string|some_string')]
 
 #The dataframe will most likely list users multiple times in different rows. This code will group all data by a common value into a single row. Resetting the index will re-add any columns initially lost in the operation (applying the list). More columns can be specified after "roleIds" by just adding a comma. Less messy this way. 
 gcp3 = gcp2.groupby('accountId')['id'].apply(list).reset_index()
-
-#print(sys.argv[1:])
-# gcp3.to_csv('%s_outputt_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
-
 
 #To append roleIds (from our user roles API response) to a dataframe, two dataframes must match on column values. If match is found during compare, the role ID gets added to that row.  
 rr2['GCP_Contact_Information(if_available)'] = rr2['accountId'].map(gcp3.set_index('accountId')['id'])
@@ -282,12 +272,37 @@ rr2['GCP_Contact_Information(if_available)'] = rr2['accountId'].map(gcp3.set_ind
 #drop 2 columns if AWS is selected. AccountID shows the same scientific notation for all rows. GCP contact info column is not useful here.
 if (args.cloudtype == 'aws' or args.cloudtype == 'AWS'):
 	rr2.drop(columns=['accountId', 'GCP_Contact_Information(if_available)'], inplace=True)
+	rr2.sort_values(by=['name'], ascending = True, inplace=True)
 	
+#Rename a column if GCP is specified then move the column to first for order. 
 else:
-    print('Done')
-	
-#Looking at a CSV output is easier to check for issues than a standard print of "rr2" in this scenario.
-rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+    rr2.rename(columns={'accountId' : 'GCP_Project'}, inplace=True)
+    rr2 = rr2.set_index('GCP_Project').reset_index()
+     
+		
+print('done')
+
+#Lets reuse the str3 string from above to complete an additional operation, now that it's previous operation was already carried out. Takes the multi-line string and makes it one line. "_" is used as the seperator. 
+str3 = "_".join(str2.splitlines())
+
+#Reduce the 6 spaces between each item in string to 1 space.
+str4 = " ".join(str3.split())
+
+#Replace the 1 space remaining in between each item in string with an underscore. This will show test results, which we will plug into output file name below. 
+str5 = str4.replace(" ", "_")
+
+#---------------------------------------------------------------------------------------------------------------#	
+#print(sys.argv[1:])
+
+#Used for CSV filename output 	
+type = args.cloudtype
+now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
+
+#Lets combine the test results and cloud type into a string.
+str6 = str5 + "_" + type
+
+#Finalized CSV, %s in filename refers to our combined string str6. 
+rr2.to_csv('Compliance_Report_%s_{}.csv'.format(now) % str6, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
 print('CSV saved.')
 
