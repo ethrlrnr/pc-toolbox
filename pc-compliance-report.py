@@ -277,12 +277,18 @@ gcp3 = gcp2.groupby('accountId')['id'].apply(list).reset_index()
 
 
 #To append roleIds (from our user roles API response) to a dataframe, two dataframes must match on column values. If match is found during compare, the role ID gets added to that row.  
-rr2['Contact_Information(if_available)'] = rr2['accountId'].map(gcp3.set_index('accountId')['id'])
+rr2['GCP_Contact_Information(if_available)'] = rr2['accountId'].map(gcp3.set_index('accountId')['id'])
 
-print('Done.')
-
+#drop 2 columns if AWS is selected. AccountID shows the same scientific notation for all rows. GCP contact info column is not useful here.
+if (args.cloudtype == 'aws' or args.cloudtype == 'AWS'):
+	rr2.drop(columns=['accountId', 'GCP_Contact_Information(if_available)'], inplace=True)
+	
+else:
+    print('Done')
+	
 #Looking at a CSV output is easier to check for issues than a standard print of "rr2" in this scenario.
 rr2.to_csv('%s_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
 print('CSV saved.')
+
 
