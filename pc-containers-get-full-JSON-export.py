@@ -1,7 +1,17 @@
 from __future__ import print_function
-import argparse
-import pc_lib_general
 
+from pprint import pprint
+
+try:
+    input = raw_input
+except NameError:
+    pass
+import argparse
+import pc_lib_api
+import pc_lib_general
+import json
+import pandas
+from datetime import datetime, date, time
 
 # --Execution Block-- #
 # --Parse command line arguments-- #
@@ -31,7 +41,7 @@ parser.add_argument(
     '-url_compute',
     '--uiurl_compute',
     type=str,
-    help='*Optional* - Base URL used in the UI for connecting to Prisma Cloud Compute.  '
+    help='*Required* - Base URL used in the UI for connecting to Prisma Cloud Compute.  '
          'Formatted as region.cloud.twistlock.com/identifier. Example: us-west1.cloud.twistlock.com/us-3-159182384  '
          'Retrieved from Compute->Manage->System->Downloads->Path to Console')
 
@@ -39,21 +49,27 @@ args = parser.parse_args()
 # --End parse command line arguments-- #
 
 # --Main-- #
-if args.username is not None and args.password is not None and args.uiurl is not None:
-    if args.uiurl_compute is not None:
-        pc_lib_general.pc_settings_write(args.username, args.password, args.uiurl, args.uiurl_compute)
-    else:
-        pc_lib_general.pc_settings_write(args.username, args.password, args.uiurl)
-    print('Settings successfully saved to disk.')
-elif args.username is None and args.password is None and args.uiurl is None:
-    pc_settings = pc_lib_general.pc_settings_read()
-    print("Your currently configured Prisma Cloud Access Key is:")
-    print(pc_settings['username'])
-    if pc_settings['apiBase'] is not None:
-        print("Your currently configured Prisma Cloud API Base URL is:")
-        print(pc_settings['apiBase'])
+# Get login details worked out
+pc_settings = pc_lib_general.pc_login_get(args.username, args.password, args.uiurl, args.uiurl_compute)
 
-else:
-    pc_lib_general.pc_exit_error(400,"Please input an Access Key (--username), Secret Key (--password), and UI base URL (--uiurl)"
-                                 " or no switches at all to see currently set information.  Note: The Prisma Cloud UI Base URL should be "
-                                 "similar to app.prismacloud.io, app2.prismacloud.io, etc.")
+# Verification (override with -y)
+# if not args.yes:
+#     print()
+#     print('Ready to excute commands aginst your Prisma Cloud tenant.')
+#     verification_response = str(input('Would you like to continue (y or yes to continue)?'))
+#     continue_response = {'yes', 'y'}
+#     print()
+#     if verification_response not in continue_response:
+#         pc_lib_general.pc_exit_error(400, 'Verification failed due to user response.  Exiting...')
+
+# Sort out API Login
+print('API - Getting authentication token...', end='')
+pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
+print('Done.')
+
+# Get containers list
+print('API - Getting containers list...', end='')
+pc_settings, response_package = pc_lib_api.api_containers_get(pc_settings)
+print('Done.')
+pprint(response_package)
+print('Done.')
