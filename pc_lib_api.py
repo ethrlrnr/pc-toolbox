@@ -449,5 +449,10 @@ def api_accounts_groups_add(pc_settings, new_accounts_group):
     url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
     return pc_call_api(action, url, pc_settings, data=new_accounts_group)
 	
+# Get Containers scan reports from Prisma Cloud Compute API
+# https://prisma.pan.dev/api/cloud/cwpp/containers#operation/get-containers
 
-
+def api_containers_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiCompute'] + "/api/v1/containers"
+    return pc_call_api(action, url, pc_settings, data="")

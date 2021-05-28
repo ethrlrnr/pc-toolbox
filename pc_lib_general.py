@@ -90,7 +90,7 @@ def pc_settings_read(settings_file_name=DEFAULT_SETTINGS_FILE_NAME, settings_fil
 
 
 # Write settings to a file
-def pc_settings_write(username, password, uiBase,
+def pc_settings_write(username, password, uiBase, apiCompute="", 
                       settings_file_name=DEFAULT_SETTINGS_FILE_NAME, settings_file_version=DEFAULT_SETTINGS_FILE_VERSION):
     # Verify API Base is understood
     apiBase = pc_find_api_base(uiBase)
@@ -101,11 +101,12 @@ def pc_settings_write(username, password, uiBase,
     new_settings['username'] = username
     new_settings['password'] = password
     new_settings['apiBase'] = apiBase
+    new_settings['apiCompute'] = apiCompute
     pc_file_write_json(settings_file_name, new_settings)
 
 
 # Work out login information
-def pc_login_get(username, password, uibase):
+def pc_login_get(username, password, uibase, apicompute):
     pc_settings = {}
     if username is None and password is None and uibase is None:
         pc_settings = pc_settings_read()
@@ -115,6 +116,7 @@ def pc_login_get(username, password, uibase):
         pc_settings['username'] = username
         pc_settings['password'] = password
         pc_settings['apiBase'] = pc_find_api_base(uibase)
+        pc_settings['apiCompute'] = apicompute
     # Add a placeholder for jwt
     pc_settings['jwt'] = None
     return pc_settings
