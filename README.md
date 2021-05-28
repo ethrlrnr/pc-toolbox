@@ -155,7 +155,7 @@ Example:
 ```
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 5 --detailed -fct aws
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
-python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp -fps medium
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
 ```
 **pc-alert-get-full-CSV-aync-export.py**
@@ -169,7 +169,7 @@ Example:
 ```
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 5 --detailed -fct aws
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 10 --detailed -fct gcp
-python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-full-CSV-export.py -y -fas open -tr 15 --detailed -fpt anomaly -fct gcp -fps medium
 python pc-alert-get-full-CSV-export.py -y -fas open -tr 20 --detailed -fpt config -fct azure
 ```
 
@@ -187,7 +187,7 @@ Example:
 ```
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 120 --detailed -fct aws
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp -fps low
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 python pc-alert-get-lite-CSV-export(RQLmode).py -y -fas open -tr 5 --detailed -fct aws --matrixmode
 ```
@@ -205,7 +205,7 @@ Example:
 ```
 python pc-alert-get-lite-CSV-async-export(RQLmode).py -y -fas open -tr 120 --detailed -fct aws
 python pc-alert-get-lite-CSV-async-export(RQLmode).py -y -fas open -tr 90 --detailed -fct gcp
-python pc-alert-get-lite-CSV-async-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp
+python pc-alert-get-lite-CSV-async-export(RQLmode).py -y -fas open -tr 10 --detailed -fpt anomaly -fct gcp -fps low
 python pc-alert-get-lite-CSV-async-export(RQLmode).py -y -fas open -tr 10 --detailed -fct aws -fpcs GDPR -y
 python pc-alert-get-lite-CSV-async-export(RQLmode).py -y -fas open -tr 5 --detailed -fct aws --matrixmode
 ```
