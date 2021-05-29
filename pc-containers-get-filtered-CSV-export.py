@@ -14,6 +14,7 @@ import json
 import pandas
 from datetime import datetime, date, time
 from pathlib import Path
+
 # --Execution Block-- #
 # --Parse command line arguments-- #
 parser = argparse.ArgumentParser(prog='rltoolbox')
@@ -71,9 +72,18 @@ print('Done.')
 # Get containers list
 print('API - Getting containers list...', end='')
 pc_settings, response_package = pc_lib_api.api_containers_get(pc_settings)
-print('Done.')
-file_name = "containers_list_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".json"
+file_name = "containers_list_filtered_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".csv"
 file_path = os.path.join(Path.home(), "prisma-compute-exports")
+containers = response_package['data']
+data_header = "Application,Hostname,Cluster,Image Name,Namespace"
 print("Exporting data to: " + os.path.join(file_path, file_name))
-pc_lib_general.pc_file_write_json(file_name,response_package, file_path)
+pc_lib_general.pc_file_write_csv(file_name, data_header, file_path)
+for container in containers:
+    data_info_hostname = container['hostname']
+    data_info_namespace = container['info']['namespace']
+    data_info_cluster = container['info']['cluster']
+    data_info_imageName = container['info']['imageName']
+    data_info_app = container['info']['app']
+    data_line = data_info_app + "," + data_info_hostname + "," + data_info_cluster + "," + data_info_imageName + "," + data_info_namespace
+    pc_lib_general.pc_file_write_csv(file_name, data_line, file_path)
 print('Done.')

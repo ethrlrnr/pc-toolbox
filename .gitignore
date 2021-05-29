@@ -1,6 +1,10 @@
 # Ignore .conf files for keys security
 *.conf
 
+# Ignore .csv and .json
+*.csv
+*.json
+
 # Ignore IDE stuff
 .idea
 
