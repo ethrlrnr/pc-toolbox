@@ -7,13 +7,15 @@ import pc_lib_general
 # --Helper Methods-- #
 # Main API Call Function
 def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=5, max_retries=9, auth_count=0,
-                auth_retries=5):
+                auth_retries=5, headers_param={'Content-Type': 'application/json'}):
     retry_statuses = [429, 500, 502, 503, 504]
     auth_statuses = [401]
     retry_wait_timer = 30
-    headers = {'Content-Type': 'application/json', 'x-redlock-auth': pc_settings['jwt']}
+    headers = headers_param
+    headers['x-redlock-auth'] = pc_settings['jwt']
 
     # Make the API Call
+    print(headers)
     response = requests.request(action, api_url, params=params, headers=headers, data=json.dumps(data))
     print(response)
 
@@ -24,7 +26,7 @@ def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=
             time.sleep(retry_wait_timer)
             return pc_call_api(action=action, api_url=api_url, pc_settings=pc_settings, data=data, params=params,
                                try_count=try_count, max_retries=max_retries, auth_count=auth_count,
-                               auth_retries=auth_retries)
+                               auth_retries=auth_retries, headers_param=headers)
         else:
             response.raise_for_status()
     elif response.status_code in auth_statuses and pc_settings['jwt'] is not None:
@@ -33,7 +35,7 @@ def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=
             pc_settings = pc_jwt_get(pc_settings)
             return pc_call_api(action=action, api_url=api_url, pc_settings=pc_settings, data=data, params=params,
                                try_count=try_count, max_retries=max_retries, auth_count=auth_count,
-                               auth_retries=auth_retries)
+                               auth_retries=auth_retries, headers_param=headers)
         else:
             response.raise_for_status()
     else:
@@ -43,7 +45,11 @@ def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=
     api_response_package = {}
     api_response_package['statusCode'] = response.status_code
     try:
-        api_response_package['data'] = response.json()
+        # Check if response should be CSV or JSON
+        if 'accept' in headers and headers['accept'] == 'text/csv':
+            api_response_package['data'] = response.text
+        else:
+            api_response_package['data'] = response.json()
     except ValueError:
         if response.text == '':
             api_response_package['data'] = None
@@ -339,10 +345,11 @@ def api_alert_v2_list_get(pc_settings, params=None, data=None):
     return pc_call_api(action, url, pc_settings, params=params, data=data)
 
 
-def api_search_config(pc_settings, params=None, data=None):
+def api_search_config(pc_settings, params=None, data=None, headers_param={'Content-Type': 'application/json'}):
     action = "POST"
+    headers = headers_param
     url = "https://" + pc_settings['apiBase'] + "/search/config"
-    return pc_call_api(action, url, pc_settings, params=params, data=data)
+    return pc_call_api(action, url, pc_settings, params=params, data=data, headers_param=headers)
 
 
 # Dismiss alerts
