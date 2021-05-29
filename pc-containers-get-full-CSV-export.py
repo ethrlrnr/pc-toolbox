@@ -71,7 +71,7 @@ print('Done.')
 print('API - Getting containers list...', end='')
 pc_settings, response_package = pc_lib_api.api_containers_get(pc_settings)
 print('Done.')
-containers = response_package
+containers = response_package['data']
 print('Done.')
 
 
