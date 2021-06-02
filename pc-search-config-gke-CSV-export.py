@@ -68,12 +68,21 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-# Get containers list
-print('API - Getting containers list...', end='')
-pc_settings, response_package = pc_lib_api.api_containers_get(pc_settings)
+# Get VMs list
+print('API - Getting GKE Resources list...', end='')
+query_json = '{"query":"config from cloud.resource where cloud.type = \'gcp\' AND api.name = ' \
+             '\'gcloud-container-describe-clusters\' addcolumn currentNodeCount endpoint $.instanceGroupUrls[*] ' \
+             '$.locations[*] name nodeConfig selfLink ","timeRange":{"type":"relative","value":{"unit":"hour",' \
+             '"amount":24}}} '
+
+headers_forsearch = {'content-type': 'application/json; charset=UTF-8','accept': 'text/csv'}
+pc_settings, response_package = pc_lib_api.api_search_config(pc_settings,data=json.loads(query_json),headers_param=headers_forsearch)
+response_data = response_package['data']
+response_data = response_data[response_data.find('\n')+1:response_data.rfind('\n')]
+print(response_data)
 print('Done.')
-file_name = "containers_list_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".json"
+file_name = "gke_list_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".csv"
 file_path = os.path.join(Path.home(), "prisma-compute-exports")
 print("Exporting data to: " + os.path.join(file_path, file_name))
-pc_lib_general.pc_file_write_json(file_name,response_package, file_path)
+pc_lib_general.pc_file_write_csv(file_name,response_data, file_path)
 print('Done.')

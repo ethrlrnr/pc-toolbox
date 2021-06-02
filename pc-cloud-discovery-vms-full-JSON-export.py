@@ -68,11 +68,11 @@ print('API - Getting authentication token...', end='')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-# Get containers list
-print('API - Getting containers list...', end='')
-pc_settings, response_package = pc_lib_api.api_containers_get(pc_settings)
+# Get VMs list
+print('API - Getting VMs list...', end='')
+pc_settings, response_package = pc_lib_api.api_cloud_discovery_vms_get(pc_settings)
 print('Done.')
-file_name = "containers_list_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".json"
+file_name = "vms_list_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".json"
 file_path = os.path.join(Path.home(), "prisma-compute-exports")
 print("Exporting data to: " + os.path.join(file_path, file_name))
 pc_lib_general.pc_file_write_json(file_name,response_package, file_path)

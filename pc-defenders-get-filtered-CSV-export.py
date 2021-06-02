@@ -14,6 +14,7 @@ import json
 import pandas
 from datetime import datetime, date, time
 from pathlib import Path
+
 # --Execution Block-- #
 # --Parse command line arguments-- #
 parser = argparse.ArgumentParser(prog='rltoolbox')
@@ -69,11 +70,23 @@ pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
 # Get containers list
-print('API - Getting containers list...', end='')
-pc_settings, response_package = pc_lib_api.api_containers_get(pc_settings)
-print('Done.')
-file_name = "containers_list_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".json"
+print('API - Getting defenders list...', end='')
+pc_settings, response_package = pc_lib_api.api_defenders_get(pc_settings)
+file_name = "defenders_list_filtered_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".csv"
 file_path = os.path.join(Path.home(), "prisma-compute-exports")
+defenders = response_package['data']
+data_header = "Hostname,Cluster,FQDN,Project,Connected,Type,Registry Scanner,Cluster Monitoring"
 print("Exporting data to: " + os.path.join(file_path, file_name))
-pc_lib_general.pc_file_write_json(file_name,response_package, file_path)
+pc_lib_general.pc_file_write_csv(file_name, data_header, file_path)
+for defender in defenders:
+    data_info_hostname = defender['hostname']
+    data_info_fqdn = defender['fqdn']
+    data_info_cluster = defender['cluster']
+    data_info_connected = defender['connected']
+    data_info_type = defender['type']
+    data_info_regscanner = defender['features']['registryScanner']
+    data_info_clustmonitoring = defender['features']['clusterMonitoring']
+    data_info_project = defender['cloudMetadata']['accountID']
+    data_line = data_info_hostname + "," + data_info_fqdn + "," + data_info_cluster + "," + data_info_project + "," + str(data_info_connected) + "," + data_info_type + "," + str(data_info_regscanner) + "," + str(data_info_clustmonitoring)
+    pc_lib_general.pc_file_write_csv(file_name, data_line, file_path)
 print('Done.')

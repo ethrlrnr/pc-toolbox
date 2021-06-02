@@ -6,13 +6,16 @@ import pc_lib_general
 
 # --Helper Methods-- #
 # Main API Call Function
-def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=5, max_retries=9, auth_count=0, auth_retries=5):
+def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=5, max_retries=9, auth_count=0,
+                auth_retries=5, headers_param={'Content-Type': 'application/json'}):
     retry_statuses = [429, 500, 502, 503, 504]
     auth_statuses = [401]
     retry_wait_timer = 30
-    headers = {'Content-Type': 'application/json', 'x-redlock-auth': pc_settings['jwt']}
+    headers = headers_param
+    headers['x-redlock-auth'] = pc_settings['jwt']
 
     # Make the API Call
+    print(headers)
     response = requests.request(action, api_url, params=params, headers=headers, data=json.dumps(data))
     print(response)
 
@@ -22,7 +25,8 @@ def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=
         if try_count <= max_retries:
             time.sleep(retry_wait_timer)
             return pc_call_api(action=action, api_url=api_url, pc_settings=pc_settings, data=data, params=params,
-                               try_count=try_count, max_retries=max_retries, auth_count=auth_count, auth_retries=auth_retries)
+                               try_count=try_count, max_retries=max_retries, auth_count=auth_count,
+                               auth_retries=auth_retries, headers_param=headers)
         else:
             response.raise_for_status()
     elif response.status_code in auth_statuses and pc_settings['jwt'] is not None:
@@ -30,7 +34,8 @@ def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=
         if auth_count <= auth_retries:
             pc_settings = pc_jwt_get(pc_settings)
             return pc_call_api(action=action, api_url=api_url, pc_settings=pc_settings, data=data, params=params,
-                               try_count=try_count, max_retries=max_retries, auth_count=auth_count,auth_retries=auth_retries)
+                               try_count=try_count, max_retries=max_retries, auth_count=auth_count,
+                               auth_retries=auth_retries, headers_param=headers)
         else:
             response.raise_for_status()
     else:
@@ -40,7 +45,11 @@ def pc_call_api(action, api_url, pc_settings, data=None, params=None, try_count=
     api_response_package = {}
     api_response_package['statusCode'] = response.status_code
     try:
-        api_response_package['data'] = response.json()
+        # Check if response should be CSV or JSON
+        if 'accept' in headers and headers['accept'] == 'text/csv':
+            api_response_package['data'] = response.text
+        else:
+            api_response_package['data'] = response.json()
     except ValueError:
         if response.text == '':
             api_response_package['data'] = None
@@ -62,6 +71,7 @@ def api_compliance_posture_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/compliance/posture"
     return pc_call_api(action, url, pc_settings)
+
 
 # Get Compliance Standards list
 def api_compliance_standard_list_get(pc_settings):
@@ -133,7 +143,8 @@ def api_policy_v2_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/v2/policy"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 # Get policy list (v2)
 def api_policy_v2_list_get_enabled(pc_settings):
     action = "GET"
@@ -176,48 +187,52 @@ def api_policy_status_update(pc_settings, policy_id, status):
     url = "https://" + pc_settings['apiBase'] + "/policy/" + policy_id + "/status/" + status
     return pc_call_api(action, url, pc_settings)
 
+
 # Get a Saved Search
 def api_search_get(pc_settings, search_id):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/search/history/" + search_id
     return pc_call_api(action, url, pc_settings)
-	
+
+
 def api_search_get_all(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=saved&limit=10000"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 def api_search_get_all_recent(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/search/history/?filter=recent&limit=10000"
     return pc_call_api(action, url, pc_settings)
-	
-	
-#Join UEBA and Network together, easier this way. 	
+
+
+# Join UEBA and Network together, easier this way.
 def api_anomalies_settings_get_UEBA(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/anomalies/settings?type=UEBA"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 def api_anomalies_settings_get_Network(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/anomalies/settings?type=Network"
-    return pc_call_api(action, url, pc_settings)	
-	
-	
-		
+    return pc_call_api(action, url, pc_settings)
+
+
 def api_anomalies_trusted_list(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/anomalies/trusted_list"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 # Get audit logs
 def api_audit_logs_get(pc_settings, params=None, data=None):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/audit/redlock"
     return pc_call_api(action, url, pc_settings, params=data)
-    
-	
+
+
 # Add a Saved Search
 def api_search_add(pc_settings, type_of_search, search_to_add):
     action = "POST"
@@ -230,7 +245,8 @@ def api_user_role_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/user/role"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 # Add new User Role
 def api_user_role_add(pc_settings, user_role_to_add):
     action = "POST"
@@ -257,7 +273,8 @@ def api_user_add(pc_settings, user_to_add):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/user"
     return pc_call_api(action, url, pc_settings, data=user_to_add)
-	
+
+
 # Add new User v2
 def api_user_add_v2(pc_settings, user_to_add_v2):
     action = "POST"
@@ -271,23 +288,27 @@ def api_user_update(pc_settings, user_to_update):
     url = "https://" + pc_settings['apiBase'] + "/user/" + user_to_update['email']
     return pc_call_api(action, url, pc_settings, data=user_to_update)
 
+
 # Update a User v2
 def api_user_update_v2(pc_settings, user_to_update_v2):
     action = "PUT"
     url = "https://" + pc_settings['apiBase'] + "/v2/user/" + user_to_update_v2['email']
     return pc_call_api(action, url, pc_settings, data=user_to_update_v2)
-	
+
+
 # Delete Account Group
 def api_delete_account_group(pc_settings, account_group_to_delete):
     action = "DELETE"
     url = "https://" + pc_settings['apiBase'] + "/cloud/group/" + account_group_to_delete['id']
     return pc_call_api(action, url, pc_settings, data=account_group_to_delete)
-	
+
+
 # Delete User Role
 def api_delete_user_role(pc_settings, user_role_to_delete):
     action = "DELETE"
     url = "https://" + pc_settings['apiBase'] + "/user/role/" + user_role_to_delete['id']
     return pc_call_api(action, url, pc_settings, data=user_role_to_delete)
+
 
 # Get alert list with filters
 def api_alert_list_get(pc_settings, params=None, data=None):
@@ -296,25 +317,25 @@ def api_alert_list_get(pc_settings, params=None, data=None):
     return pc_call_api(action, url, pc_settings, params=params, data=data)
 
 
-
-
 # Async Alerts Status
 def api_async_alerts_job_status(pc_settings, job_id, params=None, data=None):
     action = "GET"
-    url = "https://" + pc_settings['apiBase'] + "/alert/jobs/" + job_id + "/status" 
+    url = "https://" + pc_settings['apiBase'] + "/alert/jobs/" + job_id + "/status"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 # Async Alerts JSON Response
 def api_async_alerts_job_download(pc_settings, job_id, params=None, data=None):
     action = "GET"
-    url = "https://" + pc_settings['apiBase'] + "/alert/jobs/" + job_id + "/download" 
-    return pc_call_api(action, url, pc_settings)	
+    url = "https://" + pc_settings['apiBase'] + "/alert/jobs/" + job_id + "/download"
+    return pc_call_api(action, url, pc_settings)
+
 
 # Async Alerts Job
 def api_async_alerts_job(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/alert/jobs"
-    return pc_call_api(action, url, pc_settings,params=params, data=data)
+    return pc_call_api(action, url, pc_settings, params=params, data=data)
 
 
 # Get alert list with filters (V2)
@@ -322,38 +343,41 @@ def api_alert_v2_list_get(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/v2/alert"
     return pc_call_api(action, url, pc_settings, params=params, data=data)
-	
-def api_search_config(pc_settings, params=None, data=None):
+
+
+def api_search_config(pc_settings, params=None, data=None, headers_param={'Content-Type': 'application/json'}):
     action = "POST"
+    headers = headers_param
     url = "https://" + pc_settings['apiBase'] + "/search/config"
-    return pc_call_api(action, url, pc_settings, params=params, data=data)
+    return pc_call_api(action, url, pc_settings, params=params, data=data, headers_param=headers)
+
 
 # Dismiss alerts
 def api_dismiss_alert_post(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/alert/dismiss"
     return pc_call_api(action, url, pc_settings, params=params, data=data)
-	
-	
+
+
 # Get alert names
 def api_alert_names_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/v2/alert/rule?enabled=true"
     return pc_call_api(action, url, pc_settings)
-	
+
 
 # Get resource list with filters (V2)
 def api_resource_scan_info(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/resource/scan_info"
-    return pc_call_api(action, url, pc_settings, params=params, data=data)	
+    return pc_call_api(action, url, pc_settings, params=params, data=data)
+
 
 # Get resource list with filters (V2)
 def api_asset_inventory(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/v2/inventory"
-    return pc_call_api(action, url, pc_settings, params=params, data=data)		
-
+    return pc_call_api(action, url, pc_settings, params=params, data=data)
 
 
 # Get Compliance Reports list
@@ -383,23 +407,26 @@ def api_compliance_report_download(pc_settings, report_id):
     url = "https://" + pc_settings['apiBase'] + "/report/" + report_id + "/download"
     jwt, response_status, response_json = pc_call_api(action, url, pc_settings)
     if response_status == 204:
-        #download pending
+        # download pending
         pass
     elif response_status == 200:
-        #download ready
+        # download ready
         pass
+
 
 # Get Access Key list
 def api_access_key_list_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/access_keys"
     return pc_call_api(action, url, pc_settings)
-	
+
+
 # Get Third Party Integrations
 def api_third_party_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/integration"
-    return pc_call_api(action, url, pc_settings)	
+    return pc_call_api(action, url, pc_settings)
+
 
 # Get Third Party Integrations
 def api_asset_inventory_get(pc_settings):
@@ -407,12 +434,12 @@ def api_asset_inventory_get(pc_settings):
     url = "https://" + pc_settings['apiBase'] + "/filter/inventory"
     return pc_call_api(action, url, pc_settings)
 
+
 # Get Notification Templates
 def api_notification_template_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/notification/template?type=service_now"
-    return pc_call_api(action, url, pc_settings)	
-	
+    return pc_call_api(action, url, pc_settings)
 
 
 # Get Cloud Accounts list - level 1 get
@@ -434,25 +461,46 @@ def api_cloud_accounts_add(pc_settings, cloud_type, cloud_account_to_add):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/cloud/" + cloud_type
     return pc_call_api(action, url, pc_settings, data=cloud_account_to_add)
-	
+
+
 # Get Account Groups Names list
 def api_accounts_groups_list_get(pc_settings, params=None):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/cloud/group"
-	#url = "https://" + pc_settings['apiBase'] + "/cloud/name"
+    # url = "https://" + pc_settings['apiBase'] + "/cloud/name"
     return pc_call_api(action, url, pc_settings, params=params)
 
-#encoding='utf8
+
+# encoding='utf8
 # Add Account Group - level 3 needed
 def api_accounts_groups_add(pc_settings, new_accounts_group):
     action = "POST"
-    url = "https://" + pc_settings['apiBase'] + "/cloud/group" 
+    url = "https://" + pc_settings['apiBase'] + "/cloud/group"
     return pc_call_api(action, url, pc_settings, data=new_accounts_group)
-	
+
+
 # Get Containers scan reports from Prisma Cloud Compute API
 # https://prisma.pan.dev/api/cloud/cwpp/containers#operation/get-containers
 
 def api_containers_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiCompute'] + "/api/v1/containers"
+    return pc_call_api(action, url, pc_settings, data="")
+
+
+# DiscoveredVMs returns discovered cloud VM instances from Prisma Cloud Compute API
+# https://prisma.pan.dev/api/cloud/cwpp/cloud#operation/get-cloud-discovery-vms
+
+def api_cloud_discovery_vms_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiCompute'] + "/api/v1/cloud/discovery/vms"
+    return pc_call_api(action, url, pc_settings, data="")
+
+
+# Defenders returns all deployed Defenders from Prisma Cloud Compute API
+# https://prisma.pan.dev/api/cloud/cwpp/defenders#operation/get-defenders
+
+def api_defenders_get(pc_settings):
+    action = "GET"
+    url = "https://" + pc_settings['apiCompute'] + "/api/v1/defenders"
     return pc_call_api(action, url, pc_settings, data="")
