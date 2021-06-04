@@ -103,7 +103,7 @@ Just wanted to contribute something back to the community, this repo is a result
 - **User List** (List of all users) - pc-user-list-CSV.py
 -------------------------------
 **Other Notes**:
-- **API library file (pc_lib_api.py)**, edited to add in a lot more API calls from: https://api.docs.prismacloud.io/reference#try-the-apis
+- **API library file (pc_lib_api.py)**, edited to add in a lot more API calls from: https://prisma.pan.dev/api/cloud/cspm/cspm-api
 - **Automation (imports, cron)** Please see 2 import scripts for account groups and user roles, all the work is done in memory instead of from a CSV. 
 - **Backups**, today Prisma doesn't offer any method for a user to backup all settings in the UI. Prisma claims they keep some snapshot information on their back-end. The backup script "pc-backup-all-settings.py" should provide some peace of mind since it can fill the gap, it's better to be safe than sorry (due to destruction via an automation issue or a nefarious party).
 - **Default API Epoch Unix time (displays as scientific notification on CSV)** was converted to time/date (central USA) for scripts.
