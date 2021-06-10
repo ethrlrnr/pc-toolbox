@@ -116,7 +116,7 @@ def pc_settings_write(username, password, uiBase, apiCompute="",
 
 
 # Work out login information
-def pc_login_get(username, password, uibase, apicompute):
+def pc_login_get(username, password, uibase, apicompute=""):
     pc_settings = {}
     if username is None and password is None and uibase is None:
         pc_settings = pc_settings_read()
