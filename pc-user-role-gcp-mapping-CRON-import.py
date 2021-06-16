@@ -190,12 +190,16 @@ mmvp = ppu.query('description == "Role Mapped to GCP Project"')
 # Once all items are matched above, filter out all remaining columns except ID and Name. 
 mmvp1 = mmvp.filter(['id', 'name', 'accountGroupIds'])
 
+# Filter for rows that show an empty account group ID associated with the role. This will pull rows with account groups that were deleted (now showing as empty).
 mmvp2 = mmvp1[mmvp1['accountGroupIds'].str.len() == 0]
 
+# Drop the column accountGroupIds since it's no longer needed after our filter operation. 
 mmvp2.drop(columns=['accountGroupIds'], inplace=True)
 
+
+
 # print('Saving JSON contents as a CSV...', end='')
-# mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
+#mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
 # print('Done.')
 
 mmvp3 = mmvp2.to_dict('records')
