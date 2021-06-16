@@ -158,9 +158,9 @@ for user_role_to_add in user_roles_to_import:
     pc_settings, response_package = pc_lib_api.api_user_role_add(pc_settings, user_role_to_add)
 
 #print final counts 
-print('Users to add: ' + str(user_roles_added_count))
-print('Users skipped (Duplicates): ' + str(user_roles_skipped_count))
-print('Users removed as duplicates from CSV: ' + str(user_roles_duplicate_count))
+print('User roles to add: ' + str(user_roles_added_count))
+print('User roles skipped (Duplicates): ' + str(user_roles_skipped_count))
+print('User roles removed as duplicates from CSV: ' + str(user_roles_duplicate_count))
 print('Import Complete.')
 
 #if receive status code 200, group imported correctly. 
