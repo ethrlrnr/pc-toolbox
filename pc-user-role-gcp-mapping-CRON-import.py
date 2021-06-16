@@ -188,26 +188,25 @@ ppu = pandas.json_normalize(user_role_list1)
 mmvp = ppu.query('description == "Role Mapped to GCP Project"')
 
 # Once all items are matched above, filter out all remaining columns except ID and Name. 
-mmvp1 = mmvp.filter(['id', 'name', 'accountGroupIds'])
+mmvp1 = mmvp.filter(['id', 'name', 'accountGroupIds', 'associatedUsers'])
 
 # Filter for rows that show an empty account group ID associated with the role. This will pull rows with account groups that were deleted (now showing as empty).
 mmvp2 = mmvp1[mmvp1['accountGroupIds'].str.len() == 0]
 
-# Drop the column accountGroupIds since it's no longer needed after our filter operation. 
-mmvp2.drop(columns=['accountGroupIds'], inplace=True)
+# Filter for rows that show as empty for associated users. This also helps assist with an error that occurs if you try to delete a role that has 1 user still attached. Prisma Cloud requires a user to be associated with 1 role all all times.
 
+mmvp3 = mmvp2[mmvp2['associatedUsers'].str.len() == 0]
 
+print('Saving JSON contents as a CSV...', end='')
+#mmvp3.sort_values(by=['id'], ascending = True).to_csv('prisma_delete_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
+print('Done.')
 
-# print('Saving JSON contents as a CSV...', end='')
-#mvp2.sort_values(by=['id'], ascending = True).to_csv('prisma_user_role_list_{}.csv'.format(now), sep=',', encoding='utf-8', index=False)
-# print('Done.')
+mmvp4 = mmvp3.to_dict('records')
 
-mmvp3 = mmvp2.to_dict('records')
-
-#print(mvp4)
+#print(mmvp4)
 
 user_role_remove = []
-for row_dict1 in mmvp3:
+for row_dict1 in mmvp4:
     temp_UR = {}
 	#row_dict values pull from the dictionary
     temp_UR['id']= row_dict1['id']
