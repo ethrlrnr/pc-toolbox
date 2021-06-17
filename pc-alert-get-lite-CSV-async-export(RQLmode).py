@@ -110,12 +110,12 @@ parser.add_argument(
     default=30,
     help='(Optional) - Time Range in days.  Defaults to 30.')
 
-#parser.add_argument(
-    #'-l',
-    #'--limit',
-    #type=int,
-    #default=500,
-    #help='(Optional) - Return values limit (Default to 500).')
+parser.add_argument(
+    '-l',
+    '--limit',
+    type=int,
+    default=500,
+    help='(Optional) - Return values limit (Default to 500).')
 parser.add_argument(
     '-fagt',
     '--accountgroup',
@@ -176,7 +176,7 @@ alerts_filter['sortBy'] = ["id:asc"]
 
 alerts_filter['offset'] = 0
 
-#alerts_filter['limit'] = args.limit
+alerts_filter['limit'] = args.limit
 
 alerts_filter['filters'] = []
 if args.alertstatus is not None:
@@ -422,7 +422,7 @@ print ('Assembling columns specific to AWS or GCP, this includes all tag/label i
 #Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case). Condition check above is for the investigate column which isn't always populated with data.
 if args.cloudtype == "gcp": 
     if column_exist_check == True:
-        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.accountId", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId", "query", "custom_query"]
+        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.accountId", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
@@ -432,7 +432,7 @@ if args.cloudtype == "gcp":
         rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
-        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.accountId", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query", "custom_query"]
+        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.accountId", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
     
@@ -441,7 +441,7 @@ if args.cloudtype == "gcp":
 	
 if args.cloudtype == "aws": 
     if column_exist_check == True:
-        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "investigateOptions.searchId", "query", "custom_query"]
+        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "investigateOptions.searchId", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
@@ -451,7 +451,7 @@ if args.cloudtype == "aws":
         rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
     else:
-        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation","resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query", "custom_query"]
+        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query", "custom_query"]
 #Reindex, if one of our columns is empty the code will proceed and not error out. 	
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
     
