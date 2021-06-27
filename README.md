@@ -87,6 +87,7 @@ Just wanted to contribute something back to the community, this repo is a result
 - **Account Groups** (Filters items out based on string within the data frame) - pc-account-groups-names-string-filter-CSV-export.py
 - **User Roles** (Main, export all user roles) - pc-user-role-CSV-export.py
 - **User Roles** (Filters items out based on string within the data frame) - pc-user-role-filter-CSV-export.py
+- **Users and Associated Roles (GCP)** (No easy way to see this in the UI, exports list with both items) - pc-user-role-associated-users-CSV-export.py
 --------------------------
 - **Access Key List (metadata)** (Export list of access key metadata) - pc-access-key-list-CSV.py
 - **Alerts Names** (List of all the created alerts) - pc-alert-names-CSV.py
