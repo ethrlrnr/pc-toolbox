@@ -526,6 +526,7 @@ def api_iac_scans_get(pc_settings, str_params):
     url = "https://" + pc_settings['apiBase'] + "/iac/v2/scans?" + str_params
     return pc_call_api(action, url, pc_settings, headers_param={})
 
+
 # Returns scan result details for the completed scan that has the specified scan ID
 # https://prisma.pan.dev/api/cloud/cspm/iac-scan#operation/getScanResult
 
@@ -534,10 +535,21 @@ def api_iac_scan_result_get(pc_settings, scan_id):
     url = "https://" + pc_settings['apiBase'] + "/iac/v2/scans/" + scan_id + "/results"
     return pc_call_api(action, url, pc_settings)
 
+
 # Returns the status of the asynchronous IaC scan job that has the specified scan ID.
 # https://prisma.pan.dev/api/cloud/cspm/iac-scan#operation/getAsyncScanStatus
 
 def api_iac_scan_status_get(pc_settings, scan_id):
     action = "GET"
     url = "https://" + pc_settings['apiBase'] + "/iac/v2/scans/" + scan_id + "/status"
+    return pc_call_api(action, url, pc_settings)
+
+
+# Get all policies filtered by query parameters
+#  default policy.severity=high
+# https://prisma.pan.dev/api/cloud/cspm/policy#operation/get-policies-v2
+
+def api_policy_v2_list_filtered_get(pc_settings, query_params="policy.severity=high"):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/v2/policy?" + query_params
     return pc_call_api(action, url, pc_settings)
