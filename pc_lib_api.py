@@ -504,3 +504,40 @@ def api_defenders_get(pc_settings):
     action = "GET"
     url = "https://" + pc_settings['apiCompute'] + "/api/v1/defenders"
     return pc_call_api(action, url, pc_settings, data="")
+
+
+# Returns a list of IaC scans that meet the given conditions.
+# https://prisma.pan.dev/api/cloud/cspm/iac-scan#operation/getScans
+# Example: https://api.prismacloud.io/iac/v2/scans?
+#   filter%5Bstatus%5D=passed&
+#   filter%5Bstatus%5D=failed&
+#   filter%5Bstatus%5D=failed_n_merged&
+#   filter%5Bstatus%5D=failed_n_deployed&
+#   filter%5Bstatus%5D=error&
+#   filter%5BtimeAmount%5D=1&
+#   filter%5BtimeType%5D=relative&
+#   filter%5BtimeUnit%5D=week&
+#   groupBy=scanId&
+#   page%5Bnumber%5D=1&
+#   page%5Bsize%5D=25&
+
+def api_iac_scans_get(pc_settings, str_params):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/iac/v2/scans?" + str_params
+    return pc_call_api(action, url, pc_settings, headers_param={})
+
+# Returns scan result details for the completed scan that has the specified scan ID
+# https://prisma.pan.dev/api/cloud/cspm/iac-scan#operation/getScanResult
+
+def api_iac_scan_result_get(pc_settings, scan_id):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/iac/v2/scans/" + scan_id + "/results"
+    return pc_call_api(action, url, pc_settings)
+
+# Returns the status of the asynchronous IaC scan job that has the specified scan ID.
+# https://prisma.pan.dev/api/cloud/cspm/iac-scan#operation/getAsyncScanStatus
+
+def api_iac_scan_status_get(pc_settings, scan_id):
+    action = "GET"
+    url = "https://" + pc_settings['apiBase'] + "/iac/v2/scans/" + scan_id + "/status"
+    return pc_call_api(action, url, pc_settings)

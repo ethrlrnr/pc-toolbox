@@ -177,3 +177,10 @@ def pc_file_write_csv(file_name, data_to_write, file_path=os.path.dirname(os.pat
         f.close()
     except Exception as ex:
         pc_exit_error(500, "Failed to write CSV file.", ex)
+
+# Load the txt file into List
+def pc_file_load_txt(file_name):
+    txt_list = []
+    with open(file_name) as txt_file:
+        txt_list = txt_file.read().splitlines()
+    return txt_list
