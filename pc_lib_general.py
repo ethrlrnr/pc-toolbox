@@ -184,3 +184,11 @@ def pc_file_load_txt(file_name):
     with open(file_name) as txt_file:
         txt_list = txt_file.read().splitlines()
     return txt_list
+
+# Check if pc-settings exist
+
+# Read in settings
+def pc_settings_exist(settings_file_name=DEFAULT_SETTINGS_FILE_NAME,
+                     settings_file_version=DEFAULT_SETTINGS_FILE_VERSION):
+    settings_file_name_and_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), settings_file_name)
+    return os.path.isfile(settings_file_name_and_path)

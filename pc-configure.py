@@ -32,7 +32,7 @@ parser.add_argument(
     '--uiurl_compute',
     type=str,
     help='*Optional* - Base URL used in the UI for connecting to Prisma Cloud Compute.  '
-         'Formatted as region.cloud.twistlock.com/identifier. Example: us-west1.cloud.twistlock.com/us-3-159182384  '
+         'Formatted as region.cloud.twistlock.com/identifier.'
          'Retrieved from Compute->Manage->System->Downloads->Path to Console')
 
 args = parser.parse_args()
@@ -45,7 +45,7 @@ if args.username is not None and args.password is not None and args.uiurl is not
     else:
         pc_lib_general.pc_settings_write(args.username, args.password, args.uiurl)
     print('Settings successfully saved to disk.')
-elif args.username is None and args.password is None and args.uiurl is None:
+elif pc_lib_general.pc_settings_exist() and args.username is None and args.password is None and args.uiurl is None:
     pc_settings = pc_lib_general.pc_settings_read()
     print("Your currently configured Prisma Cloud Access Key is:")
     print(pc_settings['username'])
