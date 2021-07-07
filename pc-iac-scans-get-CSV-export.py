@@ -79,8 +79,6 @@ print('Done.')
 
 start_time = datetime.now()
 print('API - Getting IaC Scans...', end='')
-# Format: scanid,scanname,scanresourcelist,scantype,scantags,scanuser,scantotal,scanfail,scanpass,scanstatus,
-# scanseverityissues,scanfailurecriteria,scantimestamp
 try:
     # Preparing the destination file
     export_file_name = "iac_scan_get_full_" + str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) + ".csv"
@@ -91,7 +89,7 @@ try:
     api_call_filter_status = "filter%5Bstatus%5D=passed&filter%5Bstatus%5D=failed&filter%5Bstatus%5D=failed_n_merged&filter%5Bstatus%5D=failed_n_deployed&filter%5Bstatus%5D=error"
     api_call_filter_time_type = "filter%5BtimeType%5D=absolute"
     time_now = datetime.now().timestamp()
-    days_back = 60
+    days_back = 10
     api_call_filter_time_start = int((time_now * 1000) - (days_back*24*60*60*1000))
     api_call_filter_time_end = int((time_now * 1000))
     api_call_filter_time_window = "filter%5BstartTime%5D=" + str(api_call_filter_time_start) + "&filter%5BendTime%5D=" + str(api_call_filter_time_end)
