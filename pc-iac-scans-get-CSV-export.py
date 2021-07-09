@@ -89,7 +89,7 @@ try:
     api_call_filter_status = "filter%5Bstatus%5D=passed&filter%5Bstatus%5D=failed&filter%5Bstatus%5D=failed_n_merged&filter%5Bstatus%5D=failed_n_deployed&filter%5Bstatus%5D=error"
     api_call_filter_time_type = "filter%5BtimeType%5D=absolute"
     time_now = datetime.now().timestamp()
-    days_back = 10
+    days_back = 45
     api_call_filter_time_start = int((time_now * 1000) - (days_back*24*60*60*1000))
     api_call_filter_time_end = int((time_now * 1000))
     api_call_filter_time_window = "filter%5BstartTime%5D=" + str(api_call_filter_time_start) + "&filter%5BendTime%5D=" + str(api_call_filter_time_end)
@@ -103,12 +103,12 @@ try:
                          "attributes.matchedPoliciesSummary.high,attributes.matchedPoliciesSummary.low," \
                          "attributes.matchedPoliciesSummary.medium,attributes.merged,attributes.name,attributes.pass," \
                          "attributes.resourceList,attributes.scanAttributes.appliedAlertRules," \
-                         "attributes.scanAttributes.projectName,attributes.scanAttributes.resourcesScanned," \
+                         "attributes.scanAttributes.resourcesScanned," \
                          "attributes.scanAttributes.templateType,attributes.scanTime,attributes.status," \
                          "attributes.tags,attributes.type,attributes.user,details_data,details_meta.errorDetails," \
                          "details_meta.matchedPoliciesSummary.high,details_meta.matchedPoliciesSummary.low," \
                          "details_meta.matchedPoliciesSummary.medium,id,links.self," \
-                         "relationships.scanResult.links.related "
+                         "relationships.scanResult.links.related,z_attributes_scanAttributes"
     print("Printing header to: {0}".format(os.path.join(export_file_path, export_file_name)))
     pc_lib_general.pc_file_write_csv(export_file_name, export_file_header, export_file_path)
 
@@ -146,6 +146,21 @@ try:
                 scan_item['attributes']['scanAttributes']['templateType'] = ''
                 scan_item['attributes']['scanAttributes']['resourcesScanned'] = 0
                 scan_item['attributes']['scanAttributes']['appliedAlertRules'] = ''
+
+            # Keep fixed scanAttributes and relocate/remove custom scanAttributes
+            z_otherAttributes_list = []
+            for scanAttr in scan_item["attributes"]["scanAttributes"]:
+                if scanAttr not in ['templateType' ,'resourcesScanned','appliedAlertRules']:
+                    # Relocate
+                    attr_key = scanAttr
+                    attr_value = scan_item["attributes"]["scanAttributes"][scanAttr]
+                    # will be shown at the end of the columns list
+                    z_otherAttributes_list.append({attr_key: attr_value})
+            # Delete
+            for attr_keys_to_delete in z_otherAttributes_list:
+                for attr_key_to_delete in attr_keys_to_delete:
+                    del scan_item["attributes"]["scanAttributes"][attr_key_to_delete]
+            scan_item["z_otherAttributes_list"] = z_otherAttributes_list
 
             # Consolidate data from both API calls into one json
             consolidated_json = scan_item
