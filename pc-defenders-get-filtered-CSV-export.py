@@ -44,7 +44,7 @@ parser.add_argument(
     '--uiurl_compute',
     type=str,
     help='*Required* - Base URL used in the UI for connecting to Prisma Cloud Compute.  '
-         'Formatted as region.cloud.twistlock.com/identifier. Example: us-west1.cloud.twistlock.com/us-3-159182384  '
+         'Formatted as region.cloud.twistlock.com/identifier.'
          'Retrieved from Compute->Manage->System->Downloads->Path to Console')
 
 args = parser.parse_args()

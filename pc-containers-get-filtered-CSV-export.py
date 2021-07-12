@@ -44,8 +44,14 @@ parser.add_argument(
     '--uiurl_compute',
     type=str,
     help='*Required* - Base URL used in the UI for connecting to Prisma Cloud Compute.  '
-         'Formatted as region.cloud.twistlock.com/identifier. Example: us-west1.cloud.twistlock.com/us-3-159182384  '
+         'Formatted as region.cloud.twistlock.com/identifier.'
          'Retrieved from Compute->Manage->System->Downloads->Path to Console')
+
+parser.add_argument(
+    '-y',
+    '--yes',
+    action='store_true',
+    help='(Optional) - Override user input for verification (auto answer for yes).')
 
 args = parser.parse_args()
 # --End parse command line arguments-- #
@@ -55,14 +61,14 @@ args = parser.parse_args()
 pc_settings = pc_lib_general.pc_login_get(args.username, args.password, args.uiurl, args.uiurl_compute)
 
 # Verification (override with -y)
-# if not args.yes:
-#     print()
-#     print('Ready to excute commands aginst your Prisma Cloud tenant.')
-#     verification_response = str(input('Would you like to continue (y or yes to continue)?'))
-#     continue_response = {'yes', 'y'}
-#     print()
-#     if verification_response not in continue_response:
-#         pc_lib_general.pc_exit_error(400, 'Verification failed due to user response.  Exiting...')
+if not args.yes:
+    print()
+    print('Ready to excute commands aginst your Prisma Cloud tenant.')
+    verification_response = str(input('Would you like to continue (y or yes to continue)?'))
+    continue_response = {'yes', 'y'}
+    print()
+    if verification_response not in continue_response:
+        pc_lib_general.pc_exit_error(400, 'Verification failed due to user response.  Exiting...')
 
 # Sort out API Login
 print('API - Getting authentication token...', end='')
