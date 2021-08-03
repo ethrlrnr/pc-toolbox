@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 try:
     input = raw_input
 except NameError:
@@ -46,7 +47,7 @@ parser.add_argument(
     '--detailed',
     action='store_true',
     help='(Optional) - Detailed alerts response.')
-	
+
 parser.add_argument(
     '--matrixmode',
     action='store_true',
@@ -57,7 +58,7 @@ parser.add_argument(
     '--alertstatus',
     type=str,
     help='(Optional) - Filter - Alert Status.')
-	
+
 parser.add_argument(
     '-aid',
     '--alertid',
@@ -69,19 +70,19 @@ parser.add_argument(
     '--policytype',
     type=str,
     help='(Optional) - Filter - Policy Type.')
-	
+
 parser.add_argument(
     '-fpcs',
     '--policycomplianceStandard',
     type=str,
     help='(Optional) - Filter - Policy Compliance Standard.')
-	
+
 parser.add_argument(
     '-fps',
     '--policyseverity',
     type=str,
     help='(Optional) - Filter - Policy Severity.')
-		
+
 parser.add_argument(
     '-fct',
     '--cloudtype',
@@ -110,12 +111,12 @@ parser.add_argument(
     default=30,
     help='(Optional) - Time Range in days.  Defaults to 30.')
 
-#parser.add_argument(
-    #'-l',
-    #'--limit',
-    #type=int,
-    #default=500,
-    #help='(Optional) - Return values limit (Default to 500).')
+# parser.add_argument(
+# '-l',
+# '--limit',
+# type=int,
+# default=500,
+# help='(Optional) - Return values limit (Default to 500).')
 parser.add_argument(
     '-fagt',
     '--accountgroup',
@@ -125,18 +126,19 @@ parser.add_argument(
     '-fpid',
     '--policyid',
     type=str,
-    help='(Optional) - Filter - Policy ID.')	
+    help='(Optional) - Filter - Policy ID.')
 parser.add_argument(
     '-frid',
     '--resourceid',
     type=str,
-    help='(Optional) - Filter - Resource ID.')	
+    help='(Optional) - Filter - Resource ID.')
 
 args = parser.parse_args()
 # --End parse command line arguments-- #
 
 print('User login')
 pc_settings = pc_lib_general.pc_login_get(args.username, args.password, args.uiurl)
+uiBase = pc_settings['uiBase']
 print('Done')
 # Verification (override with -y)
 if not args.yes:
@@ -148,12 +150,12 @@ if not args.yes:
     if verification_response not in continue_response:
         pc_lib_general.pc_exit_error(400, 'Verification failed due to user response.  Exiting...')
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 print('API - Data Call 1 - Getting authentication token..')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-print ('Cloud Type Specified in CLI =', args.cloudtype)
+print('Cloud Type Specified in CLI =', args.cloudtype)
 print('Building the filters for JSON package.')
 
 alerts_filter = {}
@@ -173,7 +175,7 @@ alerts_filter['sortBy'] = ["id:asc"]
 
 alerts_filter['offset'] = 0
 
-#alerts_filter['limit'] = args.limit
+# alerts_filter['limit'] = args.limit
 
 alerts_filter['filters'] = []
 if args.alertstatus is not None:
@@ -251,30 +253,32 @@ if args.resourceid is not None:
 
 print('Done building filters specified in CLI.')
 
-#----------------------------------------------------------------------
-print('API - Data Call 2 - Plugging in filters, a granular JSON response is now being prepared by Prisma. A job ID will be provided.')
+# ----------------------------------------------------------------------
+print(
+    'API - Data Call 2 - Plugging in filters, a granular JSON response is now being prepared by Prisma. A job ID will be provided.')
 pc_settings, response_package = pc_lib_api.api_async_alerts_job(pc_settings, data=alerts_filter)
 alerts_job_number = response_package
 
 print('Putting JSON response inside a dataframe - job_id')
-job_id_json = pandas.json_normalize(alerts_job_number) #put json inside a dataframe
+job_id_json = pandas.json_normalize(alerts_job_number)  # put json inside a dataframe
 
-#Grab the job ID which we will plug into a URL, this will allow a user to check status and download. We first must convert it to a string (schema purposes for URL) and then deal with unneccesary characters.
+# Grab the job ID which we will plug into a URL, this will allow a user to check status and download. We first must
+# convert it to a string (schema purposes for URL) and then deal with unnecessary characters.
 job_id_string = job_id_json['data.id'].to_string()
 
-#For the job ID, will remove the first 5 characters since JSON pulls characters not relevant to the job ID.
+# For the job ID, will remove the first 5 characters since JSON pulls characters not relevant to the job ID.
 job_id = job_id_string[5:]
 
 print('Our job number is', job_id)
 
-#----------------------------------------------------------------------
-print('API - Data Call 3 - Using the job ID, we can now plug this into a URL to track status updates for alerts job.') 
+# ----------------------------------------------------------------------
+print('API - Data Call 3 - Using the job ID, we can now plug this into a URL to track status updates for alerts job.')
 pc_settings, response_package = pc_lib_api.api_async_alerts_job_status(pc_settings, job_id)
 alerts_job_status = response_package
 
 if args.matrixmode == True:
     print(alerts_job_status)
-	
+
 else:
     print('Done')
 
@@ -282,34 +286,39 @@ print('Putting JSON response inside a dataframe - alert_status')
 jobs_status_json = pandas.json_normalize(alerts_job_status)
 print('Done')
 
-#Before using this status check in the "IF" "ELSE" section below, we first have to convert the data to a string in order to help strip unneccesary characters.
+# Before using this status check in the "IF" "ELSE" section below, we first have to convert the data to a string in
+# order to help strip unnecessary characters.
 jobs_status_string = jobs_status_json['data.status'].to_string()
 
-#For the status, will remove the first 5 characters since it pulls characters not relevant to the status.
+# For the status, will remove the first 5 characters since it pulls characters not relevant to the status.
 status_check = jobs_status_string[5:]
 test = status_check.split()
 
-print('Now lets create a loop to continously check on job status. Once the status changes from "IN_PROGRESS" to "READY_TO_DOWNLOAD", we will break the loop.')
+print(
+    'Now lets create a loop to continuously check on job status. Once the status changes from "IN_PROGRESS" to '
+    '"READY_TO_DOWNLOAD", we will break the loop.')
 
 for boston in test:
-    
+
     while status_check == "IN_PROGRESS":
-        print('Please wait, alert data job still in progress. Once status changes from "IN_PROGRESS" to "READY_TO_DOWNLOAD", this message will disappear and the code will proceed to the next step. Retries occur every 60 seconds:')
-        for i in range(60,0,-1):
-            sys.stdout.write(str(i)+' ')
+        print(
+            'Please wait, alert data job still in progress. Once status changes from "IN_PROGRESS" to '
+            '"READY_TO_DOWNLOAD", this message will disappear and the code will proceed to the next step. Retries '
+            'occur every 60 seconds:')
+        for i in range(60, 0, -1):
+            sys.stdout.write(str(i) + ' ')
             sys.stdout.flush()
             time.sleep(1)
         pc_settings, response_package = pc_lib_api.api_async_alerts_job_status(pc_settings, job_id)
         alerts_job_status1 = response_package
-        jobs_status_json1 = pandas.json_normalize(alerts_job_status1)	
+        jobs_status_json1 = pandas.json_normalize(alerts_job_status1)
         jobs_status_string1 = jobs_status_json1['data.status'].to_string()
         status_check1 = jobs_status_string1[5:]
         if status_check1 == "READY_TO_DOWNLOAD":
-        
-	        break
-        
-print('Job is now ready for download.')        
-#----------------------------------------------------------------------!=
+            break
+
+print('Job is now ready for download.')
+# ----------------------------------------------------------------------!=
 print('Done grabbing the JSON')
 
 print('API - Data Call 4 - Downloading the list of alerts as a JSON response.')
@@ -317,22 +326,25 @@ pc_settings, response_package = pc_lib_api.api_async_alerts_job_download(pc_sett
 alerts_job_download = response_package
 
 print('Putting JSON response inside a dataframe - async_alerts_list')
-#data simply refers to the top most JSON key you want to begin sorting by in JSON reponse. 
-rr = pandas.json_normalize(alerts_job_download['data']) 
+# data simply refers to the top most JSON key you want to begin sorting by in JSON reponse.
+rr = pandas.json_normalize(alerts_job_download['data'])
 
 # Change timestamp for specific column from UNIX time to any time zone. 
-rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
-rr['lastSeen']=(pandas.to_datetime(rr['lastSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
-rr['firstSeen']=(pandas.to_datetime(rr['firstSeen'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
-rr['policy.lastModifiedOn']=(pandas.to_datetime(rr['policy.lastModifiedOn'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['alertTime'] = (pandas.to_datetime(rr['alertTime'], unit='ms')).apply(
+    lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['lastSeen'] = (pandas.to_datetime(rr['lastSeen'], unit='ms')).apply(
+    lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['firstSeen'] = (pandas.to_datetime(rr['firstSeen'], unit='ms')).apply(
+    lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+rr['policy.lastModifiedOn'] = (pandas.to_datetime(rr['policy.lastModifiedOn'], unit='ms')).apply(
+    lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 
 type = args.cloudtype
 
-#current time/date utilized in CSV output filesnames
+# current time/date utilized in CSV output filenames
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 
 print('Saving JSON contents as a CSV...', end='')
-rr.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')  
+rr.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False,
+          date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 print('Done.')
-
-

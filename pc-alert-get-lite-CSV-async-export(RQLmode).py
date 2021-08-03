@@ -1,4 +1,7 @@
 from __future__ import print_function
+
+from pprint import pprint
+
 try:
     input = raw_input
 except NameError:
@@ -45,11 +48,13 @@ parser.add_argument(
 parser.add_argument(
     '--detailed',
     action='store_true',
+    default = True,
     help='(Optional) - Detailed alerts response.')
-	
+
 parser.add_argument(
     '--matrixmode',
     action='store_true',
+    default=False,
     help='(Optional) - Print out JSON responses.')
 
 parser.add_argument(
@@ -57,7 +62,7 @@ parser.add_argument(
     '--alertstatus',
     type=str,
     help='(Optional) - Filter - Alert Status.')
-	
+
 parser.add_argument(
     '-aid',
     '--alertid',
@@ -69,23 +74,24 @@ parser.add_argument(
     '--policytype',
     type=str,
     help='(Optional) - Filter - Policy Type.')
-	
+
 parser.add_argument(
     '-fpcs',
     '--policycomplianceStandard',
     type=str,
     help='(Optional) - Filter - Policy Compliance Standard.')
-	
+
 parser.add_argument(
     '-fps',
     '--policyseverity',
     type=str,
     help='(Optional) - Filter - Policy Severity.')
-		
+
 parser.add_argument(
     '-fct',
     '--cloudtype',
     type=str,
+    default="gcp",
     help='(Optional) - Filter - Cloud Type.')
 parser.add_argument(
     '-fca',
@@ -111,6 +117,13 @@ parser.add_argument(
     help='(Optional) - Time Range in days.  Defaults to 30.')
 
 parser.add_argument(
+    '-tru',
+    '--timerangeunit',
+    type=str,
+    default='days',
+    help='(Optional) - Time Range unit.  Defaults to days.')
+
+parser.add_argument(
     '-l',
     '--limit',
     type=int,
@@ -125,18 +138,19 @@ parser.add_argument(
     '-fpid',
     '--policyid',
     type=str,
-    help='(Optional) - Filter - Policy ID.')	
+    help='(Optional) - Filter - Policy ID.')
 parser.add_argument(
     '-frid',
     '--resourceid',
     type=str,
-    help='(Optional) - Filter - Resource ID.')	
+    help='(Optional) - Filter - Resource ID.')
 
 args = parser.parse_args()
 # --End parse command line arguments-- #
 
 print('User login')
 pc_settings = pc_lib_general.pc_login_get(args.username, args.password, args.uiurl)
+uiBase = pc_settings['uiBase']
 print('Done')
 # Verification (override with -y)
 if not args.yes:
@@ -148,15 +162,15 @@ if not args.yes:
     if verification_response not in continue_response:
         pc_lib_general.pc_exit_error(400, 'Verification failed due to user response.  Exiting...')
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 print('API - Data Call 1 - Getting authentication token..')
 pc_settings = pc_lib_api.pc_jwt_get(pc_settings)
 print('Done.')
 
-#current time/date utilized in CSV output filesnames
+# current time/date utilized in CSV output filesnames
 now = datetime.now().strftime("%m_%d_%Y-%I_%M_%p")
 
-print ('Cloud Type Specified in CLI =', args.cloudtype)
+print('Cloud Type Specified in CLI =', args.cloudtype)
 print('Building the filters for JSON package.')
 
 alerts_filter = {}
@@ -169,7 +183,7 @@ else:
 alerts_filter['timeRange'] = {}
 alerts_filter['timeRange']['type'] = "relative"
 alerts_filter['timeRange']['value'] = {}
-alerts_filter['timeRange']['value']['unit'] = "day"
+alerts_filter['timeRange']['value']['unit'] = args.timerangeunit
 alerts_filter['timeRange']['value']['amount'] = args.timerange
 
 alerts_filter['sortBy'] = ["id:asc"]
@@ -254,30 +268,33 @@ if args.resourceid is not None:
 
 print('Done building filters specified in CLI.')
 
-#----------------------------------------------------------------------
-print('API - Data Call 2 - Plugging in filters, a granular JSON response is now being prepared by Prisma. A job ID will be provided.')
+# ----------------------------------------------------------------------
+print(
+    'API - Data Call 2 - Plugging in filters, a granular JSON response is now being prepared by Prisma. A job ID will '
+    'be provided.')
+print('Alert filters: ', alerts_filter)
 pc_settings, response_package = pc_lib_api.api_async_alerts_job(pc_settings, data=alerts_filter)
 alerts_job_number = response_package
 
 print('Putting JSON response inside a dataframe - job_id')
-job_id_json = pandas.json_normalize(alerts_job_number) #put json inside a dataframe
+job_id_json = pandas.json_normalize(alerts_job_number)  # put json inside a dataframe
 
-#Grab the job ID which we will plug into a URL, this will allow a user to check status and download. We first must convert it to a string (schema purposes for URL) and then deal with unneccesary characters.
+# Grab the job ID which we will plug into a URL, this will allow a user to check status and download. We first must convert it to a string (schema purposes for URL) and then deal with unneccesary characters.
 job_id_string = job_id_json['data.id'].to_string()
 
-#For the job ID, will remove the first 5 characters since JSON pulls characters not relevant to the job ID.
+# For the job ID, will remove the first 5 characters since JSON pulls characters not relevant to the job ID.
 job_id = job_id_string[5:]
 
 print('Our job number is', job_id)
 
-#----------------------------------------------------------------------
-print('API - Data Call 3 - Using the job ID, we can now plug this into a URL to track status updates for alerts job.') 
+# ----------------------------------------------------------------------
+print('API - Data Call 3 - Using the job ID, we can now plug this into a URL to track status updates for alerts job.')
 pc_settings, response_package = pc_lib_api.api_async_alerts_job_status(pc_settings, job_id)
 alerts_job_status = response_package
 
 if args.matrixmode == True:
     print(alerts_job_status)
-	
+
 else:
     print('Done')
 
@@ -285,34 +302,35 @@ print('Putting JSON response inside a dataframe - alert_status')
 jobs_status_json = pandas.json_normalize(alerts_job_status)
 print('Done')
 
-#Before using this status check in the "IF" "ELSE" section below, we first have to convert the data to a string in order to help strip unneccesary characters.
+# Before using this status check in the "IF" "ELSE" section below, we first have to convert the data to a string in order to help strip unneccesary characters.
 jobs_status_string = jobs_status_json['data.status'].to_string()
 
-#For the status, will remove the first 5 characters since it pulls characters not relevant to the status.
+# For the status, will remove the first 5 characters since it pulls characters not relevant to the status.
 status_check = jobs_status_string[5:]
 test = status_check.split()
 
-print('Now lets create a loop to continously check on job status. Once the status changes from "IN_PROGRESS" to "READY_TO_DOWNLOAD", we will break the loop.')
+print(
+    'Now lets create a loop to continously check on job status. Once the status changes from "IN_PROGRESS" to "READY_TO_DOWNLOAD", we will break the loop.')
 
 for boston in test:
-    
+
     while status_check == "IN_PROGRESS":
-        print('Please wait, alert data job still in progress. Once status changes from "IN_PROGRESS" to "READY_TO_DOWNLOAD", this message will disappear and the code will proceed to the next step. Retries occur every 60 seconds:')
-        for i in range(60,0,-1):
-            sys.stdout.write(str(i)+' ')
+        print(
+            'Please wait, alert data job still in progress. Once status changes from "IN_PROGRESS" to "READY_TO_DOWNLOAD", this message will disappear and the code will proceed to the next step. Retries occur every 60 seconds:')
+        for i in range(60, 0, -1):
+            sys.stdout.write(str(i) + ' ')
             sys.stdout.flush()
             time.sleep(1)
         pc_settings, response_package = pc_lib_api.api_async_alerts_job_status(pc_settings, job_id)
         alerts_job_status1 = response_package
-        jobs_status_json1 = pandas.json_normalize(alerts_job_status1)	
+        jobs_status_json1 = pandas.json_normalize(alerts_job_status1)
         jobs_status_string1 = jobs_status_json1['data.status'].to_string()
         status_check1 = jobs_status_string1[5:]
         if status_check1 == "READY_TO_DOWNLOAD":
-        
-	        break
-        
-print('Job is now ready for download.')        
-#----------------------------------------------------------------------!=
+            break
+
+print('Job is now ready for download.')
+# ----------------------------------------------------------------------!=
 print('API - Data Call 4 - Downloading the list of alerts as a JSON response.')
 pc_settings, response_package = pc_lib_api.api_async_alerts_job_download(pc_settings, job_id)
 alerts_job_download = response_package
@@ -321,41 +339,70 @@ print('Done grabbing the JSON')
 
 if args.matrixmode == True:
     print(alerts_job_download)
-	
+
 else:
     print('Done')
 
 print('Putting JSON response inside a dataframe - async_alerts_list')
-#data simply refers to the top most JSON key you want to begin sorting by in JSON reponse. 
-rr = pandas.json_normalize(alerts_job_download['data']) 
+# data simply refers to the top most JSON key you want to begin sorting by in JSON reponse.
+
+# Workaround for Tags in AWS
+# Iterates over the list of alerts downloaded, looks for "Tags" and "tags" elements within "resource",
+# extracts the tags from the list object, and creates a new dictionary of dictionaries object,
+# deletes the [Tags|tags] element and replaces it with a new "tags" element which can be normalized with Pandas
+
+if args.cloudtype == "aws":
+    alerts_counter = 0
+    for alert in alerts_job_download['data']:
+        print(alerts_counter)
+        resource = alert['resource']
+        aws_tags_dict = {}
+        if "Tags" in resource['data']:
+            for tags in resource['data']['Tags']:
+                pprint(tags)
+                aws_tags_dict.update({tags['key']: tags['value']})
+                pprint(aws_tags_dict.items())
+            del(alerts_job_download['data'][alerts_counter]['resource']['data']['Tags'])
+        if "tags" in resource['data']:
+            for tags in resource['data']['tags']:
+                pprint(tags)
+                aws_tags_dict.update({tags['key']: tags['value']})
+                pprint(aws_tags_dict.items())
+            del(alerts_job_download['data'][alerts_counter]['resource']['data']['tags'])
+        alerts_job_download['data'][alerts_counter]['resource']['data']['tags'] = aws_tags_dict
+        alerts_counter += 1
+
+rr = pandas.json_normalize(alerts_job_download['data'])
 print('Done')
 
-#----------------------------------------------------------------------
-#In order to get an RQL query column populated and mapped to specific alerts, first we need to combine response from a policy list response and a saved search list response. Alerts response has a policyID field which we can map to this combo response to extract the associated RQL (if applicable)
-print('API - Data Call 5 - Getting current policy list, this will help tie alerts to an RQL query. "rule.criteria" to "id" mapping from saved search in data call 2')
+# ----------------------------------------------------------------------
+# In order to get an RQL query column populated and mapped to specific alerts, first we need to combine response from a policy list response and a saved search list response. Alerts response has a policyID field which we can map to this combo response to extract the associated RQL (if applicable)
+print(
+    'API - Data Call 5 - Getting current policy list, this will help tie alerts to an RQL query. "rule.criteria" to "id" mapping from saved search in data call 2')
 pc_settings, response_package = pc_lib_api.api_policy_v2_list_get_enabled(pc_settings)
 policy_v2_list = response_package['data']
 print('Done')
 
 if args.matrixmode == True:
     print(policy_v2_list)
-	
+
 else:
     print('Done')
 
-#put json inside a dataframe
-pu = pandas.json_normalize(policy_v2_list) 
+# put json inside a dataframe
+pu = pandas.json_normalize(policy_v2_list)
 print('Putting JSON reponse inside dataframe - policy_v2_list')
 print('Done')
 
-#----------------------------------------------------------------------
-print('API - Data Call 6 - Getting saved search history list, this will help tie alerts to an RQL query. "id" to "rule.criteria" mapping from policy in data call 1')
+# ----------------------------------------------------------------------
+print(
+    'API - Data Call 6 - Getting saved search history list, this will help tie alerts to an RQL query. "id" to "rule.criteria" mapping from policy in data call 1')
 pc_settings, response_package = pc_lib_api.api_search_get_all(pc_settings)
 saved_searches = response_package['data']
 
 if args.matrixmode == True:
     print(saved_searches)
-	
+
 else:
     print('Done')
 
@@ -367,15 +414,16 @@ print('API - Mapping "policy" and "saved search (saved)" dataframes before appen
 pu['query'] = pu['rule.criteria'].map(pu2.set_index('id')['query'])
 print('Done')
 
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
 
-print('API - Data Call 7 - Getting saved search history list, this will help tie alerts to an custom RQL query. "id" to "rule.criteria" mapping from policy in data call 1')
+print('API - Data Call 7 - Getting saved search history list, this will help tie alerts to an custom RQL query. "id" '
+      'to "rule.criteria" mapping from policy in data call 1')
 pc_settings, response_package = pc_lib_api.api_search_get_all_recent(pc_settings)
 saved_searches_recent = response_package['data']
 
 if args.matrixmode == True:
     print(saved_searches_recent)
-	
+
 else:
     print('Done')
 
@@ -387,78 +435,123 @@ print('API - Mapping "policy" and "saved search (recent)" dataframes before appe
 pu['custom_query'] = pu['rule.criteria'].map(pu3.set_index('id')['query'])
 print('Done')
 
-#----------------------------------------------------------------------
-print('API - Data Call 8 - Getting alerts list. "policy.policyid" to "policyId" mapping from policy in data call 1. The more days pulled, the longer this step will take. If this times out with a 504 server side error, apply more filters or lower the days pulled. If a policy ID error pops up, please check that an alert even exists for your specificied time range in the UI. Please wait...')
+# ----------------------------------------------------------------------
+print(
+    'API - Data Call 8 - Getting alerts list. "policy.policyid" to "policyId" mapping from policy in data call 1. The '
+    'more days pulled, the longer this step will take. If this times out with a 504 server side error, apply more '
+    'filters or lower the days pulled. If a policy ID error pops up, please check that an alert even exists for your '
+    'specificied time range in the UI. Please wait...')
 pc_settings, response_package = pc_lib_api.api_alert_v2_list_get(pc_settings, data=alerts_filter)
 alerts_list = response_package['data']
 
-#print(args.matrixmode)
+# print(args.matrixmode)
 
 if args.matrixmode == True:
     print(alerts_list)
-	
+
 else:
     print('Done')
 
 type = args.cloudtype
 
-#----------------------------------------------------------------------
-#Now that the query column from the Saved Search response has been merged into the policy dataframe. Next step is to map the policy dataframe to the alerts dataframe (policy ID is the index). Once mapped one can associate the "query" from the saved search with a specific alert. 
-print('API - Mapping "policy" dataframe with appended RQL column to "alerts" data frame. This will allow the script to add the query column to the alerts dump.')
+# ---------------------------------------------------------------------- Now that the query column from the Saved
+# Search response has been merged into the policy dataframe. Next step is to map the policy dataframe to the alerts
+# dataframe (policy ID is the index). Once mapped one can associate the "query" from the saved search with a specific
+# alert.
+print(
+    'API - Mapping "policy" dataframe with appended RQL column to "alerts" data frame. This will allow the script to add the query column to the alerts dump.')
 rr['query'] = rr['policy.policyId'].map(pu.set_index('policyId')['query'])
 rr['custom_query'] = rr['policy.policyId'].map(pu.set_index('policyId')['custom_query'])
 print('Done')
 
-
-print ('Converting the main time stamp column in dataframe to time/date. By default, Prisma Cloud stores the time stamp in Unix epoch time. This code will also convert the default time zone from Coordinated Universal Time (UTC) to Chicago/Central Time (CDT).')
-rr['alertTime']=(pandas.to_datetime(rr['alertTime'],unit='ms')).apply(lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
+print(
+    'Converting the main time stamp column in dataframe to time/date. By default, Prisma Cloud stores the time stamp in Unix epoch time. This code will also convert the default time zone from Coordinated Universal Time (UTC) to Chicago/Central Time (CDT).')
+rr['alertTime'] = (pandas.to_datetime(rr['alertTime'], unit='ms')).apply(
+    lambda x: x.tz_localize('UTC').tz_convert('America/Chicago'))
 column_exist_check = "investigateOptions.searchId" in rr
 
-
-print ('Check on whether any investigation links were provided in the JSON response: ' + str(column_exist_check))
+print('Check on whether any investigation links were provided in the JSON response: ' + str(column_exist_check))
 print('Done')
-print ('Assembling columns specific to AWS or GCP, this includes all tag/label information pulled in from ServiceNow(SNOW). If tags/labels from SNOW exists for a specific alert in Prisma Cloud, they will show up in the CSV.')
+print(
+    'Assembling columns specific to AWS or GCP, this includes all tag/label information pulled in from ServiceNow(SNOW). If tags/labels from SNOW exists for a specific alert in Prisma Cloud, they will show up in the CSV.')
 
-#Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case). Condition check above is for the investigate column which isn't always populated with data.
-if args.cloudtype == "gcp": 
+# Specifies which which columns to grab on this lite version. AWS uses "tags" and GCP uses "labels" so we must be sure the correct column names are called. The columns below can be swapped out for anything found in the JSON response ("rr" in this case). Condition check above is for the investigate column which isn't always populated with data.
+if args.cloudtype == "gcp":
     if column_exist_check == True:
-        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",  "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.accountId", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "investigateOptions.searchId", "query", "custom_query"]
-#Reindex, if one of our columns is empty the code will proceed and not error out. 	
+        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",
+                           "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType",
+                           "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName",
+                           "resource.accountId", "resource.rrn", "resource.name", "resource.region",
+                           "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email",
+                           "resource.data.labels.contact_email",
+                           "resource.data.payload.authenticationInfo.principalEmail",
+                           "resource.data.labels.business_service", "resource.data.labels.environment",
+                           "resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status",
+                           "investigateOptions.searchId", "query", "custom_query"]
+        # Reindex, if one of our columns is empty the code will proceed and not error out.
         rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
-    
-        rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
-    #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
-#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
+
+        rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2[
+            'investigateOptions.searchId'].apply(
+            lambda x: "{}{}".format('https://' + uiBase + '/investigate?searchId=', x))
+        # rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] =
+        # We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False,
+                   date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
+    else:
+        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",
+                           "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType",
+                           "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName",
+                           "resource.accountId", "resource.rrn", "resource.name", "resource.region",
+                           "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email",
+                           "resource.data.labels.contact_email",
+                           "resource.data.payload.authenticationInfo.principalEmail",
+                           "resource.data.labels.business_service", "resource.data.labels.environment",
+                           "resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status",
+                           "query", "custom_query"]
+        # Reindex, if one of our columns is empty the code will proceed and not error out.
+        rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
+
+        # We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False,
+                   date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
+if args.cloudtype == "aws":
+    if column_exist_check == True:
+        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",
+                           "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType",
+                           "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName",
+                           "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region",
+                           "resource.regionId", "resource.data.tags.Owner", "resource.data.tags.OwnerEmail",
+                           "resource.data.tags.ContactEmail", "resource.data.tags.TechnicalService",
+                           "resource.data.tags.BusinessService", "resource.data.tags.Environment",
+                           "resource.data.tags.BusinessUnit", "investigateOptions.searchId", "query", "custom_query"]
+        # Reindex, if one of our columns is empty the code will proceed and not error out.
+        rr2 = rr.reindex(columns=aws_LITE_FIELDS)
+
+        rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2[
+            'investigateOptions.searchId'].apply(
+            lambda x: "{}{}".format('https://' + uiBase + '/investigate?searchId=', x))
+        # rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] =
+        # We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False,
+                   date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 
     else:
-        gcp_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.accountId", "resource.rrn", "resource.name", "resource.region", "resource.regionId", "resource.data.labels.owner", "resource.data.labels.owner_email","resource.data.labels.contact_email", "resource.data.payload.authenticationInfo.principalEmail", "resource.data.labels.business_service", "resource.data.labels.environment","resource.data.labels.business_unit", "resource.data.labels.name", "resource.data.status", "query", "custom_query"]
-#Reindex, if one of our columns is empty the code will proceed and not error out. 	
-        rr2 = rr.reindex(columns=gcp_LITE_FIELDS)
-    
-#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
-	
-if args.cloudtype == "aws": 
-    if column_exist_check == True:
-        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "investigateOptions.searchId", "query", "custom_query"]
-#Reindex, if one of our columns is empty the code will proceed and not error out. 	
+        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId",
+                           "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType",
+                           "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName",
+                           "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region",
+                           "resource.regionId", "resource.data.tags.Owner", "resource.data.tags.OwnerEmail",
+                           "resource.data.tags.ContactEmail", "resource.data.tags.TechnicalService",
+                           "resource.data.tags.BusinessService", "resource.data.tags.Environment",
+                           "resource.data.tags.BusinessUnit", "query", "custom_query"]
+        # Reindex, if one of our columns is empty the code will proceed and not error out.
         rr2 = rr.reindex(columns=aws_LITE_FIELDS)
-    
-        rr2.loc[rr2['investigateOptions.searchId'].notnull(), 'investigateOptions.searchId'] = rr2['investigateOptions.searchId'].apply(lambda x: "{}{}".format('https://app3.prismacloud.io/investigate?searchId=', x))
-    #rr2.loc[rr2['investigateOptions.searchId'].isnull(), 'investigateOptions.searchId'] = 
-#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 
 
-    else:
-        aws_LITE_FIELDS = ["id", "status", "alertTime", "policy.severity", "policy.name", "policy.policyId", "policy.policyType", "policy.recommendation", "policy.labels", "resource.cloudType", "resource.cloudAccountGroups", "resource.resourceType", "resource.resourceApiName", "resource.account", "resource.rrn", "resource.id", "resource.name", "resource.region", "resource.regionId", "resource.data.tagSets.Owner", "resource.data.tagSets.OwnerEmail", "resource.data.tagSets.ContactEmail","resource.data.tagSets.TechnicalService", "resource.data.tagSets.BusinessService","resource.data.tagSets.Environment","resource.data.tagSets.BusinessUnit", "query", "custom_query"]
-#Reindex, if one of our columns is empty the code will proceed and not error out. 	
-        rr2 = rr.reindex(columns=aws_LITE_FIELDS)
-    
-#We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
-        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False, date_format='%m-%d-%y || %I:%M:%S %p CDT%z') 		
+        # We can specify additional parameters in the post processing. Data_Format, provides the time format for the AlertTime column. Index=false, removes the 1st column of numbers (index).
+        rr2.to_csv('%s_alerts_output_{}.csv'.format(now) % type, sep=',', encoding='utf-8', index=False,
+                   date_format='%m-%d-%y || %I:%M:%S %p CDT%z')
 
 print('Done')
 print('Saving JSON contents as a CSV...')
 print('Done.')
- 

@@ -112,6 +112,7 @@ def pc_settings_write(username, password, uiBase, apiCompute="",
     new_settings['password'] = password
     new_settings['apiBase'] = apiBase
     new_settings['apiCompute'] = apiCompute
+    new_settings['uiBase'] = uiBase
     pc_file_write_json(settings_file_name, new_settings)
 
 
@@ -129,6 +130,7 @@ def pc_login_get(username, password, uibase, apicompute=""):
         pc_settings['password'] = password
         pc_settings['apiBase'] = pc_find_api_base(uibase)
         pc_settings['apiCompute'] = apicompute
+        pc_settings['uiBase'] = uibase
     # Add a placeholder for jwt
     pc_settings['jwt'] = None
     return pc_settings

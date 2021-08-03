@@ -332,6 +332,7 @@ def api_async_alerts_job_download(pc_settings, job_id, params=None, data=None):
 
 
 # Async Alerts Job
+# https://prisma.pan.dev/api/cloud/cspm/alerts#operation/submit-job-for-listing-alerts
 def api_async_alerts_job(pc_settings, params=None, data=None):
     action = "POST"
     url = "https://" + pc_settings['apiBase'] + "/alert/jobs"
